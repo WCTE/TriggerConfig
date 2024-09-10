@@ -47,8 +47,8 @@ def set_signal_channels(c, verbose = False):
     c.set_signal(27, "BSE", "Beam spill end", verbose)
 
     # other trigger inputs
-    c.set_signal(28, "CALIB", "Laser or other asynchronous trigger signal", verbose)
-    c.set_signal(29, "TOF0F", "TOF module 0 channel 15", verbose)
+    c.set_signal(28, "LASER", "Laser signal", verbose)
+    c.set_signal(29, "CUSTOM", "Other trigger", verbose)
 
     # 1 TOF channel left over
     c.set_signal(30, "TOF0F", "TOF module 0 channel 15", verbose)
@@ -133,7 +133,9 @@ set_signal_channels(low_e, verbose = True)
 setup_low_e_trigger_logic(low_e, verbose = True)
 
 # direct the output of the trigger logic to lemo 0
-low_e.set_output_lemo_assignment(0, "Level 2", 0,False, verbose = True)
+low_e.set_output_lemo_assignment(0, "level 2", 0,False, verbose = True)
 
-xxx = 1
+# Save the low energy trigger configuration to a file
+low_e.write_configuration("configurations/low_e_v1.json")
+
 
