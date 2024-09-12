@@ -1,5 +1,4 @@
 # Simple user interface to modify trigger configurations and apply them to the VME backplane
-from numpy.ma.core import indices
 
 # Import the necessary modules
 from Configuration import Configuration
