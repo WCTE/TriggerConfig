@@ -476,18 +476,22 @@ class Configuration:
         # Spill channels
         register_name = 'ARW_PRESPILL'
         register_address = self.register_list[register_type][register_name]['addresses'][0]
-        value = int(self.configuration["spill_channels"]["pre_spill"])
+        value = int(self.configuration["spill_channels"].get("pre_spill",-1))
         reg[hex(register_address)] = hex(value)
 
         register_name = 'ARW_ENDPSILL'
         register_address = self.register_list[register_type][register_name]['addresses'][0]
-        value = int(self.configuration["spill_channels"]["end_spill"])
+        value = int(self.configuration["spill_channels"].get("end_spill",-1))
         reg[hex(register_address)] = hex(value)
 
         # Deadtime veto
         register_name = 'ARW_DEADTIME'
         register_address = self.register_list[register_type][register_name]['addresses'][0]
-        value = int(self.configuration["deadtime"])
+        value_str = self.configuration["deadtime"]
+        if value_str is None:
+            value = 0
+        else:
+            value = int(value_str)
         reg[hex(register_address)] = hex(value)
 
         self.register_settings = reg
