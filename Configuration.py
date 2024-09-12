@@ -1,10 +1,12 @@
 # Define the configuration of the trigger through nested dictionaries that can be written to a JSON file
-# Note that json converts dictionary integer keys to strings, so the keys are all strings
+
+# Note that json converts any dictionary integer key to a string, so all keys strings
+# To produce simpler code for the console application, the dictionary values are all strings
+# Use the convention that all keys refer to variables with the identical name and use "snake case"
 
 # Import the necessary modules
 import json
 
-import os
 import sys
 sys.path.insert(0, "../V1495_firmware")
 from scripts.genRegisterHeader import getRegisterList
@@ -16,26 +18,27 @@ class Configuration:
         # Define the configuration dictionary
         self.configuration = {
             "config_version": "0.1",
-            "short name": short_name,
+            "short_name": short_name,
             "description": description,
-            "input signals": {},
-            "input signal treatment": {},
-            "level 1 logics": {},
-            "level 1 output treatment": {},
-            "level 2 logics": {},
-            "level 2 output treatment": {},
-            "output lemo assignments": {},
+            "input_signals": {},
+            "input_signal_treatments": {},
+            "level_1_logics": {},
+            "level_1_output_treatments": {},
+            "level_2_logics": {},
+            "output_lemo_assignments": {},
             "prescalers": {},
-            "deadtime veto": {}
+            "spill_channels": {},
+            "deadtime": {}
         }
         self.maximum_delay = 255
         self.maximum_window_length = 255
 
-        self.REGISTERS = getRegisterList("../V1495_firmware/src/V1495_regs_pkg.vhd")
+        self.register_list = getRegisterList("../V1495_firmware/src/V1495_regs_pkg.vhd")
+        self.register_settings = {}
 
-    def check_int(self, serial: int, min_value: int, max_value: int):
-        # check that the number is a number between the min and max values
-        if not (isinstance(serial, int) and min_value <= serial <= max_value):
+    def check_int(self, serial: str, min_value: int, max_value: int):
+        # check that the number is a string between the min and max values
+        if not (serial.isdigit() and min_value <= int(serial) <= max_value):
             print(f'invalid value {serial}. It must be a integer between {min_value} and {max_value}')
             return False
         return True
@@ -47,15 +50,15 @@ class Configuration:
             return False
         return True
 
-    def check_bool(self, boolean: bool):
-        # check that the boolean is a boolean
-        if not isinstance(boolean, bool):
-            print(f'invalid boolean {boolean}. It must be a boolean')
+    def check_bool(self, boolean: str):
+        # check that the boolean is a string that converts to boolean
+        if boolean not in ["True", "False"]:
+            print(f'invalid boolean {boolean}. It must be either "True" or "False"')
             return False
         return True
 
     # Define a new signal and add to the trigger configuration
-    def set_signal(self, serial: int, short_name: str, description: str, verbose: bool = True):
+    def set_signal(self, serial: str, short_name: str, description: str, verbose: bool = True):
 
         fail = False
         # check that the serial number is a number between 0 and 95
@@ -71,15 +74,15 @@ class Configuration:
 
             # check if the serial number is already in the configuration
             new_signal = True
-            if str(serial) in self.configuration["input signals"]:
+            if serial in self.configuration["input_signals"]:
                 new_signal = False
 
             # Assign the signal dictionary to the configuration
             signal = {
-                "short name": short_name,
+                "short_name": short_name,
                 "description": description
             }
-            self.configuration["input signals"][str(serial)] = signal
+            self.configuration["input_signals"][serial] = signal
             if verbose:
                 if new_signal:
                     print(f'signal {serial} ({short_name}) added')
@@ -92,7 +95,7 @@ class Configuration:
                 if verbose:
                     print(f'default treatment for signal {serial} set')
 
-    def set_treatment(self, serial: int, delay: int = 0, window_length: int = 1, invert: bool = False, verbose: bool = True):
+    def set_treatment(self, serial: str, delay: str = "0", window_length: str = "1", verbose: bool = True):
 
         fail = False
         # check that the serial number is a number between 0 and 95
@@ -101,23 +104,19 @@ class Configuration:
         fail = fail or not self.check_int(delay, 0, self.maximum_delay)
         fail = fail or not self.check_int(window_length, 1, self.maximum_window_length)
 
-        # check that the invert is a boolean
-        fail = fail or not self.check_bool(invert)
-
         if not fail:
             # Define the treatment dictionary
             treatment = {
                 "delay": delay,
-                "window length": window_length,
-                "invert": invert
+                "window_length": window_length
             }
 
             # Assign the treatment dictionary to the configuration
-            self.configuration["input signal treatment"][str(serial)] = treatment
+            self.configuration["input_signal_treatments"][serial] = treatment
             if verbose:
                 print(f'treatment for signal {serial} set')
 
-    def set_level_1_logic(self, serial:int, short_name:str, description: str, inputs: list, logic_type: str, verbose: bool = True):
+    def set_level_1_logic(self, serial:str, short_name:str, description: str, inputs: str, invert_inputs: str, logic_type: str, verbose: bool = True):
         fail = False
         # check that the serial number is a number between 0 and 9
         fail = fail or not self.check_int(serial, 0, 9)
@@ -128,35 +127,39 @@ class Configuration:
         # check that the description is a string of length at most 60 (for printing purposes)
         fail = fail or not self.check_string(description, 60)
 
-        # check that the inputs is a list of numbers between 0 and 63
-        if not all(isinstance(i, int) and 0 <= i <= 63 for i in inputs):
-            fail = True
-            print(f'invalid inputs {inputs}. It must be a list of numbers between 0 and 63')
+        # check that inputs and invert_inputs are both str that translates to a python list of numbers between 0 and 63
+        for inputs_str in [inputs, invert_inputs]:
+            check_brackets = inputs_str[0] == '[' and inputs_str[-1] == ']'
+            str_list = inputs_str.strip().strip('[]').split(',')
+            if not check_brackets and all(i.isdigit() and 0 <= int(i) <= 63 for i in str_list):
+                fail = True
+                print(f'invalid specification: {inputs_str}. It must be a list of numbers between 0 and 63')
 
-        # check that the logic type is a string and either "and" or "or"
-        if not isinstance(logic_type, str) or logic_type not in ["AND", "OR"]:
+        # check that the logic type is a string and either "AND" or "OR"
+        if logic_type not in ["AND", "OR"]:
             fail = True
-            print(f'invalid logic type {logic_type}. It must be a string and either "AND" or "OR"')
+            print(f'invalid logic type {logic_type}. It must be either "AND" or "OR"')
 
         if not fail:
 
             # check if the serial number is already in the configuration
             new_logic = True
-            if str(serial) in self.configuration["level 1 logics"]:
+            if serial in self.configuration["level_1_logics"]:
                 new_logic = False
-                short = self.configuration["level 1 logics"][str(serial)]["short name"]
+                short_old = self.configuration["level_1_logics"][serial]["short_name"]
                 if verbose:
-                    print(f'level 1 logic {serial} ({short}) replaced by new level 1 logic {short_name}')
+                    print(f'level 1 logic {serial} ({short_old}) replaced by new level 1 logic ({short_name})')
 
             # Define the logic dictionary
             logic = {
-                "short name": short_name,
+                "short_name": short_name,
                 "description": description,
                 "inputs": inputs,
-                "type": logic_type
+                "invert_inputs": invert_inputs,
+                "logic_type": logic_type
             }
             # Assign the logic dictionary to the configuration
-            self.configuration["level 1 logics"][str(serial)] = logic
+            self.configuration["level_1_logics"][serial] = logic
             if verbose:
                 print(f'level 1 logic {serial} ({short_name}) added')
 
@@ -167,8 +170,7 @@ class Configuration:
                     print(f'default treatment for level 1 logic output {serial} set')
 
 
-    def set_level_1_treatment(self, serial: int, delay: int = 0, window_length: int = 1, invert: bool = False, verbose: bool = True):
-
+    def set_level_1_treatment(self, serial: str, delay: str = "0", window_length: str = "1", verbose: bool = True):
         fail = False
         # check that the serial number is a number between 0 and 9
         fail = fail or not self.check_int(serial, 0, 9)
@@ -176,24 +178,20 @@ class Configuration:
         fail = fail or not self.check_int(delay, 0, self.maximum_delay)
         fail = fail or not self.check_int(window_length, 0, self.maximum_window_length)
 
-        # check that the invert is a boolean
-        fail = fail or not self.check_bool(invert)
-
         if not fail:
             # Define the treatment dictionary
             treatment = {
                 "delay": delay,
-                "window length": window_length,
-                "invert": invert
+                "window_length": window_length
             }
 
             # Assign the treatment dictionary to the configuration
-            self.configuration["level 1 output treatment"][str(serial)] = treatment
+            self.configuration["level_1_output_treatments"][serial] = treatment
             if verbose:
                 print(f'treatment for level 1 output {serial} set')
 
 
-    def set_level_2_logic(self, serial:int, short_name:str, description: str, inputs: list, level_1_inputs: list, logic_type: str, verbose: bool = True):
+    def set_level_2_logic(self, serial:str, short_name:str, description: str, inputs: str, invert_inputs: str, level_1_inputs: str, invert_level_1_inputs: str, logic_type: str, verbose: bool = True):
         fail = False
         # check that the serial number is a number between 0 and 3
         fail = fail or not self.check_int(serial, 0, 3)
@@ -204,79 +202,62 @@ class Configuration:
         # check that the description is a string of length at most 60 (for printing purposes)
         fail = fail or not self.check_string(description, 60)
 
-        # check that the inputs is a list of numbers between 0 and 63
-        if not all(isinstance(i, int) and 0 <= i <= 63 for i in inputs):
-            fail = True
-            print(f'invalid inputs {inputs}. It must be a list of numbers between 0 and 63')
+        # check that the inputs and invert_inputs are both lists of numbers between 0 and 63
+        for inputs_str in [inputs, invert_inputs]:
+            check_brackets = inputs_str[0] == '[' and inputs_str[-1] == ']'
+            str_list = inputs_str.strip().strip('[]').split(',')
+            if not check_brackets and all(i.isdigit() and 0 <= int(i) <= 63 for i in str_list):
+                fail = True
+                print(f'invalid specification {inputs_str}. It must be a list of numbers between 0 and 63')
 
-        # check that the level_1_inputs is a list of numbers between 0 and 9
-        if not all(isinstance(i, int) and 0 <= i <= 9 for i in level_1_inputs):
-            fail = True
-            print(f'invalid inputs {inputs}. It must be a list of numbers between 0 and 9')
+        # check that level_1_inputs and invert_level_1_inputs are both lists of numbers between 0 and 9
+        for level_1_inputs_str in [level_1_inputs, invert_level_1_inputs]:
+            check_brackets = level_1_inputs_str[0] == '[' and level_1_inputs_str[-1] == ']'
+            str_list = level_1_inputs_str.strip().strip('[]').split(',')
+            if not check_brackets and all(i.isdigit() and 0 <= int(i) <= 9 for i in str_list):
+                fail = True
+                print(f'invalid specification {level_1_inputs_str}. It must be a list of numbers between 0 and 9')
 
-        # check that the logic type is a string and either "and" or "or"
-        if not isinstance(logic_type, str) or logic_type not in ["AND", "OR"]:
+        # check that the logic type is a string and either "AND" or "OR"
+        if logic_type not in ["AND", "OR"]:
             fail = True
-            print(f'invalid logic type {logic_type}. It must be a string and either "AND" or "OR    "')
+            print(f'invalid logic type {logic_type}. It must be either "AND" or "OR"')
 
         if not fail:
 
             # check if the serial number is already in the configuration
             new_logic = True
-            if str(serial) in self.configuration["level 2 logics"]:
+            if serial in self.configuration["level_2_logics"]:
                 new_logic = False
-                short = self.configuration["level 2 logics"][str(serial)]["short name"]
+                short_old = self.configuration["level_2_logics"][serial]["short_name"]
                 if verbose:
-                    print(f'level 2 logic {serial} ({short}) replaced by new level 2 logic {short_name}')
+                    print(f'level 2 logic {serial} ({short_old}) replaced by new level 2 logic ({short_name})')
 
             # Define the logic dictionary
             logic = {
-                "short name": short_name,
+                "short_name": short_name,
                 "description": description,
                 "inputs": inputs,
-                "level 1 inputs": level_1_inputs,
-                "type": logic_type
+                "invert_inputs": invert_inputs,
+                "level_1_inputs": level_1_inputs,
+                "invert_level_1_inputs": invert_level_1_inputs,
+                "logic_type": logic_type
             }
             # Assign the logic dictionary to the configuration
-            self.configuration["level 2 logics"][str(serial)] = logic
+            self.configuration["level_2_logics"][serial] = logic
             if verbose:
-                print(f'level 1 logic {serial} ({short_name}) added')
+                print(f'level 2 logic {serial} ({short_name}) added')
 
-            # Set the default treatment for new level 2 logics:
-            if new_logic:
-                self.set_level_2_treatment(serial, verbose=verbose)
-                if verbose:
-                    print(f'default treatment for level 2 logic output {serial} set')
-
-    def set_level_2_treatment(self, serial: int, delay: int = 0, window_length: int = 1, invert: bool = False, verbose: bool = True):
-
-        fail = False
-        # check that the serial number is a number between 0 and 3
-        fail = fail or not self.check_int(serial, 0, 3)
-
-        fail = fail or not self.check_int(delay, 0, self.maximum_delay)
-        fail = fail or not self.check_int(window_length, 0, self.maximum_window_length)
-
-        # check that the invert is a boolean
-        fail = fail or not self.check_bool(invert)
-
-        if not fail:
-            # Define the treatment dictionary
-            treatment = {
-                "delay": delay,
-                "window length": window_length,
-                "invert": invert
-            }
-
-            # Assign the treatment dictionary to the configuration
-            self.configuration["level 2 output treatment"][str(serial)] = treatment
-            if verbose:
-                print(f'treatment for level 2 output {serial} set')
-
-    def set_output_lemo_assignment(self, serial: int, source: str, source_serial: int, treatment: bool, verbose: bool = True):
+    def set_output_lemo_assignment(self, serial: str, short_name:str, description: str, source: str, source_serial: str, treatment: str, verbose: bool = True):
         fail = False
         # check that the serial number (output lemo connector number) is a number between 0 and 15
         fail = fail or not self.check_int(serial, 0, 15)
+
+        # check that the short name is a string of length at most 10 (for printing purposes)
+        fail = fail or not self.check_string(short_name, 10)
+
+        # check that the description is a string of length at most 60 (for printing purposes)
+        fail = fail or not self.check_string(description, 60)
 
         # check that the source is one of "input", "level 1", "level 2"
         if source not in ["input", "level 1", "level 2"]:
@@ -297,38 +278,54 @@ class Configuration:
         if not fail:
             # Define the output dictionary
             output = {
+                "short_name": short_name,
+                "description": description,
                 "source": source,
-                "source serial": source_serial,
+                "source_serial": source_serial,
                 "treatment": treatment
             }
             # Assign the output to the configuration
-            self.configuration["output lemo assignments"][str(serial)] = output
+            self.configuration["output_lemo_assignments"][serial] = output
             if verbose:
-                print(f'output {serial} assigned to LEMO {output}')
+                extra = "with treatment" if treatment == "True" else "without treatment"
+                print(f'{source}-{source_serial} {extra} assigned to LEMO {serial}')
 
-    def set_prescaler(self, serial: int, prescaler: int, verbose: bool = True):
+    def set_prescaler(self, serial: str, prescale: str, verbose: bool = True):
         fail = False
-        # check that the serial number is a number between 0 and 2
-        fail = fail or not self.check_int(serial, 0, 2)
+        # check that the serial number is a number between 0 and 9 (level 1 logic output)
+        fail = fail or not self.check_int(serial, 0, 9)
 
-        # check that the prescaler is a number between 0 and 8
-        fail = fail or not self.check_int(prescaler, 0, 8)
+        # check that the prescale is a number between 0 and 255
+        fail = fail or not self.check_int(prescale, 0, 256)
 
         if not fail:
-            # Assign the prescaler to the configuration
-            self.configuration["prescalers"][str(serial)] = prescaler
+            # Assign the prescale to the configuration
+            self.configuration["prescalers"][serial] = prescale
             if verbose:
-                print(f'prescaler {serial} set to {prescaler}')
+                print(f'prescaler {serial} set to {prescale}')
 
-    def set_deadtime_veto(self, deadtime, verbose: bool = True):
+    def set_spill_channel(self, pre_spill: str, end_spill: str, verbose: bool = True):
         fail = False
-        # check that the deadtime is a number between 1 and 500 (in us)
-        fail = fail or not self.check_int(deadtime, 0, 500)
+        # check that the pre_spill and end_spill are numbers between 0 and 95
+        fail = fail or not self.check_int(pre_spill, 0, 95)
+        fail = fail or not self.check_int(end_spill, 0, 95)
 
         if not fail:
-            self.configuration["deadtime veto"] = deadtime
+            # Assign the spill channel to the configuration
+            self.configuration["spill_channels"]["pre_spill"] = pre_spill
+            self.configuration["spill_channels"]["end_spill"] = end_spill
             if verbose:
-                print(f'deadtime veto set')
+                print(f'(pre- and end-) spill channels set to ({pre_spill} and {end_spill})')
+
+    def set_deadtime_veto(self, deadtime: str, verbose: bool = True):
+        fail = False
+        # check that the deadtime is a number between 1 and 2 million
+        fail = fail or not self.check_int(deadtime, 0, 2000000)
+
+        if not fail:
+            self.configuration["deadtime"] = deadtime
+            if verbose:
+                print(f'deadtime veto set to {deadtime}')
 
     # Define the get configuration method
     def get_configuration(self):
@@ -348,3 +345,149 @@ class Configuration:
         with open(filename, "r") as file:
             # Read the configuration from the file
             self.configuration = json.load(file)
+
+    # Define the write register_settings method
+    def write_register_settings(self, filename):
+        # Open the file for writing
+        with open(filename, "w") as file:
+            # Write the configuration to the file
+            json.dump(self.register_settings, file, indent=4)
+
+    # Define the save method that writes both the configuration  and register values to json files
+    def save(self, filename, verbose: bool = True):
+        # Write the configuration to a json file
+        config_filename = 'configurations/' + filename + '_config.json'
+        self.write_configuration(config_filename)
+        if verbose:
+            print('Saved configuration to ' + config_filename)
+        # Set and write the register values to a json file
+        self.set_registers()
+        register_settings_filename = 'register_settings/' + filename + '_registers.json'
+        self.write_register_settings(register_settings_filename)
+        if verbose:
+            print('Saved register settings to ' + register_settings_filename)
+
+    # Define the update method - used to update the registration settings for a quick change of settings
+    def update(self, verbose: bool = True):
+        # Set and write the register values to a json file
+        self.set_registers()
+        register_settings_filename = 'register_settings/current_registers.json'
+        self.write_register_settings(register_settings_filename)
+        if verbose:
+            print('Saved register settings to ' + register_settings_filename)
+
+    def set_registers(self):
+        # Work out the values for the VME module registers
+        # Note: write a value to every register - so that previous settings are overwritten
+        reg = {}
+        register_type = 'read/write'
+        # 8 bit value registers: delays and window lengths
+        register_names = {'ARW_DELAY_PRE':{"config_category":"input_signal_treatments", "config_key":"delay", "number":64},
+                          'ARW_GATE_PRE':{"config_category":"input_signal_treatments", "config_key":"window_length", "number":64},
+                          'ARW_DELAY_LEVEL1':{"config_category":"level_1_output_treatments", "config_key":"delay"},
+                          'ARW_GATE_LEVEL1':{"config_category":"level_1_output_treatments", "config_key":"window_length"},
+                          }
+
+        for register_name in register_names:
+            register_addresses = self.register_list[register_type][register_name]['addresses']
+            config_category = register_names[register_name]["config_category"]
+            config_key = register_names[register_name]["config_key"]
+            # initialize registers to 0 (all registers must be written to)
+            for register_address in register_addresses:
+                reg[hex(register_address)] = hex(0)
+            for ist in self.configuration[config_category]:
+                if "number" not in register_names[register_name] or int(ist) < register_names[register_name]["number"]:
+                    value = int(self.configuration[config_category][ist][config_key])
+                    register_index = int(ist)//4
+                    register_address = hex(register_addresses[register_index])
+                    register_offset = (int(ist)%4)*8
+                    reg_value = int(reg[register_address], 16)
+                    reg_value |= value << register_offset
+                    reg[register_address] = hex(reg_value)
+
+        # 1 bit value registers: invert_inputs (INV) and inputs for logic (MASK)
+        # *** NOTE THAT INVERTING INPUTS FOR LEVEL 2 LOGIC IS NOT YET IMPLEMENTED ***
+        one_bit_regs = {'INV': {'L1':['A','B']},
+                        'MASK': {'L1':['A','B'], 'L2':['A','B','L1']}}
+        for spec in one_bit_regs:
+            for logic_level in one_bit_regs[spec]:
+                for source in one_bit_regs[spec][logic_level]:
+                    register_name = f'ARW_{source}{spec}_{logic_level}'
+                    register_addresses = self.register_list[register_type][register_name]['addresses']
+                    config_category = {'L1':'level_1_logics', 'L2':'level_2_logics'}[logic_level]
+                    config_key = 'invert_inputs' if spec == 'INV' else 'inputs'
+                    if source == 'L1':
+                        config_key = 'invert_level_1_inputs' if spec == 'INV' else 'level_1_inputs'
+                    offset = {'A':0, 'B':32, 'L1':0}[source]
+                    # initialize registers to 0 (all registers must be written to)
+                    for register_address in register_addresses:
+                        reg[hex(register_address)] = hex(0)
+                    for ist in self.configuration[config_category]:
+                        inputs_str = self.configuration[config_category][ist][config_key]
+                        inputs_split = inputs_str.strip().strip('[]').split(',')
+                        value = 0
+                        if len(inputs_split[0]) > 0:
+                            inputs_list = [int(i) for i in inputs_split]
+                            for input in inputs_list:
+                                if offset <= input < offset + 32:
+                                    shift = input - offset
+                                    value |= 1 << shift
+                        register_index = int(ist)
+                        register_address = hex(register_addresses[register_index])
+                        reg[register_address] = hex(value)
+
+        # Logic type for level 1 and level 2 logics
+        register_name = 'ARW_LOGIC_TYPE'
+        register_address = self.register_list[register_type][register_name]['addresses'][0]
+        value = 0
+        for ist in self.configuration['level_1_logics']:
+            logic_type = 0 if self.configuration['level_1_logics'][ist]['logic_type'] == 'AND' else 1
+            value |= logic_type << int(ist)
+        for ist in self.configuration['level_2_logics']:
+            logic_type = 0 if self.configuration['level_2_logics'][ist]['logic_type'] == 'AND' else 1
+            value |= logic_type << (int(ist)+10)
+        reg[hex(register_address)] = hex(value)
+
+        # Output assignments: LEMO in port F
+        register_name = 'ARW_F'
+        register_addresses = self.register_list[register_type][register_name]['addresses']
+        # initialize registers to 0 (all registers must be written to)
+        for register_address in register_addresses:
+            reg[hex(register_address)] = hex(0)
+        for ist in self.configuration["output_lemo_assignments"]:
+            if int(ist) < 8:
+                source = self.configuration["output_lemo_assignments"][ist]["source"]
+                offset = {'input':0, 'level 1':96, 'level 2':104}[source]
+                source_serial = int(self.configuration["output_lemo_assignments"][ist]["source_serial"])
+                treatment = 1 << 7 if self.configuration["output_lemo_assignments"][ist]["treatment"] == "True" else 0
+                value = offset + source_serial + treatment
+                reg[hex(register_addresses[int(ist)])] = hex(value)
+
+        # Prescalers
+        register_name = 'ARW_POST_L1_PRESCALE'
+        register_addresses = self.register_list[register_type][register_name]['addresses']
+        # initialize registers to 0 (all registers must be written to)
+        for register_address in register_addresses:
+            reg[hex(register_address)] = hex(0)
+        for ist in self.configuration["prescalers"]:
+            value = int(self.configuration["prescalers"][ist])
+            reg[hex(register_addresses[int(ist)])] = hex(value)
+
+        # Spill channels
+        register_name = 'ARW_PRESPILL'
+        register_address = self.register_list[register_type][register_name]['addresses'][0]
+        value = int(self.configuration["spill_channels"]["pre_spill"])
+        reg[hex(register_address)] = hex(value)
+
+        register_name = 'ARW_ENDPSILL'
+        register_address = self.register_list[register_type][register_name]['addresses'][0]
+        value = int(self.configuration["spill_channels"]["end_spill"])
+        reg[hex(register_address)] = hex(value)
+
+        # Deadtime veto
+        register_name = 'ARW_DEADTIME'
+        register_address = self.register_list[register_type][register_name]['addresses'][0]
+        value = int(self.configuration["deadtime"])
+        reg[hex(register_address)] = hex(value)
+
+        self.register_settings = reg
