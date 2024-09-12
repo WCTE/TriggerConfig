@@ -28,7 +28,7 @@ class Configuration:
             "output_lemo_assignments": {},
             "prescalers": {},
             "spill_channels": {},
-            "deadtime": {}
+            "deadtime": None
         }
         self.maximum_delay = 255
         self.maximum_window_length = 255

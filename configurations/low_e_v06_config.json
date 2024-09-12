@@ -192,10 +192,6 @@
             "description": "Hodoscope channel 14"
         },
         "47": {
-            "short_name": "HODOF",
-            "description": "Hodoscope channel 15"
-        },
-        "48": {
             "short_name": "TDCT0",
             "description": "TDC stop signal for TDC1"
         },
@@ -518,10 +514,6 @@
             "window_length": "1"
         },
         "47": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "48": {
             "delay": "0",
             "window_length": "1"
         },

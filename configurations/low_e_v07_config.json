@@ -1,6 +1,6 @@
 {
     "config_version": "0.1",
-    "short_name": "Low E v07",
+    "short_name": "LowE v07",
     "description": "Low Energy Trigger - version 0.7",
     "input_signals": {
         "0": {
@@ -192,10 +192,6 @@
             "description": "Hodoscope channel 14"
         },
         "47": {
-            "short_name": "HODOF",
-            "description": "Hodoscope channel 15"
-        },
-        "48": {
             "short_name": "TDCT0",
             "description": "TDC stop signal for TDC1"
         },
@@ -521,10 +517,6 @@
             "delay": "0",
             "window_length": "1"
         },
-        "48": {
-            "delay": "0",
-            "window_length": "1"
-        },
         "64": {
             "delay": "0",
             "window_length": "1"
@@ -698,8 +690,8 @@
             "window_length": "7"
         },
         "3": {
-            "delay": "11",
-            "window_length": "18"
+            "delay": "7",
+            "window_length": "11"
         }
     },
     "level_2_logics": {

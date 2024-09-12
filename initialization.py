@@ -71,8 +71,7 @@ def set_signal_channels(c, verbose = False):
     c.set_signal("44", "HODOC", "Hodoscope channel 12", verbose)
     c.set_signal("45", "HODOD", "Hodoscope channel 13", verbose)
     c.set_signal("46", "HODOE", "Hodoscope channel 14", verbose)
-    c.set_signal("47", "HODOF", "Hodoscope channel 15", verbose)
-    c.set_signal("48", "TDCT0", "TDC stop signal for TDC1", verbose)
+    c.set_signal("47", "TDCT0", "TDC stop signal for TDC1", verbose)
 
 # Channels 49-63 are not used since we have only 5 discriminator modules (80 channels)
 

@@ -51,11 +51,36 @@ def load():
         else:
             print("Invalid index")
 
+def channels():
+    print("Current input signals:")
+    input_signals = current_configuration.configuration["input_signals"]
+    indices = []
+    for i in range(96):
+        if str(i) in input_signals:
+            indices.append(i)
+    table = texttable.Texttable(max_width=max_table_width)
+    table.set_cols_align(["c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", ])
+    table.set_cols_valign(["m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", ])
+    table.add_row(["#", "Name", "#", "Name", "#", "Name", "#", "Name",
+                   "#", "Name", "#", "Name", "#", "Name", "#", "Name"])
+    # show 8 channels per row
+    for i in range(0, len(indices), 8):
+        row = []
+        for j in range(8):
+            if i+j < len(indices):
+                row.append(str(indices[i+j]))
+                row.append(input_signals[str(indices[i+j])]["short_name"])
+            else:
+                row.append("")
+                row.append("")
+        table.add_row(row)
+    print(table.draw())
+
 def input_table(indices, signals, treatments):
     table = texttable.Texttable(max_width=max_table_width)
     table.set_cols_align(["c", "c", "c", "c", "l"])
     table.set_cols_valign(["m", "m", "m", "m", "m"])
-    table.add_row(["Channel", "Short Name", "Delay", "Window", "Description"])
+    table.add_row(["Channel", "Short Name", "Delay", "Gate", "Description"])
     for i in indices:
         short_name = signals[str(i)]["short_name"]
         delay = treatments[str(i)]["delay"]
@@ -126,7 +151,7 @@ def level_1_table(indices, logics, treatments):
     table = texttable.Texttable(max_width=max_table_width)
     table.set_cols_align(["c", "c", "c", "c", "c", "c", "c", "l"])
     table.set_cols_valign(["m", "m", "m", "m", "m", "m", "m", "m"])
-    table.add_row(["Index", "Short Name", "Inputs", "Invert Inputs", "Logic", "Delay", "Window", "Description"])
+    table.add_row(["Index", "Short Name", "Inputs", "Invert Inputs", "Logic", "Delay", "Gate", "Description"])
     for i in indices:
         short_name = logics[str(i)]["short_name"]
         inputs = logics[str(i)]["inputs"]
@@ -415,8 +440,8 @@ def spills_table(spills):
     table.set_cols_align(["c", "c"])
     table.set_cols_valign(["m", "m"])
     table.add_row(["Pre-spill channel", "End-spill channel"])
-    pre_spill = spills["pre_spill"]
-    end_spill = spills["end_spill"]
+    pre_spill = spills.get("pre_spill", "None")
+    end_spill = spills.get("end_spill", "None")
     table.add_row([pre_spill, end_spill])
     return table
 
@@ -454,6 +479,8 @@ def deadtime_table(deadtime):
 def deadtime(prompt: bool = True):
     print("Current deadtime value:")
     deadtime = current_configuration.configuration["deadtime"]
+    if deadtime is None:
+        deadtime = "None"
     table = deadtime_table(deadtime)
     print(table.draw())
 
@@ -470,11 +497,19 @@ def deadtime(prompt: bool = True):
 
 def show_all():
     inputs(False)
+    print()
+    channels()
+    print()
     level_1(False)
+    print()
     level_2(False)
+    print()
     outputs(False)
+    print()
     prescalers(False)
+    print()
     spills(False)
+    print()
     deadtime(False)
 
 def save():
@@ -497,7 +532,7 @@ def save():
         else:
             print("Description too long")
     while True:
-        command = input("Enter filename (do not include .json): [cancel] ")
+        command = input("Enter filename prefix (do not include _config.json): [cancel] ")
         if command == "":
             return
         current_configuration.save(command)
@@ -510,6 +545,7 @@ def help():
     print("Available commands:")
     print("help: Display this help message")
     print("load: Load a trigger configuration")
+    print("channels: Show the input signal channels in compact form")
     print("inputs: Show/modify the input signal properties")
     print("level1: Show/modify the level 1 logic properties")
     print("level2: Show/modify the level 2 logic properties")
@@ -527,6 +563,7 @@ def main():
     commands = {
         "help": help,
         "load": load,
+        "channels": channels,
         "inputs": inputs,
         "level1": level_1,
         "level2": level_2,
