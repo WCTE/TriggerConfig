@@ -26,9 +26,12 @@ class Configuration:
             "level_1_output_treatments": {},
             "level_2_logics": {},
             "output_lemo_assignments": {},
+            "trigger_board_connections": {},
+            "digitizer_board_connections": {},
+            "patch_panel_connections": {},
             "prescalers": {},
             "spill_channels": {},
-            "deadtime": None
+            "deadtime": None,
         }
         self.maximum_delay = 255
         self.maximum_window_length = 255
@@ -289,6 +292,96 @@ class Configuration:
             if verbose:
                 extra = "with treatment" if treatment == "True" else "without treatment"
                 print(f'{source}-{source_serial} {extra} assigned to LEMO {serial}')
+
+    def set_trigger_board_connection(self, board: str, channel: str, source: str, source_serial: str, verbose: bool = True):
+        fail = False
+        # check that the board number is a number between 0 and 2
+        fail = fail or not self.check_int(board, 0, 2)
+
+        # check that the channel number is a number between 0 and 19
+        fail = fail or not self.check_int(channel, 0, 19)
+
+        # check that source is one of "lemo" or "patch panel" or "other"
+        if source not in ["lemo", "patch panel", "other"]:
+            fail = True
+            print(f'invalid source {source}. It must be one of "lemo", "patch panel", "other"')
+
+        # check that the source serial number is valid
+        if source == "lemo":
+            fail = fail or not self.check_int(source_serial, 0, 15)
+        elif source == "patch panel":
+            fail = fail or not self.check_int(source_serial, 0, 15)
+
+        if not fail:
+            # Define the connection dictionary
+            connection = {
+                "board": board,
+                "channel": channel,
+                "source": source,
+                "source_serial": source_serial
+            }
+            # Assign the connection to the configuration
+            serial = str(int(board)*20 + int(channel))
+            self.configuration["trigger_board_connections"][serial] = connection
+            if verbose:
+                print(f'{source}-{source_serial} connected to digitizer board {board} channel {channel}')
+
+    def set_digitizer_board_connection(self, board: str, channel: str, source: str, source_serial: str, verbose: bool = True):
+        fail = False
+        # check that the board number is a number between 0 and 2
+        fail = fail or not self.check_int(board, 0, 2)
+
+        # check that the channel number is a number between 0 and 19
+        fail = fail or not self.check_int(channel, 0, 19)
+
+        # check that source is one of "input" or "other"
+        if source not in ["input", "other"]:
+            fail = True
+            print(f'invalid source {source}. It must be one of "input" or "other"')
+
+        # check that the source serial number is valid
+        if source == "input":
+            fail = fail or not self.check_int(source_serial, 0, 95)
+
+        if not fail:
+            # Define the connection dictionary
+            connection = {
+                "board": board,
+                "channel": channel,
+                "source": source,
+                "source_serial": source_serial
+            }
+            # Assign the connection to the configuration
+            serial = str(int(board)*20 + int(channel))
+            self.configuration["digitizer_board_connections"][serial] = connection
+            if verbose:
+                print(f'{source}-{source_serial} connected to digitizer board {board} channel {channel}')
+
+    def set_patch_panel_connection(self, serial: str, source: str, source_serial: str, verbose: bool = True):
+        fail = False
+
+        # check that the serial number is a number between 0 and 15
+        fail = fail or not self.check_int(serial, 0, 15)
+
+        # check that source is one of "lemo" or "other"
+        if source not in ["lemo", "other"]:
+            fail = True
+            print(f'invalid source {source}. It must be one of "lemo", "patch panel", "other"')
+
+        # check that the source serial number is valid
+        if source == "lemo":
+            fail = fail or not self.check_int(source_serial, 0, 15)
+
+        if not fail:
+            # Define the connection dictionary
+            connection = {
+                "source": source,
+                "source_serial": source_serial
+            }
+            # Assign the connection to the configuration
+            self.configuration["patch_panel_connections"][serial] = connection
+            if verbose:
+                print(f'{source}-{source_serial} connected to patch panel position {serial}')
 
     def set_prescaler(self, serial: str, prescale: str, verbose: bool = True):
         fail = False
