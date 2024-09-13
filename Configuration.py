@@ -26,8 +26,7 @@ class Configuration:
             "level_1_output_treatments": {},
             "level_2_logics": {},
             "output_lemo_assignments": {},
-            "trigger_board_connections": {},
-            "digitizer_board_connections": {},
+            "trigger_digitizer_board_connections": {},
             "patch_panel_connections": {},
             "prescalers": {},
             "spill_channels": {},
@@ -298,8 +297,12 @@ class Configuration:
         # check that the board number is a number between 0 and 2
         fail = fail or not self.check_int(board, 0, 2)
 
-        # check that the channel number is a number between 0 and 19
-        fail = fail or not self.check_int(channel, 0, 19)
+        if board in ["0", "1"]:
+            # check that the channel number is a number between 0 and 9
+            fail = fail or not self.check_int(channel, 0, 9)
+        elif board == "2":
+            # check that the channel number is 0
+            fail = fail or not self.check_int(channel, 0, 0)
 
         # check that source is one of "lemo" or "patch panel" or "other"
         if source not in ["lemo", "patch panel", "other"]:
@@ -322,17 +325,21 @@ class Configuration:
             }
             # Assign the connection to the configuration
             serial = str(int(board)*20 + int(channel))
-            self.configuration["trigger_board_connections"][serial] = connection
+            self.configuration["trigger_digitizer_board_connections"][serial] = connection
             if verbose:
-                print(f'{source}-{source_serial} connected to digitizer board {board} channel {channel}')
+                print(f'{source}-{source_serial} connected to trigger board {board} channel {channel}')
 
     def set_digitizer_board_connection(self, board: str, channel: str, source: str, source_serial: str, verbose: bool = True):
         fail = False
         # check that the board number is a number between 0 and 2
         fail = fail or not self.check_int(board, 0, 2)
 
-        # check that the channel number is a number between 0 and 19
-        fail = fail or not self.check_int(channel, 0, 19)
+        if board in ["0", "1"]:
+            # check that the channel number is a number between 10 and 19
+            fail = fail or not self.check_int(channel, 10, 19)
+        elif board == "2":
+            # check that the channel number is a number between 1 and 19
+            fail = fail or not self.check_int(channel, 1, 19)
 
         # check that source is one of "input" or "other"
         if source not in ["input", "other"]:
@@ -353,7 +360,7 @@ class Configuration:
             }
             # Assign the connection to the configuration
             serial = str(int(board)*20 + int(channel))
-            self.configuration["digitizer_board_connections"][serial] = connection
+            self.configuration["trigger_digitizer_board_connections"][serial] = connection
             if verbose:
                 print(f'{source}-{source_serial} connected to digitizer board {board} channel {channel}')
 

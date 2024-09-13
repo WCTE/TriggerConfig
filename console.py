@@ -494,6 +494,132 @@ def deadtime(prompt: bool = True):
         else:
             print("Invalid input")
 
+def connection_table(indices, tdbc):
+    table = texttable.Texttable(max_width=max_table_width)
+    table.set_cols_align(["c", "c", "c", "c", "c", "c"])
+    table.set_cols_valign(["m", "m", "m", "m", "m", "m"])
+    table.add_row(["Index", "Board", "Channel", "Source", "Source Serial", "Source Short Name"])
+    for i in indices:
+        board = tdbc[str(i)]["board"]
+        channel = tdbc[str(i)]["channel"]
+        source = tdbc[str(i)]["source"]
+        source_serial = tdbc[str(i)]["source_serial"]
+        source_short_name = "-"
+        if source == "input" and source_serial in current_configuration.configuration["input_signals"]:
+            source_short_name = current_configuration.configuration["input_signals"][source_serial]["short_name"]
+        elif source == "lemo" and source_serial in current_configuration.configuration["output_lemo_assignments"]:
+            source_short_name = current_configuration.configuration["output_lemo_assignments"][source_serial]["short_name"]
+        table.add_row([str(i), board, channel, source, source_serial, source_short_name])
+    return table
+
+def connections(prompt: bool = True):
+    print("Current trigger/digitizer board connections:")
+    board_connections = current_configuration.configuration["trigger_digitizer_board_connections"]
+    indices = []
+    for i in range(60): # CURRENTLY 8 -> will go to 16
+        if str(i) in board_connections:
+            indices.append(i)
+    table = connection_table(indices, board_connections)
+    print(table.draw())
+
+    # prompt the user to select an index to modify
+    while prompt:
+        index = input("Enter board connection index to add/modify: [cancel] ")
+        if index == "":
+            return
+        if index.isdigit() and 0 <= int(index) < 60:
+            i = int(index)
+            board = str(i // 20)
+            channel = str(i % 20)
+            indices = [i]
+            if index in board_connections:
+                print('Trigger/digitizer board connection:')
+                table = connection_table(indices, board_connections)
+                print(table.draw())
+            else:
+                # add the new board connection
+                if i in list(range(0, 10)) + list(range(20, 30)) + [40]:
+                    current_configuration.set_trigger_board_connection(board, channel,"other", "0", True)
+                else:
+                    current_configuration.set_digitizer_board_connection(board, channel, "other", "0", True)
+                continue
+
+            while True:
+                command = input("Enter source, source_serial: [cancel] ")
+                if command == "":
+                    break
+                fields = [c.strip() for c in command.split(',')]
+                if len(fields) == 2:
+                    source = fields[0]
+                    source_serial = fields[1]
+
+                    if i in list(range(0, 10)) + list(range(20, 30)) + [40]:
+                        current_configuration.set_trigger_board_connection(board, channel, source, source_serial, True)
+                    else:
+                        current_configuration.set_digitizer_board_connection(board, channel, source, source_serial, True)
+
+                else:
+                    print("Invalid input")
+        else:
+            print("Invalid index number")
+
+def patch_table(indices, tdbc):
+    table = texttable.Texttable(max_width=max_table_width)
+    table.set_cols_align(["c", "c", "c", "c"])
+    table.set_cols_valign(["m", "m", "m", "m"])
+    table.add_row(["Index", "Source", "Source Serial", "Source Short Name"])
+    for i in indices:
+        source = tdbc[str(i)]["source"]
+        source_serial = tdbc[str(i)]["source_serial"]
+        source_short_name = "-"
+        if source == "lemo" and source_serial in current_configuration.configuration["output_lemo_assignments"]:
+            source_short_name = current_configuration.configuration["output_lemo_assignments"][source_serial]["short_name"]
+        table.add_row([str(i), source, source_serial, source_short_name])
+    return table
+
+def patch_panel(prompt: bool = True):
+    print("Current patch panel connections:")
+    panel_connections = current_configuration.configuration["patch_panel_connections"]
+    indices = []
+    for i in range(60): # CURRENTLY 8 -> will go to 16
+        if str(i) in panel_connections:
+            indices.append(i)
+    table = patch_table(indices, panel_connections)
+    print(table.draw())
+
+    # prompt the user to select an index to modify
+    while prompt:
+        index = input("Enter patch panel connection index to add/modify: [cancel] ")
+        if index == "":
+            return
+        if index.isdigit() and 0 <= int(index) < 16:
+            i = int(index)
+            indices = [i]
+            if index in panel_connections:
+                print('Patch panel connection:')
+                table = patch_table(indices, panel_connections)
+                print(table.draw())
+            else:
+                # add the new patch panel connection
+                current_configuration.set_patch_panel_connection(index,"other", "0", True)
+
+            while True:
+                command = input("Enter source, source_serial: [cancel] ")
+                if command == "":
+                    break
+                fields = [c.strip() for c in command.split(',')]
+                if len(fields) == 2:
+                    source = fields[0]
+                    source_serial = fields[1]
+
+                    current_configuration.set_patch_panel_connection(index, source, source_serial, True)
+
+                else:
+                    print("Invalid input")
+        else:
+            print("Invalid index number")
+
+
 def show_all():
     inputs(False)
     print()
@@ -510,6 +636,10 @@ def show_all():
     spills(False)
     print()
     deadtime(False)
+    print()
+    connections(False)
+    print()
+    patch_panel(False)
 
 def save():
     while True:
@@ -542,20 +672,28 @@ def update():
 
 def help():
     print("Available commands:")
-    print("help: Display this help message")
-    print("load: Load a trigger configuration")
-    print("channels: Show the input signal channels in compact form")
-    print("inputs: Show/modify the input signal properties")
-    print("level1: Show/modify the level 1 logic properties")
-    print("level2: Show/modify the level 2 logic properties")
-    print("outputs: Show/modify the output lemo assignments")
-    print("prescalers: Show/modify the prescaler properties")
-    print("spills: Show/modify the spill signal assignments")
-    print("deadtime: Show/modify the deadtime properties")
-    print("show: Show all elements of the current configuration")
-    print("save: Save the current configuration (config and register settings)")
-    print("update: Write the current register settings to current_registers.json")
-    print("exit: Exit the program")
+    table = texttable.Texttable(max_width=max_table_width)
+    table.set_cols_align(["l", "l"])
+    table.set_cols_valign(["m", "m"])
+    table.add_row(["Command", "Action"])
+
+    table.add_row(["help", "Display this help message"])
+    table.add_row(["load", "Load a trigger configuration"])
+    table.add_row(["channels", "Show the input signal channels in compact form"])
+    table.add_row(["inputs", "Show/modify the input signal properties"])
+    table.add_row(["level1", "Show/modify the level 1 logic properties"])
+    table.add_row(["level2", "Show/modify the level 2 logic properties"])
+    table.add_row(["outputs", "Show/modify the output lemo assignments"])
+    table.add_row(["prescalers", "Show/modify the prescaler properties"])
+    table.add_row(["spills", "Show/modify the spill signal assignments"])
+    table.add_row(["deadtime", "Show/modify the deadtime properties"])
+    table.add_row(["connections", "Show/modify the connections to the trigger/digitizer boards"])
+    table.add_row(["patches", "Show/modify the connections to the patch panel"])
+    table.add_row(["show", "Show all elements of the current configuration"])
+    table.add_row(["save", "Save the current configuration (config and register settings)"])
+    table.add_row(["update", "Write the current register settings to current_registers.json"])
+    table.add_row(["exit", "Exit the program"])
+    print(table.draw())
 
 def main():
 
@@ -570,12 +708,18 @@ def main():
         "prescalers": prescalers,
         "spills": spills,
         "deadtime": deadtime,
+        "connections": connections,
+        "patches": patch_panel,
         "show": show_all,
         "save": save,
         "update": update,
         "exit": exit
     }
 
+    print()
+    print("Welcome to the WCTE trigger configuration console.")
+    print("The default action is shown in square brackets. Press enter to execute the default action.")
+    print()
     while True:
         command = input("Enter command: [help] ")
         if command == "":

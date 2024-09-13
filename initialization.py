@@ -73,10 +73,18 @@ def set_signal_channels(c, verbose = False):
     c.set_signal("26", "BSW", "Beam spill warning", verbose)
     c.set_signal("27", "BSE", "Beam spill end", verbose)
     c.set_spill_channel("26", "27", verbose)
+    c.set_output_lemo_assignment("3", "BSWarn", "Beam spill warning", "input", "26", "True", verbose=True)
+    c.set_trigger_board_connection("0", "3", "lemo", "3", verbose=True)
+    c.set_output_lemo_assignment("4", "BSEnd", "Beam spill end", "input", "27", "True", verbose=True)
+    c.set_trigger_board_connection("0", "4", "lemo", "4", verbose=True)
 
-    # other trigger inputs
+    # other trigger inputs - to activate TDCT0, these would need to be directed to lemo 0 (see laser trigger configuration)
     c.set_signal("28", "LASER", "Laser signal", verbose)
-    c.set_signal("29", "CUSTOM", "Other trigger", verbose)
+    c.set_output_lemo_assignment("5", "LASER", "Laser signal", "input", "28", "True", verbose=True)
+    c.set_trigger_board_connection("0", "5", "lemo", "5", verbose=True)
+    c.set_signal("29", "XTRIG", "Other trigger", verbose)
+    c.set_output_lemo_assignment("6", "XTRIG", "Other trigger", "input", "29", "True", verbose=True)
+    c.set_trigger_board_connection("0", "6", "lemo", "6", verbose=True)
 
     # 1 TOF channel left over
     c.set_signal("30", "TOF0F", "TOF module 0 channel 15", verbose)
@@ -171,12 +179,10 @@ def setup_le_trigger_logic(c: Configuration, verbose = False):
     c.set_level_1_treatment("2","3", "7", verbose=verbose)
 
     # level 2 logics
-    c.set_level_2_logic("0", "LE ps", "Low Energy Trigger prescaled eVeto", "[]", "[]", "[0,1]","[3,4]","AND", verbose)
-    c.set_level_2_logic("1", "LE ev", "Low Energy Trigger with eVeto", "[]", "[]", "[0,1]","[2,4]","AND", verbose)
-    c.set_level_2_logic("2", "LE", "Low Energy Trigger with electron", "[]", "[]", "[0,1,2]", "[4]", "AND", verbose)
+    c.set_level_2_logic("0", "LE psV", "Low Energy Trigger prescaled eVeto", "[]", "[]", "[0,1]","[3,4]","AND", verbose)
+    c.set_level_2_logic("1", "LE nV", "Low Energy Trigger without eVeto", "[]", "[]", "[0,1]","[4]","AND", verbose)
+    c.set_level_2_logic("2", "LE e", "Low Energy Trigger with electron", "[]", "[]", "[0,1,2]", "[4]", "AND", verbose)
     c.set_level_2_logic("3", "LE mu", "Low Energy Trigger with muon", "[]", "[]", "[0,1,5]", "[2,4]", "AND", verbose)
-
-    return
 
 # initialize the low energy trigger configuration
 def configure_le_trigger(short_name: str, description: str, filename: str):
@@ -196,8 +202,11 @@ def configure_le_trigger(short_name: str, description: str, filename: str):
     # The TDCT0 signal (lemo 0) will be fanned out to the TDCs, the trigger/digitizer boards, and the patch panel
     le.set_trigger_board_connection("0", "0", "other", "TDCT0", verbose = True)
     le.set_trigger_board_connection("1", "0", "other", "TDCT0", verbose = True)
-    le.set_digitizer_board_connection("2", "0", "other", "TDCT0", verbose = True)
+    le.set_trigger_board_connection("2", "0", "other", "TDCT0", verbose = True)
     le.set_patch_panel_connection("0", "other", "TDCT0", verbose = True)
+
+    # custom trigger from control room to input 29
+    le.set_patch_panel_connection("1", "other", "XTRIG", verbose=True)
 
     # output electron and muon tags
     le.set_output_lemo_assignment("1", "EL TAG", "Electron tagged", "level 2", "2", "True", verbose=True)
@@ -205,6 +214,10 @@ def configure_le_trigger(short_name: str, description: str, filename: str):
 
     le.set_output_lemo_assignment("2", "MU TAG", "Muon tagged", "level 2", "3", "True", verbose=True)
     le.set_trigger_board_connection("0", "2", "lemo", "2", verbose=True)
+
+    # LE trigger without electron veto patched to control room (for beam tuning)
+    le.set_output_lemo_assignment("7", "LE nV", "Low Energy Trigger without eVeto", "level 2", "1", "True", verbose=True)
+    le.set_patch_panel_connection("2", "lemo", "7", verbose=True)
 
     # Set some treatment examples
     le.set_treatment("1","7","3", verbose = True)
@@ -224,11 +237,10 @@ def setup_tp_trigger_logic(c: Configuration, verbose = False):
     c.set_level_1_logic("1","HODO", "Hodoscope signal", hodoscope_channels, "[]", "OR", verbose)
 
     # level 2 logics
-    c.set_level_2_logic("0", "TP", "Tagged Photon Trigger", "[8]", "[1]", "[0,1]","[]","AND", verbose)
+    c.set_level_2_logic("0", "TP", "Tagged Photon Trigger", "[8]", "[12]", "[0,1]","[]","AND", verbose)
+    c.set_level_2_logic("1", "TP nH", "Tagged Photon Trigger no HODO requirement", "[8]", "[12]", "[0]","[]","AND", verbose)
 
-    return
-
-# initialize the low energy trigger configuration
+# initialize the tagged photon trigger configuration
 def configure_tp_trigger(short_name: str, description: str, filename: str):
 
     # Create a tagged photon trigger configuration object
@@ -246,9 +258,15 @@ def configure_tp_trigger(short_name: str, description: str, filename: str):
     # The TDCT0 signal (lemo 0) will be fanned out to the TDCs, the trigger/digitizer boards, and the patch panel
     tp.set_trigger_board_connection("0", "0", "other", "TDCT0", verbose = True)
     tp.set_trigger_board_connection("1", "0", "other", "TDCT0", verbose = True)
-    tp.set_digitizer_board_connection("2", "0", "other", "TDCT0", verbose = True)
+    tp.set_trigger_board_connection("2", "0", "other", "TDCT0", verbose = True)
     tp.set_patch_panel_connection("0", "other", "TDCT0", verbose = True)
 
+    # custom trigger from control room to input 29
+    tp.set_patch_panel_connection("1", "other", "XTRIG", verbose=True)
+
+    # Tagged photon trigger without hodoscope requirement patched to control room (for beam tuning)
+    tp.set_output_lemo_assignment("7", "TP nH", "Tagged Photon Trigger no HODO requirement", "level 2", "1", "True", verbose=True)
+    tp.set_patch_panel_connection("2", "lemo", "7", verbose=True)
 
     # define the deadtime veto: 625 time bins = 5 us
     tp.set_deadtime_veto("625", verbose = True)
@@ -256,13 +274,41 @@ def configure_tp_trigger(short_name: str, description: str, filename: str):
     # Save the low energy trigger configuration and register settings to json files
     tp.save(filename)
 
+# initialize the laser trigger configuration
+def configure_la_trigger(short_name: str, description: str, filename: str):
+
+    # Create a laser trigger configuration object
+    la = Configuration(short_name,description)
+
+    la.set_signal("28", "LASER", "Laser signal", verbose=True)
+    la.set_output_lemo_assignment("5", "LASER", "Laser signal", "input", "28", "True", verbose=True)
+    la.set_trigger_board_connection("0", "5", "lemo", "5", verbose=True)
+
+    # this selects the trigger for TDC readout (to get laser flash time): direct the output of the trigger logic to lemo 0
+    la.set_output_lemo_assignment("0", "TDCT0", "Event trigger (TDC_STOP)", "input", "28", "True", verbose=True)
+
+    # The TDCT0 signal (lemo 0) will be fanned out to the TDCs, the trigger/digitizer boards, and the patch panel
+    la.set_trigger_board_connection("0", "0", "other", "TDCT0", verbose = True)
+    la.set_trigger_board_connection("1", "0", "other", "TDCT0", verbose = True)
+    la.set_trigger_board_connection("2", "0", "other", "TDCT0", verbose = True)
+    la.set_patch_panel_connection("0", "other", "TDCT0", verbose = True)
+
+    # define the deadtime veto: 625 time bins = 5 us
+    la.set_deadtime_veto("625", verbose = True)
+
+    # Save the low energy trigger configuration and register settings to json files
+    la.save(filename)
+
 
 # Select the trigger configuration to setup:
 
-trigger = "TP"  # one of "LE" (low energy) "TP" (tagged photon) or "TS" (test stand)
+trigger = "LA"  # one of "LE" (low energy) "TP" (tagged photon) "LA" (laser) or "TS" (test stand)
 
 if trigger == "LE":
     configure_le_trigger("LE v09","Low Energy Trigger version 0.9", "le_v09")
 
 elif trigger == "TP":
     configure_tp_trigger("TP v09","Tagged Photon Trigger version 0.9", "tp_v09")
+
+elif trigger == "LA":
+    configure_la_trigger("LA v09","Laser Trigger version 0.9", "la_v09")
