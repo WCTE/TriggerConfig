@@ -1020,6 +1020,38 @@
         "2": {
             "source": "lemo",
             "source_serial": "7"
+        },
+        "8": {
+            "source": "lemo",
+            "source_serial": "8"
+        },
+        "9": {
+            "source": "lemo",
+            "source_serial": "9"
+        },
+        "10": {
+            "source": "lemo",
+            "source_serial": "10"
+        },
+        "11": {
+            "source": "lemo",
+            "source_serial": "11"
+        },
+        "12": {
+            "source": "lemo",
+            "source_serial": "12"
+        },
+        "13": {
+            "source": "lemo",
+            "source_serial": "13"
+        },
+        "14": {
+            "source": "lemo",
+            "source_serial": "14"
+        },
+        "15": {
+            "source": "lemo",
+            "source_serial": "15"
         }
     },
     "prescalers": {},

@@ -219,6 +219,10 @@ def configure_le_trigger(short_name: str, description: str, filename: str):
     le.set_output_lemo_assignment("7", "LE nV", "Low Energy Trigger without eVeto", "level 2", "1", "True", verbose=True)
     le.set_patch_panel_connection("2", "lemo", "7", verbose=True)
 
+    # Reserve 8 patch panel connections connected to LEMO outputs 8-15
+    for i in range(8,16):
+        le.set_patch_panel_connection(str(i), "lemo", str(i), verbose=True)
+
     # Set some treatment examples
     le.set_treatment("1","7","3", verbose = True)
     le.set_treatment("3","255","3", verbose = True)
@@ -268,6 +272,10 @@ def configure_tp_trigger(short_name: str, description: str, filename: str):
     tp.set_output_lemo_assignment("7", "TP nH", "Tagged Photon Trigger no HODO requirement", "level 2", "1", "True", verbose=True)
     tp.set_patch_panel_connection("2", "lemo", "7", verbose=True)
 
+    # Reserve 8 patch panel connections connected to LEMO outputs 8-15
+    for i in range(8,16):
+        tp.set_patch_panel_connection(str(i), "lemo", str(i), verbose=True)
+
     # define the deadtime veto: 625 time bins = 5 us
     tp.set_deadtime_veto("625", verbose = True)
 
@@ -302,7 +310,7 @@ def configure_la_trigger(short_name: str, description: str, filename: str):
 
 # Select the trigger configuration to setup:
 
-trigger = "LA"  # one of "LE" (low energy) "TP" (tagged photon) "LA" (laser) or "TS" (test stand)
+trigger = "LE"  # one of "LE" (low energy) "TP" (tagged photon) "LA" (laser) or "TS" (test stand)
 
 if trigger == "LE":
     configure_le_trigger("LE v09","Low Energy Trigger version 0.9", "le_v09")
