@@ -197,6 +197,7 @@ Current level 1 logic:
 +-------+------------+-----------+---------------+-------+-------+------+------------------------+
 Enter level 1 logic index to add/modify: [cancel]  
 ```
+There are 10 level 1 logic elements. They are referenced by their index (0-9).
 
 The invert inputs specify the input signals that are inverted before the logic operation.
 The delay and gate widths are applied prior to subsequent trigger logic (at level 2).
@@ -221,6 +222,7 @@ Current level 2 logic:
 +-------+------------+--------+---------------+-----------+------------------+-------+---------------------------------+
 Enter level 2 logic index to add/modify: [cancel] 
 ```
+There are 4 level 2 logic elements. They are referenced by their index (0-3).
 
 The level 2 logic can take the treated inputs and the treated level 1 logic outputs to form the trigger condition.
 This example includes veto conditions for "electrons" and for signals in the "hole counters".
@@ -252,7 +254,9 @@ Current output lemo assignments:
 Enter output lemo assignment index to add/modify: [cancel] 
 ```
 
-Input signals and trigger logic outputs can be assigned to the LEMO outputs. 
+There are 16 lemo outputs on the front panel of the trigger module. These are referenced by their index (0-15).
+
+Input signals and trigger logic outputs can be assigned to the lemo outputs. 
 The treatment specifies whether the corresponding delay and gate width treatment is applied before output.
 For level 2, if treatment is False, the width corresponds to the width that the trigger condition was met, but
 if True, the width is one time bin. No adjustable delay is applied to the level 2 outputs.
@@ -273,6 +277,8 @@ The prescalers apply to the level 1 logic outputs. The most significant bit of t
 prescale factor.
 The possible prescale factors are 1 (no prescaling) 2 (every other level 1 trigger is accepted), 
 4 (every fourth level 1 trigger is accepted) etc up to 256.
+
+The index refers to the level 1 logic element that the prescale is applied to.
 
 ### Viewing and adjusting the spill signal assignments
 ```
@@ -347,6 +353,8 @@ There are 3 boards (numbered 0,1,2). Ten channels are reserved for logic channel
 The remaining 40 channels are generally connected to the input signals (split before the discriminator) 
 from the beamline modules or other signals (for example, the laser signal).
 
+The index is a combination of the board number and the channel number (board number * 20 + channel number).
+
 ### Viewing and adjusting the connections to the patch panel
 ```
 Enter command: [help] patches
@@ -376,6 +384,8 @@ The patch panel cable 2 is for the low energy trigger without eVeto signal that 
 
 Patch panel cables 8-15 are connected to lemo channels 8-15 on the trigger module. These will be used to route signals
 into the control room to determine delay and gate width settings for trigger logic, among other things.
+
+It is assumed that there are 16 patch panel cables available for use, and they are numbered (0-15) according to the index above.
 
 ### Saving the configuration
 
