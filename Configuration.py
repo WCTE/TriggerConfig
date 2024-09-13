@@ -434,10 +434,18 @@ class Configuration:
 
     # Define the write configuration method
     def write_configuration(self, filename):
+        # Check that there is no file with this name
+        try:
+            with open(filename, "r") as file:
+                print(f'file {filename} already exists - please choose a different name')
+                return False
+        except FileNotFoundError:
+            pass
         # Open the file for writing
         with open(filename, "w") as file:
             # Write the configuration to the file
             json.dump(self.configuration, file, indent=4)
+        return True
 
     # Define the read configuration method
     def read_configuration(self, filename):
@@ -447,33 +455,43 @@ class Configuration:
             self.configuration = json.load(file)
 
     # Define the write register_settings method
-    def write_register_settings(self, filename):
+    def write_register_settings(self, filename, overwrite: bool = False):
+        if not overwrite:
+            # Check that there is no file with this name
+            try:
+                with open(filename, "r") as file:
+                    print(f'file {filename} already exists - please choose a different name')
+                    return False
+            except FileNotFoundError:
+                pass
         # Open the file for writing
         with open(filename, "w") as file:
             # Write the configuration to the file
             json.dump(self.register_settings, file, indent=4)
+        return True
 
     # Define the save method that writes both the configuration  and register values to json files
     def save(self, filename, verbose: bool = True):
         # Write the configuration to a json file
         config_filename = 'configurations/' + filename + '_config.json'
-        self.write_configuration(config_filename)
-        if verbose:
-            print('Saved configuration to ' + config_filename)
-        # Set and write the register values to a json file
-        self.set_registers()
-        register_settings_filename = 'register_settings/' + filename + '_registers.json'
-        self.write_register_settings(register_settings_filename)
-        if verbose:
-            print('Saved register settings to ' + register_settings_filename)
+        success = self.write_configuration(config_filename)
+        if success:
+            if verbose:
+                print('Saved configuration to ' + config_filename)
+            # Set and write the register values to a json file
+            self.set_registers()
+            register_settings_filename = 'register_settings/' + filename + '_registers.json'
+            success2 = self.write_register_settings(register_settings_filename)
+            if success2 and verbose:
+                print('Saved register settings to ' + register_settings_filename)
 
     # Define the update method - used to update the registration settings for a quick change of settings
     def update(self, verbose: bool = True):
         # Set and write the register values to a json file
         self.set_registers()
         register_settings_filename = 'register_settings/current_registers.json'
-        self.write_register_settings(register_settings_filename)
-        if verbose:
+        success = self.write_register_settings(register_settings_filename, overwrite=True)
+        if success and verbose:
             print('Saved register settings to ' + register_settings_filename)
 
     def set_registers(self):
