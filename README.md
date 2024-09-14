@@ -174,7 +174,7 @@ The delay and gate widths are specified in the fundamental clock period for WCTE
 The treatments to the input signals are applied before the subsequent trigger logic.
 
 The FPGA is phase locked to the 125 MHz clock of the trigger mainboard which is phase locked to the shared 25 MHz clock.
-The maximum delay is ?? * 8 ns = ?? ns. The maximum gate width is ?? * 8 ns = ?? ns.
+The maximum delay and maximum gate width are 255 * 8 ns = 2.040 us.
 
 ### Viewing and adjusting the level 1 logic
 ```

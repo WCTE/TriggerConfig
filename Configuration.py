@@ -566,20 +566,21 @@ class Configuration:
             value |= logic_type << (int(ist)+10)
         reg[hex(register_address)] = hex(value)
 
-        # Output assignments: LEMO in port F
-        register_name = 'ARW_F'
-        register_addresses = self.register_list[register_type][register_name]['addresses']
-        # initialize registers to 0 (all registers must be written to)
-        for register_address in register_addresses:
-            reg[hex(register_address)] = hex(0)
-        for ist in self.configuration["output_lemo_assignments"]:
-            if int(ist) < 8:
-                source = self.configuration["output_lemo_assignments"][ist]["source"]
-                offset = {'input':0, 'level 1':96, 'level 2':104}[source]
-                source_serial = int(self.configuration["output_lemo_assignments"][ist]["source_serial"])
-                treatment = 1 << 7 if self.configuration["output_lemo_assignments"][ist]["treatment"] == "True" else 0
-                value = offset + source_serial + treatment
-                reg[hex(register_addresses[int(ist)])] = hex(value)
+        # Output assignments: LEMO in port E and F
+        for register_name, lemo_offset in zip(['ARW_E', 'ARW_F'], [0, 8]):
+            register_addresses = self.register_list[register_type][register_name]['addresses']
+            # initialize registers to 0 (all registers must be written to)
+            for register_address in register_addresses:
+                reg[hex(register_address)] = hex(0)
+            for ist in self.configuration["output_lemo_assignments"]:
+                if 0 + lemo_offset <= int(ist) < lemo_offset + 8:
+                    source = self.configuration["output_lemo_assignments"][ist]["source"]
+                    offset = {'input':0, 'level 1':96, 'level 2':107}[source]
+                    source_serial = int(self.configuration["output_lemo_assignments"][ist]["source_serial"])
+                    treatment = 1 << 7 if self.configuration["output_lemo_assignments"][ist]["treatment"] == "True" else 0
+                    value = offset + source_serial + treatment
+                    pointer = int(ist) - lemo_offset
+                    reg[hex(register_addresses[pointer])] = hex(value)
 
         # Prescalers
         register_name = 'ARW_POST_L1_PRESCALE'
@@ -597,7 +598,7 @@ class Configuration:
         value = int(self.configuration["spill_channels"].get("pre_spill",-1))
         reg[hex(register_address)] = hex(value)
 
-        register_name = 'ARW_ENDPSILL'
+        register_name = 'ARW_ENDSPILL'
         register_address = self.register_list[register_type][register_name]['addresses'][0]
         value = int(self.configuration["spill_channels"].get("end_spill",-1))
         reg[hex(register_address)] = hex(value)
