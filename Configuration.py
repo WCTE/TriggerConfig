@@ -524,8 +524,7 @@ class Configuration:
                     reg[register_address] = hex(reg_value)
 
         # 1 bit value registers: invert_inputs (INV) and inputs for logic (MASK)
-        # *** NOTE THAT INVERTING INPUTS FOR LEVEL 2 LOGIC IS NOT YET IMPLEMENTED ***
-        one_bit_regs = {'INV': {'L1':['A','B']},
+        one_bit_regs = {'INV': {'L1':['A','B'], 'L2':['A','B','L1']},
                         'MASK': {'L1':['A','B'], 'L2':['A','B','L1']}}
         for spec in one_bit_regs:
             for logic_level in one_bit_regs[spec]:
