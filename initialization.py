@@ -310,13 +310,15 @@ def configure_la_trigger(short_name: str, description: str, filename: str):
 
 # Select the trigger configuration to setup:
 
-trigger = "LE"  # one of "LE" (low energy) "TP" (tagged photon) "LA" (laser) or "TS" (test stand)
+# trigger = "LE"  # one of "LE" (low energy) "TP" (tagged photon) "LA" (laser) or "TS" (test stand)
 
-if trigger == "LE":
-    configure_le_trigger("LE v10","Low Energy Trigger version 1.0", "le_v10")
+for trigger in ["LE", "TP", "LA"]:
 
-elif trigger == "TP":
-    configure_tp_trigger("TP v10","Tagged Photon Trigger version 1.0", "tp_v10")
+    if trigger == "LE":
+        configure_le_trigger("LE v11","Low Energy Trigger version 1.1", "le_v11")
 
-elif trigger == "LA":
-    configure_la_trigger("LA v10","Laser Trigger version 1.0", "la_v10")
+    elif trigger == "TP":
+        configure_tp_trigger("TP v11","Tagged Photon Trigger version 1.1", "tp_v11")
+
+    elif trigger == "LA":
+        configure_la_trigger("LA v11","Laser Trigger version 1.1", "la_v11")

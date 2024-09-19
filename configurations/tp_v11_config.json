@@ -1,7 +1,7 @@
 {
     "config_version": "0.1",
-    "short_name": "TP v10",
-    "description": "Tagged Photon Trigger version 1.0",
+    "short_name": "TP v11",
+    "description": "Tagged Photon Trigger version 1.1",
     "input_signals": {
         "0": {
             "short_name": "T00",

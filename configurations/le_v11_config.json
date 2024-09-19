@@ -1,7 +1,7 @@
 {
     "config_version": "0.1",
-    "short_name": "LE v10",
-    "description": "Low Energy Trigger version 1.0",
+    "short_name": "LE v11",
+    "description": "Low Energy Trigger version 1.1",
     "input_signals": {
         "0": {
             "short_name": "T00",
