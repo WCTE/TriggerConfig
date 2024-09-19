@@ -565,8 +565,8 @@ class Configuration:
             value |= logic_type << (int(ist)+10)
         reg[hex(register_address)] = hex(value)
 
-        # Output assignments: LEMO in port E and F
-        for register_name, lemo_offset in zip(['ARW_E', 'ARW_F'], [0, 8]):
+        # Output assignments: LEMO in port E and F: lemo 0 is the lowest lemo in port F
+        for register_name, lemo_offset in zip(['ARW_F', 'ARW_E'], [0, 8]):
             register_addresses = self.register_list[register_type][register_name]['addresses']
             # initialize registers to 0 (all registers must be written to)
             for register_address in register_addresses:
@@ -594,12 +594,12 @@ class Configuration:
         # Spill channels
         register_name = 'ARW_PRESPILL'
         register_address = self.register_list[register_type][register_name]['addresses'][0]
-        value = int(self.configuration["spill_channels"].get("pre_spill",-1))
+        value = int(self.configuration["spill_channels"].get("pre_spill",50))
         reg[hex(register_address)] = hex(value)
 
         register_name = 'ARW_ENDSPILL'
         register_address = self.register_list[register_type][register_name]['addresses'][0]
-        value = int(self.configuration["spill_channels"].get("end_spill",-1))
+        value = int(self.configuration["spill_channels"].get("end_spill",50))
         reg[hex(register_address)] = hex(value)
 
         # Deadtime veto
