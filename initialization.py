@@ -72,7 +72,7 @@ def set_signal_channels(c, verbose = False):
     # spill information
     c.set_signal("26", "BSW", "Beam spill warning", verbose)
     c.set_signal("27", "BSE", "Beam spill end", verbose)
-    c.set_spill_channel("26", "27", verbose)
+    c.set_spill_channel("26", "27", "False", verbose)
     c.set_output_lemo_assignment("3", "BSWarn", "Beam spill warning", "input", "26", "True", verbose=True)
     c.set_trigger_board_connection("0", "3", "lemo", "3", verbose=True)
     c.set_output_lemo_assignment("4", "BSEnd", "Beam spill end", "input", "27", "True", verbose=True)

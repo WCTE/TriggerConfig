@@ -29,7 +29,7 @@ To install texttable:
 ```python3 console.py```
 
 ```
-Welcome to the WCTE trigger configuration console.
+Welcome to the WCTE trigger configuration console. Version 1.0
 The default action is shown in square brackets. Press enter to execute the default action.
 
 Enter command: [help] 
@@ -261,6 +261,12 @@ The treatment specifies whether the corresponding delay and gate width treatment
 For level 2, if treatment is False, the width corresponds to the width that the trigger condition was met, but
 if True, the width is one time bin. No adjustable delay is applied to the level 2 outputs.
 
+The output of LEMO 0 (the bottom-most LEMO connector on the mezzanine card) is considered to be
+the master trigger signal (TDC stop) and has a deadtime veto applied. 
+A configuration which has the deadtime veto period shorter than the gate width of the master trigger signal will
+produce an oscillating signal on the master trigger output (as the deadtime veto logic is being applied) which
+should be avoided. The LEMO 0 output is also subject to the out-of-spill veto, if that is enabled.
+
 ### Viewing and adjusting the prescaler properties
 ```
 Enter command: [help] prescalers
@@ -284,11 +290,11 @@ The index refers to the level 1 logic element that the prescale is applied to.
 ```
 Enter command: [help] spills
 Current spill signal assignments:
-+-------------------+-------------------+
-| Pre-spill channel | End-spill channel |
-+-------------------+-------------------+
-|        26         |        27         |
-+-------------------+-------------------+
++-------------------+-------------------+---------+
+| Pre-spill channel | End-spill channel | Enabled |
++-------------------+-------------------+---------+
+|        26         |        27         |  True   |
++-------------------+-------------------+---------+
 Enter pre-spill, end-spill: [cancel] 
 ```
 
@@ -310,6 +316,7 @@ Enter deadtime: [cancel]
 The deadtime is applied to signals directed to lemo 0 (the master trigger signal). 
 Signals are blocked for the specified number of clock cycles after the master trigger signal is generated.
 The value 625 corresponds to 5 us, which is the nominal deadtime being considered for the WCTE trigger.
+The minimum deadtime is 1 (8 ns).
 
 ### Viewing and adjusting the connections to the trigger/digitizer boards
 ```

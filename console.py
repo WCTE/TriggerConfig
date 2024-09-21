@@ -7,11 +7,13 @@ import os
 
 max_table_width = 120
 current_configuration = Configuration("","")
+configuration_changed = False
 
 def load():
+    global current_configuration, configuration_changed
     print("List of available trigger configurations: sorted by modification time")
-    #show a list of available configurations in a texttable
-    # get a list of .json files in the configurations directory oldest first
+    # show a list of available configurations in a texttable
+    # get a list of .json files in the configurations directory, oldest first
 
     #search_dir = "configurations"
     #files = filter(os.path.isfile, os.listdir(search_dir))
@@ -43,12 +45,18 @@ def load():
         if index == "":
             return
         if index.isdigit() and 0 <= int(index) < len(files):
+            if configuration_changed:
+                command = input("Current configuration has been modified. Save those changes now? [y] ")
+                if command.strip() not in ["n", "N", "no", "No"]:
+                    save()
+                    return
             i = int(index)
             current_configuration.read_configuration(json_files[i])
             print("Configuration loaded from " + files[i])
+            configuration_changed = False
             return
         else:
-            print("Invalid index")
+            print("*** Invalid index")
 
 def channels():
     print("Current input signals:")
@@ -89,6 +97,7 @@ def input_table(indices, signals, treatments):
     return table
 
 def inputs(prompt: bool = True):
+    global configuration_changed
     print("Current input signals:")
     input_signals = current_configuration.configuration["input_signals"]
     input_treatments = current_configuration.configuration["input_signal_treatments"]
@@ -115,6 +124,7 @@ def inputs(prompt: bool = True):
             else:
                 # add the new channel
                 current_configuration.set_signal(index, "SHORT", "Description", True)
+                configuration_changed = True
                 continue
             while True:
                 command = input("Enter field # = new value: [cancel] ")
@@ -139,12 +149,14 @@ def inputs(prompt: bool = True):
                         description = value
                     if field in [0,3]:
                         current_configuration.set_signal(index, short_name, description, True)
+                        configuration_changed = True
                     else:
                         current_configuration.set_treatment(index, delay, window_length, True)
+                        configuration_changed = True
                 else:
-                    print("Invalid input")
+                    print("*** Invalid input")
         else:
-            print("Invalid channel number")
+            print("*** Invalid channel number")
 
 def level_1_table(indices, logics, treatments):
     table = texttable.Texttable(max_width=max_table_width)
@@ -163,6 +175,7 @@ def level_1_table(indices, logics, treatments):
     return table
 
 def level_1(prompt: bool = True):
+    global configuration_changed
     print("Current level 1 logic:")
     level_1_logics = current_configuration.configuration["level_1_logics"]
     level_1_treatments = current_configuration.configuration["level_1_output_treatments"]
@@ -189,6 +202,7 @@ def level_1(prompt: bool = True):
             else:
                 # add the new level 1 logic
                 current_configuration.set_level_1_logic(index, "SHORT", "Description", "[0,1,2,3]", "[]","AND", True)
+                configuration_changed = True
                 continue
             while True:
                 command = input("Enter field # = new value: [cancel] ")
@@ -223,12 +237,14 @@ def level_1(prompt: bool = True):
 
                     if field in [0,1,2,3,6]:
                         current_configuration.set_level_1_logic(index, short_name, description, inputs, invert_inputs, logic_type, True)
+                        configuration_changed = True
                     else:
                         current_configuration.set_level_1_treatment(index, delay, window_length, True)
+                        configuration_changed = True
                 else:
-                    print("Invalid input")
+                    print("*** Invalid input")
         else:
-            print("Invalid index number")
+            print("*** Invalid index number")
 
 
 def level_2_table(indices, logics):
@@ -249,6 +265,7 @@ def level_2_table(indices, logics):
 
 
 def level_2(prompt: bool = True):
+    global configuration_changed
     print("Current level 2 logic:")
     level_2_logics = current_configuration.configuration["level_2_logics"]
     indices = []
@@ -274,6 +291,7 @@ def level_2(prompt: bool = True):
             else:
                 # add the new level 2 logic
                 current_configuration.set_level_2_logic(index, "SHORT", "Description", "[0,1,2,3]", "[]", "[0]", "[]", "AND", True)
+                configuration_changed = True
                 continue
             while True:
                 command = input("Enter field # = new value: [cancel] ")
@@ -307,11 +325,11 @@ def level_2(prompt: bool = True):
                         description = value
 
                     current_configuration.set_level_2_logic(index, short_name, description, inputs, invert_inputs, level_1_inputs, invert_level_1_inputs, logic_type, True)
-
+                    configuration_changed = True
                 else:
-                    print("Invalid input")
+                    print("*** Invalid input")
         else:
-            print("Invalid index number")
+            print("*** Invalid index number")
 
 def output_table(indices, olas):
     table = texttable.Texttable(max_width=max_table_width)
@@ -328,6 +346,7 @@ def output_table(indices, olas):
     return table
 
 def outputs(prompt: bool = True):
+    global configuration_changed
     print("Current output lemo assignments:")
     output_lemo_assignments = current_configuration.configuration["output_lemo_assignments"]
     indices = []
@@ -353,6 +372,7 @@ def outputs(prompt: bool = True):
             else:
                 # add the new lemo assignment
                 current_configuration.set_output_lemo_assignment(index, "SHORT", "Description", "input", "0", "False", True)
+                configuration_changed = True
                 continue
             while True:
                 command = input("Enter field # = new value: [cancel] ")
@@ -380,11 +400,11 @@ def outputs(prompt: bool = True):
                         description = value
 
                     current_configuration.set_output_lemo_assignment(index, short_name, description, source, source_serial, treatment, True)
-
+                    configuration_changed = True
                 else:
-                    print("Invalid input")
+                    print("*** Invalid input")
         else:
-            print("Invalid index number")
+            print("*** Invalid index number")
 
 def prescalers_table(indices, prescalers):
     table = texttable.Texttable(max_width=max_table_width)
@@ -397,6 +417,7 @@ def prescalers_table(indices, prescalers):
     return table
 
 def prescalers(prompt: bool = True):
+    global configuration_changed
     print("Current prescaler values:")
     prescalers = current_configuration.configuration["prescalers"]
     indices = []
@@ -421,6 +442,7 @@ def prescalers(prompt: bool = True):
             else:
                 # add the new prescaler
                 current_configuration.set_prescaler(index, "1", True)
+                configuration_changed = True
                 continue
             while True:
                 command = input("Enter new prescale: [cancel] ")
@@ -428,11 +450,12 @@ def prescalers(prompt: bool = True):
                     break
                 if command.isdigit():
                     current_configuration.set_prescaler(index, command, True)
+                    configuration_changed = True
 
                 else:
-                    print("Invalid input")
+                    print("*** Invalid input")
         else:
-            print("Invalid index number")
+            print("*** Invalid index number")
 
 def spills_table(spills):
     table = texttable.Texttable(max_width=max_table_width)
@@ -446,6 +469,7 @@ def spills_table(spills):
     return table
 
 def spills(prompt: bool = True):
+    global configuration_changed
     print("Current spill signal assignments:")
     spills = current_configuration.configuration["spill_channels"]
     table = spills_table(spills)
@@ -467,15 +491,16 @@ def spills(prompt: bool = True):
                 elif command == "True" or command == "False":
                     enabled = command
                 else:
-                    print("Invalid input")
+                    print("*** Invalid input")
                     continue
 
                 current_configuration.set_spill_channel(pre_spill, end_spill, enabled, True)
+                configuration_changed = True
             else:
-                print("Invalid spill channel")
+                print("*** Invalid spill channel")
 
         else:
-            print("Invalid input")
+            print("*** Invalid input")
 
 def deadtime_table(deadtime):
     table = texttable.Texttable(max_width=max_table_width)
@@ -486,6 +511,7 @@ def deadtime_table(deadtime):
     return table
 
 def deadtime(prompt: bool = True):
+    global configuration_changed
     print("Current deadtime value:")
     deadtime = current_configuration.configuration["deadtime"]
     if deadtime is None:
@@ -500,9 +526,13 @@ def deadtime(prompt: bool = True):
             return
         if command.isdigit():
             deadtime_value = command
-            current_configuration.set_deadtime_veto(deadtime_value, True)
+            if int(deadtime_value) < 1:
+                print("*** Invalid deadtime value: must be greater than 0")
+            else:
+                current_configuration.set_deadtime_veto(deadtime_value, True)
+                configuration_changed = True
         else:
-            print("Invalid input")
+            print("*** Invalid input")
 
 def connection_table(indices, tdbc):
     table = texttable.Texttable(max_width=max_table_width)
@@ -523,6 +553,7 @@ def connection_table(indices, tdbc):
     return table
 
 def connections(prompt: bool = True):
+    global configuration_changed
     print("Current trigger/digitizer board connections:")
     board_connections = current_configuration.configuration["trigger_digitizer_board_connections"]
     indices = []
@@ -550,8 +581,10 @@ def connections(prompt: bool = True):
                 # add the new board connection
                 if i in list(range(0, 10)) + list(range(20, 30)) + [40]:
                     current_configuration.set_trigger_board_connection(board, channel,"other", "0", True)
+                    configuration_changed = True
                 else:
                     current_configuration.set_digitizer_board_connection(board, channel, "other", "0", True)
+                    configuration_changed = True
                 continue
 
             while True:
@@ -565,13 +598,15 @@ def connections(prompt: bool = True):
 
                     if i in list(range(0, 10)) + list(range(20, 30)) + [40]:
                         current_configuration.set_trigger_board_connection(board, channel, source, source_serial, True)
+                        configuration_changed = True
                     else:
                         current_configuration.set_digitizer_board_connection(board, channel, source, source_serial, True)
+                        configuration_changed = True
 
                 else:
-                    print("Invalid input")
+                    print("*** Invalid input")
         else:
-            print("Invalid index number")
+            print("*** Invalid index number")
 
 def patch_table(indices, tdbc):
     table = texttable.Texttable(max_width=max_table_width)
@@ -588,6 +623,7 @@ def patch_table(indices, tdbc):
     return table
 
 def patch_panel(prompt: bool = True):
+    global configuration_changed
     print("Current patch panel connections:")
     panel_connections = current_configuration.configuration["patch_panel_connections"]
     indices = []
@@ -612,6 +648,7 @@ def patch_panel(prompt: bool = True):
             else:
                 # add the new patch panel connection
                 current_configuration.set_patch_panel_connection(index,"other", "0", True)
+                configuration_changed = True
 
             while True:
                 command = input("Enter source, source_serial: [cancel] ")
@@ -623,11 +660,12 @@ def patch_panel(prompt: bool = True):
                     source_serial = fields[1]
 
                     current_configuration.set_patch_panel_connection(index, source, source_serial, True)
+                    configuration_changed = True
 
                 else:
-                    print("Invalid input")
+                    print("*** Invalid input")
         else:
-            print("Invalid index number")
+            print("*** Invalid index number")
 
 
 def show_all():
@@ -652,6 +690,7 @@ def show_all():
     patch_panel(False)
 
 def save():
+    global configuration_changed
     while True:
         command = input("Enter new short name (10 characters max): [cancel] ")
         if command == "":
@@ -660,7 +699,7 @@ def save():
             current_configuration.configuration["short_name"] = command
             break
         else:
-            print("Short name too long")
+            print("*** Short name too long")
     while True:
         command = input("Enter new description (60 characters max): [cancel] ")
         if command == "":
@@ -669,16 +708,26 @@ def save():
             current_configuration.configuration["description"] = command
             break
         else:
-            print("Description too long")
+            print("*** Description too long")
     while True:
         command = input("Enter filename prefix (do not include _config.json): [cancel] ")
         if command == "":
             return
-        current_configuration.save(command)
+        success = current_configuration.save(command)
+        if success:
+            configuration_changed = False
         return
 
 def update():
     current_configuration.update()
+
+def exit_check():
+    if configuration_changed:
+        command = input("Current configuration has been modified. Save those changes now? [y] ")
+        if command.strip() not in ["n", "N", "no", "No"]:
+            save()
+            return
+    exit()
 
 def help():
     print("Available commands:")
@@ -723,11 +772,11 @@ def main():
         "show": show_all,
         "save": save,
         "update": update,
-        "exit": exit
+        "exit": exit_check
     }
 
     print()
-    print("Welcome to the WCTE trigger configuration console.")
+    print("Welcome to the WCTE trigger configuration console. Version", Configuration.get_version())
     print("The default action is shown in square brackets. Press enter to execute the default action.")
     print()
     while True:
@@ -737,7 +786,7 @@ def main():
         if command in commands:
             commands[command]()
         else:
-            print("Invalid command. Type 'help' for a list of available commands.")
+            print("*** Invalid command. Type 'help' for a list of available commands.")
 
 if __name__ == "__main__":
     main()

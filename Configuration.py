@@ -17,7 +17,7 @@ class Configuration:
     def __init__(self, short_name: str, description: str):
         # Define the configuration dictionary
         self.configuration = {
-            "config_version": "0.1",
+            "config_version": self.get_version(),
             "short_name": short_name,
             "description": description,
             "input_signals": {},
@@ -38,24 +38,29 @@ class Configuration:
         self.register_list = getRegisterList("../V1495_firmware/src/V1495_regs_pkg.vhd")
         self.register_settings = {}
 
+    # Get the version number (change when the configuration format changes)
+    @staticmethod
+    def get_version():
+        return "1.0"
+
     def check_int(self, serial: str, min_value: int, max_value: int):
         # check that the number is a string between the min and max values
         if not (serial.isdigit() and min_value <= int(serial) <= max_value):
-            print(f'invalid value {serial}. It must be a integer between {min_value} and {max_value}')
+            print(f'*** invalid value {serial}. It must be a integer between {min_value} and {max_value}')
             return False
         return True
 
     def check_string(self, string: str, max_length: int):
         # check that the string is a string of length at most max_length
         if not isinstance(string, str) or len(string) > max_length:
-            print(f'invalid string {string}. It must be a string of length at most {max_length}')
+            print(f'*** invalid string {string}. It must be a string of length at most {max_length}')
             return False
         return True
 
     def check_bool(self, boolean: str):
         # check that the boolean is a string that converts to boolean
         if boolean not in ["True", "False"]:
-            print(f'invalid boolean {boolean}. It must be either "True" or "False"')
+            print(f'*** invalid boolean {boolean}. It must be either "True" or "False"')
             return False
         return True
 
@@ -135,12 +140,12 @@ class Configuration:
             str_list = inputs_str.strip().strip('[]').split(',')
             if not check_brackets and all(i.isdigit() and 0 <= int(i) <= 63 for i in str_list):
                 fail = True
-                print(f'invalid specification: {inputs_str}. It must be a list of numbers between 0 and 63')
+                print(f'*** invalid specification: {inputs_str}. It must be a list of numbers between 0 and 63')
 
         # check that the logic type is a string and either "AND" or "OR"
         if logic_type not in ["AND", "OR"]:
             fail = True
-            print(f'invalid logic type {logic_type}. It must be either "AND" or "OR"')
+            print(f'*** invalid logic type {logic_type}. It must be either "AND" or "OR"')
 
         if not fail:
 
@@ -210,7 +215,7 @@ class Configuration:
             str_list = inputs_str.strip().strip('[]').split(',')
             if not check_brackets and all(i.isdigit() and 0 <= int(i) <= 63 for i in str_list):
                 fail = True
-                print(f'invalid specification {inputs_str}. It must be a list of numbers between 0 and 63')
+                print(f'*** invalid specification {inputs_str}. It must be a list of numbers between 0 and 63')
 
         # check that level_1_inputs and invert_level_1_inputs are both lists of numbers between 0 and 9
         for level_1_inputs_str in [level_1_inputs, invert_level_1_inputs]:
@@ -218,12 +223,12 @@ class Configuration:
             str_list = level_1_inputs_str.strip().strip('[]').split(',')
             if not check_brackets and all(i.isdigit() and 0 <= int(i) <= 9 for i in str_list):
                 fail = True
-                print(f'invalid specification {level_1_inputs_str}. It must be a list of numbers between 0 and 9')
+                print(f'*** invalid specification {level_1_inputs_str}. It must be a list of numbers between 0 and 9')
 
         # check that the logic type is a string and either "AND" or "OR"
         if logic_type not in ["AND", "OR"]:
             fail = True
-            print(f'invalid logic type {logic_type}. It must be either "AND" or "OR"')
+            print(f'*** invalid logic type {logic_type}. It must be either "AND" or "OR"')
 
         if not fail:
 
@@ -264,7 +269,7 @@ class Configuration:
         # check that the source is one of "input", "level 1", "level 2"
         if source not in ["input", "level 1", "level 2"]:
             fail = True
-            print(f'invalid source {source}. It must be one of "input", "level 1", "level 2"')
+            print(f'*** invalid source {source}. It must be one of "input", "level 1", "level 2"')
 
         # check that the source serial number is valid
         if source == "input":
@@ -307,7 +312,7 @@ class Configuration:
         # check that source is one of "lemo" or "patch panel" or "other"
         if source not in ["lemo", "patch panel", "other"]:
             fail = True
-            print(f'invalid source {source}. It must be one of "lemo", "patch panel", "other"')
+            print(f'*** invalid source {source}. It must be one of "lemo", "patch panel", "other"')
 
         # check that the source serial number is valid
         if source == "lemo":
@@ -344,7 +349,7 @@ class Configuration:
         # check that source is one of "input" or "other"
         if source not in ["input", "other"]:
             fail = True
-            print(f'invalid source {source}. It must be one of "input" or "other"')
+            print(f'*** invalid source {source}. It must be one of "input" or "other"')
 
         # check that the source serial number is valid
         if source == "input":
@@ -373,7 +378,7 @@ class Configuration:
         # check that source is one of "lemo" or "other"
         if source not in ["lemo", "other"]:
             fail = True
-            print(f'invalid source {source}. It must be one of "lemo", "patch panel", "other"')
+            print(f'*** invalid source {source}. It must be one of "lemo", "patch panel", "other"')
 
         # check that the source serial number is valid
         if source == "lemo":
@@ -440,7 +445,7 @@ class Configuration:
         # Check that there is no file with this name
         try:
             with open(filename, "r") as file:
-                print(f'file {filename} already exists - please choose a different name')
+                print(f'*** file {filename} already exists - please choose a different name')
                 return False
         except FileNotFoundError:
             pass
@@ -463,7 +468,7 @@ class Configuration:
             # Check that there is no file with this name
             try:
                 with open(filename, "r") as file:
-                    print(f'file {filename} already exists - please choose a different name')
+                    print(f'*** file {filename} already exists - please choose a different name')
                     return False
             except FileNotFoundError:
                 pass
@@ -487,6 +492,8 @@ class Configuration:
             success2 = self.write_register_settings(register_settings_filename)
             if success2 and verbose:
                 print('Saved register settings to ' + register_settings_filename)
+                return True
+        return False
 
     # Define the update method - used to update the registration settings for a quick change of settings
     def update(self, verbose: bool = True):
@@ -610,9 +617,9 @@ class Configuration:
         register_address = self.register_list[register_type][register_name]['addresses'][0]
         value_str = self.configuration["deadtime"]
         if value_str is None:
-            value = 0
+            value = 1
         else:
-            value = int(value_str)
+            value = min(1,int(value_str))
         reg[hex(register_address)] = hex(value)
 
         self.register_settings = reg
