@@ -1,7 +1,7 @@
 {
     "config_version": "0.1",
-    "short_name": "TP v11",
-    "description": "Tagged Photon Trigger version 1.1",
+    "short_name": "LE v12",
+    "description": "Low Energy Trigger version 1.2",
     "input_signals": {
         "0": {
             "short_name": "T00",
@@ -330,16 +330,16 @@
             "window_length": "1"
         },
         "1": {
-            "delay": "0",
-            "window_length": "1"
+            "delay": "7",
+            "window_length": "3"
         },
         "2": {
             "delay": "0",
             "window_length": "1"
         },
         "3": {
-            "delay": "0",
-            "window_length": "1"
+            "delay": "255",
+            "window_length": "3"
         },
         "4": {
             "delay": "0",
@@ -655,11 +655,39 @@
             "logic_type": "AND"
         },
         "1": {
-            "short_name": "HODO",
-            "description": "Hodoscope signal",
-            "inputs": "[32,33,34,35,36,37,38,39,40,41,42,43,44,45,46]",
+            "short_name": "T1 L1",
+            "description": "T1 coincidence",
+            "inputs": "[4,5,6,7]",
+            "invert_inputs": "[]",
+            "logic_type": "AND"
+        },
+        "2": {
+            "short_name": "ATCe",
+            "description": "ATC electron",
+            "inputs": "[12,13]",
             "invert_inputs": "[]",
             "logic_type": "OR"
+        },
+        "3": {
+            "short_name": "ATCeps",
+            "description": "ATC electron prescaled",
+            "inputs": "[12,13]",
+            "invert_inputs": "[]",
+            "logic_type": "OR"
+        },
+        "4": {
+            "short_name": "HC L1",
+            "description": "Hole counter",
+            "inputs": "[9,10]",
+            "invert_inputs": "[]",
+            "logic_type": "OR"
+        },
+        "5": {
+            "short_name": "MUON",
+            "description": "Muon tagger",
+            "inputs": "[24,25]",
+            "invert_inputs": "[]",
+            "logic_type": "AND"
         }
     },
     "level_1_output_treatments": {
@@ -670,25 +698,59 @@
         "1": {
             "delay": "0",
             "window_length": "1"
+        },
+        "2": {
+            "delay": "3",
+            "window_length": "7"
+        },
+        "3": {
+            "delay": "0",
+            "window_length": "1"
+        },
+        "4": {
+            "delay": "0",
+            "window_length": "1"
+        },
+        "5": {
+            "delay": "0",
+            "window_length": "1"
         }
     },
     "level_2_logics": {
         "0": {
-            "short_name": "TP",
-            "description": "Tagged Photon Trigger",
-            "inputs": "[8]",
-            "invert_inputs": "[12]",
+            "short_name": "LE psV",
+            "description": "Low Energy Trigger prescaled eVeto",
+            "inputs": "[]",
+            "invert_inputs": "[]",
             "level_1_inputs": "[0,1]",
-            "invert_level_1_inputs": "[]",
+            "invert_level_1_inputs": "[3,4]",
             "logic_type": "AND"
         },
         "1": {
-            "short_name": "TP nH",
-            "description": "Tagged Photon Trigger no HODO requirement",
-            "inputs": "[8]",
-            "invert_inputs": "[12]",
-            "level_1_inputs": "[0]",
-            "invert_level_1_inputs": "[]",
+            "short_name": "LE nV",
+            "description": "Low Energy Trigger without eVeto",
+            "inputs": "[]",
+            "invert_inputs": "[]",
+            "level_1_inputs": "[0,1]",
+            "invert_level_1_inputs": "[4]",
+            "logic_type": "AND"
+        },
+        "2": {
+            "short_name": "LE e",
+            "description": "Low Energy Trigger with electron",
+            "inputs": "[]",
+            "invert_inputs": "[]",
+            "level_1_inputs": "[0,1,2]",
+            "invert_level_1_inputs": "[4]",
+            "logic_type": "AND"
+        },
+        "3": {
+            "short_name": "LE mu",
+            "description": "Low Energy Trigger with muon",
+            "inputs": "[]",
+            "invert_inputs": "[]",
+            "level_1_inputs": "[0,1,5]",
+            "invert_level_1_inputs": "[2,4]",
             "logic_type": "AND"
         }
     },
@@ -728,9 +790,23 @@
             "source_serial": "0",
             "treatment": "True"
         },
+        "1": {
+            "short_name": "EL TAG",
+            "description": "Electron tagged",
+            "source": "level 2",
+            "source_serial": "2",
+            "treatment": "True"
+        },
+        "2": {
+            "short_name": "MU TAG",
+            "description": "Muon tagged",
+            "source": "level 2",
+            "source_serial": "3",
+            "treatment": "True"
+        },
         "7": {
-            "short_name": "TP nH",
-            "description": "Tagged Photon Trigger no HODO requirement",
+            "short_name": "LE nV",
+            "description": "Low Energy Trigger without eVeto",
             "source": "level 2",
             "source_serial": "1",
             "treatment": "True"
@@ -1006,6 +1082,18 @@
             "channel": "0",
             "source": "other",
             "source_serial": "TDCT0"
+        },
+        "1": {
+            "board": "0",
+            "channel": "1",
+            "source": "lemo",
+            "source_serial": "1"
+        },
+        "2": {
+            "board": "0",
+            "channel": "2",
+            "source": "lemo",
+            "source_serial": "2"
         }
     },
     "patch_panel_connections": {
@@ -1054,10 +1142,9 @@
             "source_serial": "15"
         }
     },
-    "prescalers": {},
-    "spill_channels": {
-        "pre_spill": "26",
-        "end_spill": "27"
+    "prescalers": {
+        "3": "16"
     },
+    "spill_channels": {},
     "deadtime": "625"
 }

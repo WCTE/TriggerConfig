@@ -404,18 +404,21 @@ class Configuration:
             if verbose:
                 print(f'prescaler {serial} set to {prescale}')
 
-    def set_spill_channel(self, pre_spill: str, end_spill: str, verbose: bool = True):
+    def set_spill_channel(self, pre_spill: str, end_spill: str, enabled: str, verbose: bool = True):
         fail = False
-        # check that the pre_spill and end_spill are numbers between 0 and 95
-        fail = fail or not self.check_int(pre_spill, 0, 95)
-        fail = fail or not self.check_int(end_spill, 0, 95)
+        # check that the pre_spill and end_spill are numbers between 0 and 63
+        fail = fail or not self.check_int(pre_spill, 0, 63)
+        fail = fail or not self.check_int(end_spill, 0, 63)
+        # check that the enabled is a boolean (specifies if the out of spill veto is applied)
+        fail = fail or not self.check_bool(enabled)
 
         if not fail:
             # Assign the spill channel to the configuration
             self.configuration["spill_channels"]["pre_spill"] = pre_spill
             self.configuration["spill_channels"]["end_spill"] = end_spill
+            self.configuration["spill_channels"]["enabled"] = enabled
             if verbose:
-                print(f'(pre- and end-) spill channels set to ({pre_spill} and {end_spill})')
+                print(f'(pre- and end-) spill channels set to ({pre_spill} and {end_spill} with enabled {enabled}')
 
     def set_deadtime_veto(self, deadtime: str, verbose: bool = True):
         fail = False
@@ -592,14 +595,14 @@ class Configuration:
             reg[hex(register_addresses[int(ist)])] = hex(value)
 
         # Spill channels
-        register_name = 'ARW_PRESPILL'
+        register_name = 'ARW_SPILL'
         register_address = self.register_list[register_type][register_name]['addresses'][0]
-        value = int(self.configuration["spill_channels"].get("pre_spill",50))
-        reg[hex(register_address)] = hex(value)
+        value = 0
+        value += int(self.configuration["spill_channels"].get("pre_spill",50))
+        value += int(self.configuration["spill_channels"].get("end_spill", 51)) << 8
+        if self.configuration["spill_channels"].get("enabled", "False") == "True":
+            value += 1 << 16
 
-        register_name = 'ARW_ENDSPILL'
-        register_address = self.register_list[register_type][register_name]['addresses'][0]
-        value = int(self.configuration["spill_channels"].get("end_spill",50))
         reg[hex(register_address)] = hex(value)
 
         # Deadtime veto

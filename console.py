@@ -436,12 +436,13 @@ def prescalers(prompt: bool = True):
 
 def spills_table(spills):
     table = texttable.Texttable(max_width=max_table_width)
-    table.set_cols_align(["c", "c"])
-    table.set_cols_valign(["m", "m"])
-    table.add_row(["Pre-spill channel", "End-spill channel"])
+    table.set_cols_align(["c", "c", "c"])
+    table.set_cols_valign(["m", "m", "m"])
+    table.add_row(["Pre-spill channel", "End-spill channel", "Enabled"])
     pre_spill = spills.get("pre_spill", "None")
     end_spill = spills.get("end_spill", "None")
-    table.add_row([pre_spill, end_spill])
+    enabled = spills.get("enabled", "False")
+    table.add_row([pre_spill, end_spill, enabled])
     return table
 
 def spills(prompt: bool = True):
@@ -459,8 +460,17 @@ def spills(prompt: bool = True):
         if len(fields) == 2 and fields[0].isdigit() and fields[1].isdigit():
             pre_spill = fields[0]
             end_spill = fields[1]
-            if 0 <= int(pre_spill) < 96 and 0 <= int(end_spill) < 96:
-                current_configuration.set_spill_channel(pre_spill, end_spill, True)
+            if 0 <= int(pre_spill) < 64 and 0 <= int(end_spill) < 64:
+                command = input("Enter enabled: [True] ")
+                if command == "":
+                    enabled = "True"
+                elif command == "True" or command == "False":
+                    enabled = command
+                else:
+                    print("Invalid input")
+                    continue
+
+                current_configuration.set_spill_channel(pre_spill, end_spill, enabled, True)
             else:
                 print("Invalid spill channel")
 
