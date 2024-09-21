@@ -305,7 +305,7 @@ def level_2(prompt: bool = True):
                     inputs = level_2_logics[str(i)]["inputs"]
                     invert_inputs = level_2_logics[str(i)]["invert_inputs"]
                     level_1_inputs = level_2_logics[str(i)]["level_1_inputs"]
-                    invert_level_1_inputs = level_2_logics[str(i)]["level_1_inputs"]
+                    invert_level_1_inputs = level_2_logics[str(i)]["invert_level_1_inputs"]
                     logic_type = level_2_logics[str(i)]["logic_type"]
                     description = level_2_logics[str(i)]["description"]
 
