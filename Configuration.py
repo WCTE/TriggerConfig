@@ -41,7 +41,7 @@ class Configuration:
     # Get the version number (change when the configuration format changes)
     @staticmethod
     def get_version():
-        return "1.0"
+        return "tc-1.0"
 
     def check_int(self, serial: str, min_value: int, max_value: int):
         # check that the number is a string between the min and max values

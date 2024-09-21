@@ -15,28 +15,26 @@ def load():
     # show a list of available configurations in a texttable
     # get a list of .json files in the configurations directory, oldest first
 
-    #search_dir = "configurations"
-    #files = filter(os.path.isfile, os.listdir(search_dir))
-    #files = [os.path.join(search_dir, f) for f in files]  # add path to each file
-    #files.sort(key=lambda x: os.path.getmtime(x))
-
     path = "configurations"
     name_list = os.listdir(path)
     full_list = [os.path.join(path, i) for i in name_list]
     full_list_sorted = sorted(full_list, key=os.path.getmtime)
     json_files = [i for i in full_list_sorted if i.endswith(".json")]
     files = [os.path.basename(i) for i in json_files]
+    file_versions = []
 
     table = texttable.Texttable(max_width=max_table_width)
-    table.set_cols_align(["c", "c", "c", "c"])
-    table.set_cols_valign(["m", "m", "m", "m"])
-    table.add_row(["Index", "Filename", "Short Name", "Description"])
+    table.set_cols_align(["c", "c", "c", "c", "c"])
+    table.set_cols_valign(["m", "m", "m", "m", "m"])
+    table.add_row(["Index", "Filename", "TC Version", "Short Name", "Description"])
     for i, config_file in enumerate(files):
         config = Configuration("","")
         config.read_configuration(json_files[i])
         short_name = config.configuration["short_name"]
         description = config.configuration["description"]
-        table.add_row([str(i), config_file, short_name, description])
+        configuration_version = config.configuration["config_version"]
+        file_versions.append(configuration_version)
+        table.add_row([str(i), config_file, configuration_version, short_name, description])
     print(table.draw())
 
     #prompt the user to select a configuration
@@ -45,6 +43,10 @@ def load():
         if index == "":
             return
         if index.isdigit() and 0 <= int(index) < len(files):
+            current_version = Configuration.get_version()
+            if current_version != file_versions[int(index)]:
+                print("*** Configuration file version mismatch - cannot load")
+                continue
             if configuration_changed:
                 command = input("Current configuration has been modified. Save those changes now? [y] ")
                 if command.strip() not in ["n", "N", "no", "No"]:

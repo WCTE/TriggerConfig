@@ -1,5 +1,5 @@
 {
-    "config_version": "1.0",
+    "config_version": "tc-1.0",
     "short_name": "TP v12",
     "description": "Tagged Photon Trigger version 1.2",
     "input_signals": {

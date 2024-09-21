@@ -29,7 +29,7 @@ To install texttable:
 ```python3 console.py```
 
 ```
-Welcome to the WCTE trigger configuration console. Version 1.0
+Welcome to the WCTE trigger configuration console. Version tc-1.0
 The default action is shown in square brackets. Press enter to execute the default action.
 
 Enter command: [help] 
@@ -74,17 +74,17 @@ Available commands:
 ```
 Enter command: [help] load
 List of available trigger configurations: sorted by modification time
-+-------+--------------------+------------+-----------------------------------+
-| Index |      Filename      | Short Name |            Description            |
-+-------+--------------------+------------+-----------------------------------+
-|   0   | la_v09_config.json |   LA v09   |     Laser Trigger version 0.9     |
-+-------+--------------------+------------+-----------------------------------+
-|   1   | le_v09_config.json |   LE v09   |  Low Energy Trigger version 0.9   |
-+-------+--------------------+------------+-----------------------------------+
-|   2   | tp_v09_config.json |   TP v09   | Tagged Photon Trigger version 0.9 |
-+-------+--------------------+------------+-----------------------------------+
++-------+--------------------+------------+------------+-----------------------------------+
+| Index |      Filename      | TC Version | Short Name |            Description            |
++-------+--------------------+------------+------------+-----------------------------------+
+|   0   | tp_v12_config.json |   tc-1.0   |   TP v12   | Tagged Photon Trigger version 1.2 |
++-------+--------------------+------------+------------+-----------------------------------+
+|   1   | le_v12_config.json |   tc-1.0   |   LE v12   |  Low Energy Trigger version 1.2   |
++-------+--------------------+------------+------------+-----------------------------------+
+|   2   | la_v12_config.json |   tc-1.0   |   LA v12   |     Laser Trigger version 1.2     |
++-------+--------------------+------------+------------+-----------------------------------+
 Select index of file to load: [cancel] 1
-Configuration loaded from le_v09_config.json
+Configuration loaded from le_v12_config.json
 Enter command: [help] 
 ```
 The folder "configurations" contains the JSON trigger configuration files listed in this example. 
@@ -92,6 +92,12 @@ The folder "configurations" contains the JSON trigger configuration files listed
 When saving  a configuration, the filename prefix, short name, and description are specified, and the file is saved in the "configurations" folder,
 and the corresponding register settings are saved in the "register_settings" folder.
 Existing files cannot be overwritten.
+
+The TC Version is the version of the TriggerConfig package that was used to create the configuration file.
+Only files with the same version as the current package can be loaded. Previous versions of the package can be
+modified to be compatible with the current version by adjusting the JSON file.
+Version numbers in the filename, short name, and description relate to the version of the trigger configuration
+itself, and are not associated with the TC Version.
 
 ### Compact summary of input signal channels using shortnames
 ```
