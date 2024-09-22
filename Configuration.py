@@ -584,7 +584,7 @@ class Configuration:
             for ist in self.configuration["output_lemo_assignments"]:
                 if 0 + lemo_offset <= int(ist) < lemo_offset + 8:
                     source = self.configuration["output_lemo_assignments"][ist]["source"]
-                    offset = {'input':0, 'level 1':96, 'level 2':107}[source]
+                    offset = {'input':0, 'level 1':96, 'level 2':106}[source]
                     source_serial = int(self.configuration["output_lemo_assignments"][ist]["source_serial"])
                     treatment = 1 << 7 if self.configuration["output_lemo_assignments"][ist]["treatment"] == "True" else 0
                     value = offset + source_serial + treatment
