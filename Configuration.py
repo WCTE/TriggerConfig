@@ -21,6 +21,7 @@ class Configuration:
             "short_name": short_name,
             "description": description,
             "input_signals": {},
+            "input_cfd_settings": {},
             "input_signal_treatments": {},
             "level_1_logics": {},
             "level_1_output_treatments": {},
@@ -37,11 +38,12 @@ class Configuration:
 
         self.register_list = getRegisterList("../V1495_firmware/src/V1495_regs_pkg.vhd")
         self.register_settings = {}
+        self.cfd_register_settings = {}
 
     # Get the version number (change when the configuration format changes)
     @staticmethod
     def get_version():
-        return "tc-1.0"
+        return "tc-1.1"
 
     def check_int(self, serial: str, min_value: int, max_value: int):
         # check that the number is a string between the min and max values
@@ -99,8 +101,33 @@ class Configuration:
             # Set the default treatment for new signals:
             if new_signal:
                 self.set_treatment(serial, verbose=verbose)
+                self.set_cfd_setting(serial, verbose=verbose)
                 if verbose:
-                    print(f'default treatment for signal {serial} set')
+                    print(f'default treatment and CFD settings for signal {serial} set')
+
+    def set_cfd_setting(self, serial: str, enabled: str = "True", threshold: str = "16", verbose: bool = True):
+
+            fail = False
+            # check that the serial number is a number between 0 and 95
+            fail = fail or not self.check_int(serial, 0, 95)
+
+            # check that the enabled is a boolean (specifies if the CFD channel is enabled)
+            fail = fail or not self.check_bool(enabled)
+
+            # check that the threshold is a number between 0 and 255
+            fail = fail or not self.check_int(threshold, 0, 255)
+
+            if not fail:
+                # Define the CFD setting dictionary
+                cfd_setting = {
+                    "enabled": enabled,
+                    "threshold": threshold
+                }
+
+                # Assign the CFD setting dictionary to the configuration
+                self.configuration["input_cfd_settings"][serial] = cfd_setting
+                if verbose:
+                    print(f'CFD setting for signal {serial} set')
 
     def set_treatment(self, serial: str, delay: str = "0", window_length: str = "1", verbose: bool = True):
 
@@ -463,7 +490,7 @@ class Configuration:
             self.configuration = json.load(file)
 
     # Define the write register_settings method
-    def write_register_settings(self, filename, overwrite: bool = False):
+    def write_register_settings(self, filename, reg_settings, overwrite: bool = False):
         if not overwrite:
             # Check that there is no file with this name
             try:
@@ -475,7 +502,7 @@ class Configuration:
         # Open the file for writing
         with open(filename, "w") as file:
             # Write the configuration to the file
-            json.dump(self.register_settings, file, indent=4)
+            json.dump(reg_settings, file, indent=4)
         return True
 
     # Define the save method that writes both the configuration  and register values to json files
@@ -489,10 +516,18 @@ class Configuration:
             # Set and write the register values to a json file
             self.set_registers()
             register_settings_filename = 'register_settings/' + filename + '_registers.json'
-            success2 = self.write_register_settings(register_settings_filename)
-            if success2 and verbose:
-                print('Saved register settings to ' + register_settings_filename)
-                return True
+            success2 = self.write_register_settings(register_settings_filename, self.register_settings)
+            if success2:
+                if verbose:
+                    print('Saved V1495 register settings to ' + register_settings_filename)
+                # Set and write the CFD register values to a json file
+                self.set_cfd_registers()
+                cfd_register_settings_filename = 'register_settings/' + filename + '_cfd_registers.json'
+                success3 = self.write_register_settings(cfd_register_settings_filename, self.cfd_register_settings)
+                if success3:
+                    if verbose:
+                        print('Saved CFD register settings to ' + cfd_register_settings_filename)
+                    return True
         return False
 
     # Define the update method - used to update the registration settings for a quick change of settings
@@ -500,9 +535,17 @@ class Configuration:
         # Set and write the register values to a json file
         self.set_registers()
         register_settings_filename = 'register_settings/current_registers.json'
-        success = self.write_register_settings(register_settings_filename, overwrite=True)
+        success = self.write_register_settings(register_settings_filename, self.register_settings, overwrite=True)
         if success and verbose:
-            print('Saved register settings to ' + register_settings_filename)
+            print('Saved V1495 register settings to ' + register_settings_filename)
+
+        # Set and write the CFD register values to a json file
+        self.set_cfd_registers()
+        cfd_register_settings_filename = 'register_settings/current_cfd_registers.json'
+        success2 = self.write_register_settings(cfd_register_settings_filename, self.cfd_register_settings, overwrite=True)
+        if success2 and verbose:
+            print('Saved CFD register settings to ' + cfd_register_settings_filename)
+
 
     def set_registers(self):
         # Work out the values for the VME module registers
@@ -623,3 +666,43 @@ class Configuration:
         reg[hex(register_address)] = hex(value)
 
         self.register_settings = reg
+
+    def set_cfd_registers(self):
+        # Work out the values for the CFD module registers
+        # Note: write a value to every register - so that previous settings are overwritten
+        cfd_reg = {}
+        # CFD modules have 16 channels
+        # ignore any modules that have no enabled channels There is a maximum of 6 CFD modules
+        for cfd_module in range(6):
+            in_use = False
+            for cfd_channel in range(16):
+                input_channel = cfd_module*16 + cfd_channel
+                if str(input_channel) in self.configuration["input_cfd_settings"]:
+                    if self.configuration["input_cfd_settings"][str(input_channel)]["enabled"] == "True":
+                        in_use = True
+                        break
+            if in_use:
+                cfd_reg[str(cfd_module)] = {}
+                enabled = 0
+                for cfd_channel in range(16):
+                    input_channel = cfd_module*16 + cfd_channel
+                    register_address = cfd_channel*2
+                    threshold = 16
+                    if str(input_channel) in self.configuration["input_cfd_settings"]:
+                        threshold = int(self.configuration["input_cfd_settings"][str(input_channel)]["threshold"])
+                        if self.configuration["input_cfd_settings"][str(input_channel)]["enabled"] == "True":
+                            enabled |= 1 << cfd_channel
+
+                    cfd_reg[str(cfd_module)][hex(register_address)] = hex(threshold)
+
+                cfd_reg[str(cfd_module)][hex(64)] = hex(0) # address of the width register chans 0-7 (0x40)
+                cfd_reg[str(cfd_module)][hex(66)] = hex(0)  # address of the width register chans 8-15 (0x40)
+                cfd_reg[str(cfd_module)][hex(68)] = hex(0)  # address of the deadtime register chans 0-7 (0x40)
+                cfd_reg[str(cfd_module)][hex(70)] = hex(0)  # address of the deadtime register chans 8-15 (0x40)
+                cfd_reg[str(cfd_module)][hex(74)] = hex(enabled)  # address of the enable register (0x4A)
+
+        self.cfd_register_settings = cfd_reg
+
+
+
+

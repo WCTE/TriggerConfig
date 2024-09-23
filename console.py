@@ -85,29 +85,32 @@ def channels():
         table.add_row(row)
     print(table.draw())
 
-def input_table(indices, signals, treatments):
+def input_table(indices, signals, cfd_settings, treatments):
     table = texttable.Texttable(max_width=max_table_width)
-    table.set_cols_align(["c", "c", "c", "c", "l"])
-    table.set_cols_valign(["m", "m", "m", "m", "m"])
-    table.add_row(["Channel", "Short Name", "Delay", "Gate", "Description"])
+    table.set_cols_align(["c", "c", "c", "c", "c", "c", "l"])
+    table.set_cols_valign(["m", "m", "m", "m", "m", "m", "m"])
+    table.add_row(["Channel", "Short Name", "Enabled", "Threshold", "Delay", "Gate", "Description"])
     for i in indices:
         short_name = signals[str(i)]["short_name"]
+        enabled = cfd_settings[str(i)]["enabled"]
+        threshold = cfd_settings[str(i)]["threshold"]
         delay = treatments[str(i)]["delay"]
         window_length = treatments[str(i)]["window_length"]
         description = signals[str(i)]["description"]
-        table.add_row([str(i), short_name, delay, window_length, description])
+        table.add_row([str(i), short_name, enabled, threshold, delay, window_length, description])
     return table
 
 def inputs(prompt: bool = True):
     global configuration_changed
     print("Current input signals:")
     input_signals = current_configuration.configuration["input_signals"]
+    input_cfd_settings = current_configuration.configuration["input_cfd_settings"]
     input_treatments = current_configuration.configuration["input_signal_treatments"]
     indices = []
     for i in range(96):
         if str(i) in input_signals:
             indices.append(i)
-    table = input_table(indices, input_signals, input_treatments)
+    table = input_table(indices, input_signals, input_cfd_settings, input_treatments)
     print(table.draw())
 
     #prompt the user to select a channel to modify
@@ -120,8 +123,8 @@ def inputs(prompt: bool = True):
             indices = [i]
             if index in input_signals:
                 print('Channel selected:')
-                table = input_table(indices, input_signals, input_treatments)
-                table.add_row(["field:", "0", "1", "2", "3"])
+                table = input_table(indices, input_signals, input_cfd_settings, input_treatments)
+                table.add_row(["field:", "0", "1", "2", "3", "4", "5"])
                 print(table.draw())
             else:
                 # add the new channel
@@ -133,8 +136,10 @@ def inputs(prompt: bool = True):
                 if command == "":
                     break
                 fields = [c.strip() for c in command.split('=')]
-                if len(fields) == 2 and fields[0].isdigit() and 0 <= int(fields[0]) <= 3:
+                if len(fields) == 2 and fields[0].isdigit() and 0 <= int(fields[0]) <= 5:
                     short_name = input_signals[index]["short_name"]
+                    enabled = input_cfd_settings[str(i)]["enabled"]
+                    threshold = input_cfd_settings[str(i)]["threshold"]
                     delay = input_treatments[index]["delay"]
                     window_length = input_treatments[index]["window_length"]
                     description = input_signals[index]["description"]
@@ -144,13 +149,20 @@ def inputs(prompt: bool = True):
                     if field == 0:
                         short_name = value
                     elif field == 1:
-                        delay = value
+                        enabled = value
                     elif field == 2:
-                        window_length = value
+                        threshold = value
                     elif field == 3:
+                        delay = value
+                    elif field == 4:
+                        window_length = value
+                    elif field == 5:
                         description = value
-                    if field in [0,3]:
+                    if field in [0,5]:
                         current_configuration.set_signal(index, short_name, description, True)
+                        configuration_changed = True
+                    elif field in [1,2]:
+                        current_configuration.set_cfd_setting(index, enabled, threshold, True)
                         configuration_changed = True
                     else:
                         current_configuration.set_treatment(index, delay, window_length, True)

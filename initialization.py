@@ -315,10 +315,10 @@ def configure_la_trigger(short_name: str, description: str, filename: str):
 for trigger in ["LE", "TP", "LA"]:
 
     if trigger == "LE":
-        configure_le_trigger("LE v12","Low Energy Trigger version 1.2", "le_v12")
+        configure_le_trigger("LE v13","Low Energy Trigger version 1.3", "le_v13")
 
     elif trigger == "TP":
-        configure_tp_trigger("TP v12","Tagged Photon Trigger version 1.2", "tp_v12")
+        configure_tp_trigger("TP v13","Tagged Photon Trigger version 1.3", "tp_v13")
 
     elif trigger == "LA":
-        configure_la_trigger("LA v12","Laser Trigger version 1.2", "la_v12")
+        configure_la_trigger("LA v13","Laser Trigger version 1.3", "la_v13")

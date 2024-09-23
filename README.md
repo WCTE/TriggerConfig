@@ -1,17 +1,17 @@
 # TriggerConfig
-This package provides the tools for defining and adjusting the WCTE trigger configuration 
+This package provides the tools for defining and adjusting the WCTE trigger configuration
  * "Configuration" class:
    * defines all elements of the WCTE trigger configuration in terms of nested dictionaries
    * provides methods for adjusting the configuration
    * provides methods for saving and loading configurations using JSON files
-   * provides a method to convert the configuration to a JSON file with register values for the WCTE trigger FPGA 
+   * provides a method to convert the configuration to a JSON files with register values for the WCTE trigger logic module (V1495) and the constant fraction discriminator (CFD) modules (V812)
  * "initialization" module:
    * provides methods that produce default WCTE trigger configurations
  * "console" module:
    * provides a command line interface for
      * viewing and adjusting all elements of the trigger configuration
      * saving and loading configurations using JSON files
-     * saving a JSON file with register values for the WCTE trigger FPGA
+     * saving JSON files with register values for the WCTE trigger logic module (V1495) and the constant fraction discriminator (CFD) modules (V812)
 
 ## Installation
 To install the package, clone WCTE/TriggerConfig repository in a folder that also contains the V1495_firmware
@@ -129,55 +129,58 @@ Current input signals:
 Enter command: [help] 
 ```
 
-### Viewing and adjusting input signal delays and gate widths
+### Viewing and adjusting input signals: (CFD enabled and CFD threshold) and logic delays and gate widths
 ```
 Enter command: [help] inputs
 Current input signals:
-+---------+------------+-------+------+-----------------------------------------------+
-| Channel | Short Name | Delay | Gate | Description                                   |
-+---------+------------+-------+------+-----------------------------------------------+
-|    0    |    T00     |   0   |  1   | Upstream trigger scintillator 0 channel 0     |
-+---------+------------+-------+------+-----------------------------------------------+
-|    1    |    T01     |   7   |  3   | Upstream trigger scintillator 0 channel 1     |
-+---------+------------+-------+------+-----------------------------------------------+
-|    2    |    T02     |   0   |  1   | Upstream trigger scintillator 0 channel 2     |
-+---------+------------+-------+------+-----------------------------------------------+
-|    3    |    T03     |  255  |  3   | Upstream trigger scintillator 0 channel 3     |
++---------+------------+---------+-----------+-------+------+-----------------------------------------------+
+| Channel | Short Name | Enabled | Threshold | Delay | Gate | Description                                   |
++---------+------------+---------+-----------+-------+------+-----------------------------------------------+
+|    0    |    T00     |  True   |    16     |   0   |  1   | Upstream trigger scintillator 0 channel 0     |
++---------+------------+---------+-----------+-------+------+-----------------------------------------------+
+|    1    |    T01     |  True   |    16     |   7   |  3   | Upstream trigger scintillator 0 channel 1     |
++---------+------------+---------+-----------+-------+------+-----------------------------------------------+
+|    2    |    T02     |  True   |    16     |   0   |  1   | Upstream trigger scintillator 0 channel 2     |
++---------+------------+---------+-----------+-------+------+-----------------------------------------------+
+|    3    |    T03     |  True   |    16     |  255  |  3   | Upstream trigger scintillator 0 channel 3     |
 
 ...
 
-|   94    |   TOF1E    |   0   |  1   | TOF module 1 channel 14                       |
-+---------+------------+-------+------+-----------------------------------------------+
-|   95    |   TDCT0    |   0   |  1   | TDC stop signal for TDC2                      |
-+---------+------------+-------+------+-----------------------------------------------+
+|   94    |   TOF1E    |  True   |    16     |   0   |  1   | TOF module 1 channel 14                       |
++---------+------------+---------+-----------+-------+------+-----------------------------------------------+
+|   95    |   TDCT0    |  True   |    16     |   0   |  1   | TDC stop signal for TDC2                      |
++---------+------------+---------+-----------+-------+------+-----------------------------------------------+
 Enter input channel number to add/modify: [cancel] 1
 Channel selected:
-+---------+------------+-------+------+-------------------------------------------+
-| Channel | Short Name | Delay | Gate | Description                               |
-+---------+------------+-------+------+-------------------------------------------+
-|    1    |    T01     |   7   |  3   | Upstream trigger scintillator 0 channel 1 |
-+---------+------------+-------+------+-------------------------------------------+
-| field:  |     0      |   1   |  2   | 3                                         |
-+---------+------------+-------+------+-------------------------------------------+
-Enter field # = new value: [cancel] 2=5
++---------+------------+---------+-----------+-------+------+-------------------------------------------+
+| Channel | Short Name | Enabled | Threshold | Delay | Gate | Description                               |
++---------+------------+---------+-----------+-------+------+-------------------------------------------+
+|    1    |    T01     |  False  |    16     |   7   |  3   | Upstream trigger scintillator 0 channel 1 |
++---------+------------+---------+-----------+-------+------+-------------------------------------------+
+| field:  |     0      |    1    |     2     |   3   |  4   | 5                                         |
++---------+------------+---------+-----------+-------+------+-------------------------------------------+
+Enter field # = new value: [cancel] 4=8
 treatment for signal 1 set
 Enter field # = new value: [cancel] 
 Enter input channel number to add/modify: [cancel] 1
 Channel selected:
-+---------+------------+-------+------+-------------------------------------------+
-| Channel | Short Name | Delay | Gate | Description                               |
-+---------+------------+-------+------+-------------------------------------------+
-|    1    |    T01     |   7   |  5   | Upstream trigger scintillator 0 channel 1 |
-+---------+------------+-------+------+-------------------------------------------+
-| field:  |     0      |   1   |  2   | 3                                         |
-+---------+------------+-------+------+-------------------------------------------+
++---------+------------+---------+-----------+-------+------+-------------------------------------------+
+| Channel | Short Name | Enabled | Threshold | Delay | Gate | Description                               |
++---------+------------+---------+-----------+-------+------+-------------------------------------------+
+|    1    |    T01     |  False  |    16     |   7   |  8   | Upstream trigger scintillator 0 channel 1 |
++---------+------------+---------+-----------+-------+------+-------------------------------------------+
+| field:  |     0      |    1    |     2     |   3   |  4   | 5                                         |
++---------+------------+---------+-----------+-------+------+-------------------------------------------+
 Enter field # = new value: [cancel] 
 Enter input channel number to add/modify: [cancel] 
 Enter command: [help] 
 ```
 
-The delay and gate widths are specified in the fundamental clock period for WCTE: 8 ns.
-The treatments to the input signals are applied before the subsequent trigger logic.
+ * The Enabled field is used to enable or disable the CFD input
+ * The Threshold field sets the CFD threshold in mV
+ * The delay and gate widths are specified in the fundamental clock period for WCTE: 8 ns.
+
+The treatments to the input signals are applied before any subsequent trigger logic.
 
 The FPGA is phase locked to the 125 MHz clock of the trigger mainboard which is phase locked to the shared 25 MHz clock.
 The maximum delay and maximum gate width are 255 * 8 ns = 2.040 us.
@@ -205,7 +208,8 @@ Enter level 1 logic index to add/modify: [cancel]
 ```
 There are 10 level 1 logic elements. They are referenced by their index (0-9).
 
-The invert inputs specify the input signals that are inverted before the logic operation.
+ * The invert inputs specify the input signals that are inverted before the logic operation.
+
 The delay and gate widths are applied prior to subsequent trigger logic (at level 2).
 
 ### Viewing and adjusting the level 2 logic
@@ -285,12 +289,11 @@ Current prescaler values:
 Enter prescaler index to add/modify: [cancel] 
 ```
 
-The prescalers apply to the level 1 logic outputs. The most significant bit of the prescale value determines the 
+The prescalers apply to the output of the level 1 logic unit specified by the Index. The most significant bit of the prescale value determines the 
 prescale factor.
 The possible prescale factors are 1 (no prescaling) 2 (every other level 1 trigger is accepted), 
 4 (every fourth level 1 trigger is accepted) etc up to 256.
 
-The index refers to the level 1 logic element that the prescale is applied to.
 
 ### Viewing and adjusting the spill signal assignments
 ```
@@ -306,6 +309,8 @@ Enter pre-spill, end-spill: [cancel]
 
 The spill signals are assigned to the input channels that correspond to the beam spill warning and beam spill end signals.
 These are required for the module to take special actions (resetting counters and vetoing triggers outside of spills).
+
+To disable the special spill treatment, set the Enabled field to False.
 
 ### Viewing and adjusting the deadtime
 ```
@@ -405,14 +410,15 @@ It is assumed that there are 16 patch panel cables available for use, and they a
 The "save" command saves the configuration to a JSON file in the "configurations" folder.
 When saving  a configuration, the filename prefix, short name, and description are specified, and the file is saved in the "configurations" folder,
 and the corresponding register settings are saved in the "register_settings" folder.
-Existing files cannot be overwritten.
+Existing files cannot be overwritten to ensure that a named configuration has a unique definition.
 
-Note that the filename prefix is appended with "_config" and "_register_settings" for the configuration and register settings files, respectively,
-so that their purpose and association is clear.
+Note that the filename prefix is appended with "_config", "_register_settings", and _cfd_register_settings for the configuration, trigger logic register settings files, 
+and CFD register settings respectively, so that their purpose and association is clear.
 
-### Writing the current register settings to current_registers.json
+### Writing the current register settings to current_registers.json and current_cfd_registers.json
 
-While setting up the trigger configuration for the first time, a large number of incremental adjustments will be made to the configuration.
-Instead of saving configuration files for every step, the "update" command can be used. It writes the current register settings to the file "current_registers.json",
-overwriting the previous version. By loading this file, the configuration can be set quickly and further adjustments can be made. One a large set of adjustments
-has been made, the configuration can be saved to a new file using the "save" command (see previous section).
+While setting up the trigger configuration for the first time (or making significant adjustments), a large number of incremental adjustments will be made to the configuration.
+Instead of saving configuration files for every step, the "update" command can be used. It writes the current trigger logic module register settings to the 
+file "current_registers.json", and the current CFD register settings to the file "current_cfd_registers.json", overwriting the previous versions. 
+By loading these files into the VME modules, the configuration can be set quickly and further adjustments can be made. 
+Once a large set of adjustments has been made, the configuration and register setting files can be saved to new files using the "save" command (see previous section).
