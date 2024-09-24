@@ -577,11 +577,17 @@ class Configuration:
                     reg[register_address] = hex(reg_value)
 
         # 1 bit value registers: invert_inputs (INV) and inputs for logic (MASK)
+        # Note that the mask must be set for both inverted and not-inverted inputs
         one_bit_regs = {'INV': {'L1':['A','B'], 'L2':['A','B','L1']},
                         'MASK': {'L1':['A','B'], 'L2':['A','B','L1']}}
+        inv_values = {}
         for spec in one_bit_regs:
             for logic_level in one_bit_regs[spec]:
+                if spec == 'INV':
+                    inv_values[logic_level] = {}
                 for source in one_bit_regs[spec][logic_level]:
+                    if spec == 'INV':
+                        inv_values[logic_level][source] = {}
                     register_name = f'ARW_{source}{spec}_{logic_level}'
                     register_addresses = self.register_list[register_type][register_name]['addresses']
                     config_category = {'L1':'level_1_logics', 'L2':'level_2_logics'}[logic_level]
@@ -593,9 +599,14 @@ class Configuration:
                     for register_address in register_addresses:
                         reg[hex(register_address)] = hex(0)
                     for ist in self.configuration[config_category]:
+                        if spec == 'INV':
+                            inv_values[logic_level][source][ist] = 0
                         inputs_str = self.configuration[config_category][ist][config_key]
                         inputs_split = inputs_str.strip().strip('[]').split(',')
                         value = 0
+                        # start with the inverted inputs (they need to set in the mask)
+                        if spec =='MASK':
+                            value = inv_values[logic_level][source][ist]
                         if len(inputs_split[0]) > 0:
                             inputs_list = [int(i) for i in inputs_split]
                             for input in inputs_list:
@@ -605,6 +616,9 @@ class Configuration:
                         register_index = int(ist)
                         register_address = hex(register_addresses[register_index])
                         reg[register_address] = hex(value)
+                        # save the inverted inputs for the mask
+                        if spec == 'INV':
+                            inv_values[logic_level][source][ist] = value
 
         # Logic type for level 1 and level 2 logics
         register_name = 'ARW_LOGIC_TYPE'
