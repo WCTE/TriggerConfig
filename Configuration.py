@@ -260,9 +260,7 @@ class Configuration:
         if not fail:
 
             # check if the serial number is already in the configuration
-            new_logic = True
             if serial in self.configuration["level_2_logics"]:
-                new_logic = False
                 short_old = self.configuration["level_2_logics"][serial]["short_name"]
                 if verbose:
                     print(f'level 2 logic {serial} ({short_old}) replaced by new level 2 logic ({short_name})')
@@ -609,9 +607,9 @@ class Configuration:
                             value = inv_values[logic_level][source][ist]
                         if len(inputs_split[0]) > 0:
                             inputs_list = [int(i) for i in inputs_split]
-                            for input in inputs_list:
-                                if offset <= input < offset + 32:
-                                    shift = input - offset
+                            for input_chan in inputs_list:
+                                if offset <= input_chan < offset + 32:
+                                    shift = input_chan - offset
                                     value |= 1 << shift
                         register_index = int(ist)
                         register_address = hex(register_addresses[register_index])
