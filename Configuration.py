@@ -674,7 +674,7 @@ class Configuration:
         if value_str is None:
             value = 1
         else:
-            value = min(1,int(value_str))
+            value = max(1,int(value_str))
         reg[hex(register_address)] = hex(value)
 
         self.register_settings = reg
