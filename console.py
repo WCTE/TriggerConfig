@@ -119,7 +119,7 @@ def inputs(prompt: bool = True):
         index = input("Enter input channel number to add/modify: [cancel] ")
         if index == "":
             return
-        if index.isdigit() and 0 <= int(index) < 96:
+        if index[0] != "c" and index.isdigit() and 0 <= int(index) < 96:
             i = int(index)
             indices = [i]
             if index in input_signals:
@@ -139,8 +139,8 @@ def inputs(prompt: bool = True):
                 fields = [c.strip() for c in command.split('=')]
                 if len(fields) == 2 and fields[0].isdigit() and 0 <= int(fields[0]) <= 5:
                     short_name = input_signals[index]["short_name"]
-                    enabled = input_cfd_settings[str(i)]["enabled"]
-                    threshold = input_cfd_settings[str(i)]["threshold"]
+                    enabled = input_cfd_settings[index]["enabled"]
+                    threshold = input_cfd_settings[index]["threshold"]
                     delay = input_treatments[index]["delay"]
                     window_length = input_treatments[index]["window_length"]
                     description = input_signals[index]["description"]
@@ -170,6 +170,29 @@ def inputs(prompt: bool = True):
                         configuration_changed = True
                 else:
                     print("*** Invalid input")
+        elif index[0] == "c":    # allows copying a channel to a range of channels
+            if index[1:].isdigit() and index[1:] in input_signals:
+                reference = index[1:]
+                command = input("Copy index "+index[1:]+" to i-j: [cancel] ")
+                if command == "":
+                    break
+                fields = [c.strip() for c in command.split('-')]
+                if len(fields) == 2 and fields[0].isdigit() and fields[1].isdigit():
+                    first = int(fields[0])
+                    last = int(fields[1])
+                    short_name = input_signals[reference]["short_name"]
+                    enabled = input_cfd_settings[reference]["enabled"]
+                    threshold = input_cfd_settings[reference]["threshold"]
+                    delay = input_treatments[reference]["delay"]
+                    window_length = input_treatments[reference]["window_length"]
+                    description = input_signals[reference]["description"]
+                    for i in range(first, last+1):
+                        dest = str(i)
+                        current_configuration.set_signal(dest, short_name, description, False)
+                        current_configuration.set_cfd_setting(dest, enabled, threshold, False)
+                        current_configuration.set_treatment(dest, delay, window_length, False)
+
+                    configuration_changed = True
         else:
             print("*** Invalid channel number")
 
