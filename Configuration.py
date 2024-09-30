@@ -470,14 +470,15 @@ class Configuration:
         return self.configuration
 
     # Define the write configuration method
-    def write_configuration(self, filename):
-        # Check that there is no file with this name
-        try:
-            with open(filename, "r") as file:
-                print(f'*** file {filename} already exists - please choose a different name')
-                return False
-        except FileNotFoundError:
-            pass
+    def write_configuration(self, filename, overwrite: bool = False):
+        if not overwrite:
+            # Check that there is no file with this name
+            try:
+                with open(filename, "r") as file:
+                    print(f'*** file {filename} already exists - please choose a different name')
+                    return False
+            except FileNotFoundError:
+                pass
         # Open the file for writing
         with open(filename, "w") as file:
             # Write the configuration to the file
@@ -534,6 +535,13 @@ class Configuration:
 
     # Define the update method - used to update the registration settings for a quick change of settings
     def update(self, verbose: bool = True):
+        # Write the configuration to a json file
+        config_filename = 'configurations/current_config.json'
+        success = self.write_configuration(config_filename, overwrite=True)
+        if success:
+            if verbose:
+                print('Saved configuration to ' + config_filename)
+
         # Set and write the register values to a json file
         self.set_registers()
         register_settings_filename = 'register_settings/current_registers.json'
