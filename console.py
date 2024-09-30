@@ -173,9 +173,9 @@ def inputs(prompt: bool = True):
         elif index[0] == "c":    # allows copying a channel to a range of channels
             if index[1:].isdigit() and index[1:] in input_signals:
                 reference = index[1:]
-                command = input("Copy index "+index[1:]+" to i-j: [cancel] ")
+                command = input("Copy channel "+index[1:]+" to i-j: [cancel] ")
                 if command == "":
-                    break
+                    continue
                 fields = [c.strip() for c in command.split('-')]
                 if len(fields) == 2 and fields[0].isdigit() and fields[1].isdigit():
                     first = int(fields[0])
@@ -188,10 +188,11 @@ def inputs(prompt: bool = True):
                     description = input_signals[reference]["description"]
                     for i in range(first, last+1):
                         dest = str(i)
-                        current_configuration.set_signal(dest, short_name, description, False)
+                        if dest not in input_signals:
+                            current_configuration.set_signal(dest, short_name, description, False)
                         current_configuration.set_cfd_setting(dest, enabled, threshold, False)
                         current_configuration.set_treatment(dest, delay, window_length, False)
-
+                    print("Input signal copied from channel "+index[1:]+" to "+fields[0]+"-"+fields[1])
                     configuration_changed = True
         else:
             print("*** Invalid channel number")
@@ -388,7 +389,7 @@ def outputs(prompt: bool = True):
     print("Current output lemo assignments:")
     output_lemo_assignments = current_configuration.configuration["output_lemo_assignments"]
     indices = []
-    for i in range(8): # CURRENTLY 8 -> will go to 16
+    for i in range(16):
         if str(i) in output_lemo_assignments:
             indices.append(i)
     table = output_table(indices, output_lemo_assignments)
@@ -399,7 +400,7 @@ def outputs(prompt: bool = True):
         index = input("Enter output lemo assignment index to add/modify: [cancel] ")
         if index == "":
             return
-        if index.isdigit() and 0 <= int(index) < 8:
+        if index[0] != "c" and index.isdigit() and 0 <= int(index) < 16:
             i = int(index)
             indices = [i]
             if index in output_lemo_assignments:
@@ -415,7 +416,7 @@ def outputs(prompt: bool = True):
             while True:
                 command = input("Enter field # = new value: [cancel] ")
                 if command == "":
-                    break
+                    continue
                 fields = [c.strip() for c in command.split('=')]
                 if len(fields) == 2 and fields[0].isdigit() and 0 <= int(fields[0]) <= 4:
                     short_name = output_lemo_assignments[str(i)]["short_name"]
@@ -441,6 +442,30 @@ def outputs(prompt: bool = True):
                     configuration_changed = True
                 else:
                     print("*** Invalid input")
+        
+        elif index[0] == "c":    # allows copying an output to a range of outputs
+            if index[1:].isdigit() and index[1:] in output_lemo_assignments:
+                reference = index[1:]
+                command = input("Copy index "+index[1:]+" to i-j: [cancel] ")
+                if command == "":
+                    break
+                fields = [c.strip() for c in command.split('-')]
+                if len(fields) == 2 and fields[0].isdigit() and fields[1].isdigit():
+                    first = int(fields[0])
+                    last = int(fields[1])
+                    source = output_lemo_assignments[reference]["source"]
+                    source_serial = output_lemo_assignments[reference]["source_serial"]
+                    treatment = output_lemo_assignments[reference]["treatment"]
+                    for i in range(first, last+1):
+                        dest = str(i)
+                        short_name = output_lemo_assignments[reference]["short_name"]
+                        description = output_lemo_assignments[reference]["description"]
+                        if dest in output_lemo_assignments:
+                            short_name = output_lemo_assignments[dest]["short_name"]
+                            description = output_lemo_assignments[dest]["description"]
+                        current_configuration.set_output_lemo_assignment(dest, short_name, description, source, source_serial, treatment, True)
+                    print("Output LEMO assignment copied from "+index[1:]+" to "+fields[0]+"-"+fields[1])
+                    configuration_changed = True
         else:
             print("*** Invalid index number")
 

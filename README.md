@@ -439,3 +439,11 @@ Instead of saving configuration files for every step, the "update" command can b
 file "current_registers.json", and the current CFD register settings to the file "current_cfd_registers.json", overwriting the previous versions. 
 By loading these files into the VME modules, the configuration can be set quickly and further adjustments can be made. 
 Once a large set of adjustments has been made, the configuration and register setting files can be saved to new files using the "save" command (see previous section).
+
+### Bulk copying of input and output settings
+
+During tests of the VME modules, it can be helpful to set many input and output parameters to the same value. For those
+cases, the "copy" function can be used. It will copy the settings of one input or output to other inputs or outputs.
+Use the command "inputs" or "outputs" to view the current settings, and then type "c" (for copy) followed by the index of the
+reference input or output (for example c0). You are then asked to enter the range of inputs or outputs 
+to copy the settings to (for example 1-7).
