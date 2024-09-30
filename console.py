@@ -416,7 +416,7 @@ def outputs(prompt: bool = True):
             while True:
                 command = input("Enter field # = new value: [cancel] ")
                 if command == "":
-                    continue
+                    break
                 fields = [c.strip() for c in command.split('=')]
                 if len(fields) == 2 and fields[0].isdigit() and 0 <= int(fields[0]) <= 4:
                     short_name = output_lemo_assignments[str(i)]["short_name"]
@@ -448,7 +448,7 @@ def outputs(prompt: bool = True):
                 reference = index[1:]
                 command = input("Copy index "+index[1:]+" to i-j: [cancel] ")
                 if command == "":
-                    break
+                    continue
                 fields = [c.strip() for c in command.split('-')]
                 if len(fields) == 2 and fields[0].isdigit() and fields[1].isdigit():
                     first = int(fields[0])
