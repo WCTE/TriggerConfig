@@ -61,6 +61,7 @@ def load():
             print("*** Invalid index")
 
 def channels():
+    global current_configuration
     print("Current input signals:")
     input_signals = current_configuration.configuration["input_signals"]
     indices = []
@@ -101,7 +102,7 @@ def input_table(indices, signals, cfd_settings, treatments):
     return table
 
 def inputs(prompt: bool = True):
-    global configuration_changed
+    global current_configuration, configuration_changed
     print("Current input signals:")
     input_signals = current_configuration.configuration["input_signals"]
     input_cfd_settings = current_configuration.configuration["input_cfd_settings"]
@@ -189,7 +190,7 @@ def level_1_table(indices, logics, treatments):
     return table
 
 def level_1(prompt: bool = True):
-    global configuration_changed
+    global current_configuration, configuration_changed
     print("Current level 1 logic:")
     level_1_logics = current_configuration.configuration["level_1_logics"]
     level_1_treatments = current_configuration.configuration["level_1_output_treatments"]
@@ -279,7 +280,7 @@ def level_2_table(indices, logics):
 
 
 def level_2(prompt: bool = True):
-    global configuration_changed
+    global current_configuration, configuration_changed
     print("Current level 2 logic:")
     level_2_logics = current_configuration.configuration["level_2_logics"]
     indices = []
@@ -360,7 +361,7 @@ def output_table(indices, olas):
     return table
 
 def outputs(prompt: bool = True):
-    global configuration_changed
+    global current_configuration, configuration_changed
     print("Current output lemo assignments:")
     output_lemo_assignments = current_configuration.configuration["output_lemo_assignments"]
     indices = []
@@ -422,20 +423,21 @@ def outputs(prompt: bool = True):
 
 def prescalers_table(indices, prescalers):
     table = texttable.Texttable(max_width=max_table_width)
-    table.set_cols_align(["c", "c"])
-    table.set_cols_valign(["m", "m"])
-    table.add_row(["Index", "Prescale"])
+    table.set_cols_align(["c", "c", "c"])
+    table.set_cols_valign(["m", "m", "m"])
+    table.add_row(["Index", "Prescale", "Select"])
     for i in indices:
         value = prescalers[str(i)]
-        table.add_row([str(i), value])
+        select = prescalers[str(i)+"_select"]
+        table.add_row([str(i), value, select])
     return table
 
 def prescalers(prompt: bool = True):
-    global configuration_changed
+    global current_configuration, configuration_changed
     print("Current prescaler values:")
     prescalers = current_configuration.configuration["prescalers"]
     indices = []
-    for i in range(8):
+    for i in range(10):
         if str(i) in prescalers:
             indices.append(i)
     table = prescalers_table(indices, prescalers)
@@ -455,19 +457,21 @@ def prescalers(prompt: bool = True):
                 print(table.draw())
             else:
                 # add the new prescaler
-                current_configuration.set_prescaler(index, "1", True)
+                current_configuration.set_prescaler(index, "1", True,True)
                 configuration_changed = True
                 continue
             while True:
-                command = input("Enter new prescale: [cancel] ")
+                command = input("Enter new prescale, select: [cancel] ")
                 if command == "":
                     break
-                if command.isdigit():
-                    current_configuration.set_prescaler(index, command, True)
+                fields = [c.strip() for c in command.split(',')]
+                if len(fields) == 2 and fields[0].isdigit() and fields[1] in ["True", "False"]:
+                    prescale = fields[0]
+                    select = fields[1]
+                    current_configuration.set_prescaler(index, prescale, select,True)
                     configuration_changed = True
-
                 else:
-                    print("*** Invalid input")
+                    print("*** Invalid input (enter for example: 10, True)")
         else:
             print("*** Invalid index number")
 
@@ -483,7 +487,7 @@ def spills_table(spills):
     return table
 
 def spills(prompt: bool = True):
-    global configuration_changed
+    global current_configuration, configuration_changed
     print("Current spill signal assignments:")
     spills = current_configuration.configuration["spill_channels"]
     table = spills_table(spills)
@@ -525,7 +529,7 @@ def deadtime_table(deadtime):
     return table
 
 def deadtime(prompt: bool = True):
-    global configuration_changed
+    global current_configuration, configuration_changed
     print("Current deadtime value:")
     deadtime = current_configuration.configuration["deadtime"]
     if deadtime is None:
@@ -549,6 +553,7 @@ def deadtime(prompt: bool = True):
             print("*** Invalid input")
 
 def connection_table(indices, tdbc):
+    global current_configuration
     table = texttable.Texttable(max_width=max_table_width)
     table.set_cols_align(["c", "c", "c", "c", "c", "c"])
     table.set_cols_valign(["m", "m", "m", "m", "m", "m"])
@@ -559,15 +564,34 @@ def connection_table(indices, tdbc):
         source = tdbc[str(i)]["source"]
         source_serial = tdbc[str(i)]["source_serial"]
         source_short_name = "-"
+        # check that gate widths are 1 for digital inputs to the trigger board
+        digital_input = i in [0,1,2,3,4,5,6,7,8,9,20,21,22,23,24,25,26,27,28,29,59]
         if source == "input" and source_serial in current_configuration.configuration["input_signals"]:
             source_short_name = current_configuration.configuration["input_signals"][source_serial]["short_name"]
+            if digital_input:
+                # "input" in this context means the analog split for the corresponding input to the CFD
+                # so this should not be connected to a digital input
+                source_short_name += " *** digital !! ***"
         elif source == "lemo" and source_serial in current_configuration.configuration["output_lemo_assignments"]:
             source_short_name = current_configuration.configuration["output_lemo_assignments"][source_serial]["short_name"]
+            source_source = current_configuration.configuration["output_lemo_assignments"][source_serial]["source"]
+            if digital_input and source_source in ["level 1","level 2","input"]:
+                treatment = current_configuration.configuration["output_lemo_assignments"][source_serial]["treatment"]
+                window_length = "1"
+                if source_source == "input":
+                    source_source_serial = current_configuration.configuration["output_lemo_assignments"][source_serial]["source_serial"]
+                    window_length = current_configuration.configuration["input_signal_treatments"][source_source_serial]["window_length"]
+                elif source_source == "level 1":
+                    source_source_serial = current_configuration.configuration["output_lemo_assignments"][source_serial]["source_serial"]
+                    window_length = current_configuration.configuration["level_1_output_treatments"][source_source_serial]["window_length"]
+                if treatment == "False" or window_length != "1":
+                    source_short_name += " *** GATE WIDTH != 1 ***"
+
         table.add_row([str(i), board, channel, source, source_serial, source_short_name])
     return table
 
 def connections(prompt: bool = True):
-    global configuration_changed
+    global current_configuration, configuration_changed
     print("Current trigger/digitizer board connections:")
     board_connections = current_configuration.configuration["trigger_digitizer_board_connections"]
     indices = []
@@ -593,7 +617,7 @@ def connections(prompt: bool = True):
                 print(table.draw())
             else:
                 # add the new board connection
-                if i in list(range(0, 10)) + list(range(20, 30)) + [40]:
+                if i in [0,1,2,3,4,5,6,7,8,9,20,21,22,23,24,25,26,27,28,29,59]:
                     current_configuration.set_trigger_board_connection(board, channel,"other", "0", True)
                     configuration_changed = True
                 else:
@@ -610,7 +634,7 @@ def connections(prompt: bool = True):
                     source = fields[0]
                     source_serial = fields[1]
 
-                    if i in list(range(0, 10)) + list(range(20, 30)) + [40]:
+                    if i in [0,1,2,3,4,5,6,7,8,9,20,21,22,23,24,25,26,27,28,29,59]:
                         current_configuration.set_trigger_board_connection(board, channel, source, source_serial, True)
                         configuration_changed = True
                     else:
@@ -623,6 +647,7 @@ def connections(prompt: bool = True):
             print("*** Invalid index number")
 
 def patch_table(indices, tdbc):
+    global current_configuration
     table = texttable.Texttable(max_width=max_table_width)
     table.set_cols_align(["c", "c", "c", "c"])
     table.set_cols_valign(["m", "m", "m", "m"])
@@ -637,7 +662,7 @@ def patch_table(indices, tdbc):
     return table
 
 def patch_panel(prompt: bool = True):
-    global configuration_changed
+    global current_configuration, configuration_changed
     print("Current patch panel connections:")
     panel_connections = current_configuration.configuration["patch_panel_connections"]
     indices = []
@@ -683,6 +708,10 @@ def patch_panel(prompt: bool = True):
 
 
 def show_all():
+    global current_configuration
+    print("")
+    print("Current configuration:", current_configuration.configuration["short_name"], "("+current_configuration.configuration["description"]+")")
+    print("")
     inputs(False)
     print()
     channels()
@@ -704,7 +733,7 @@ def show_all():
     patch_panel(False)
 
 def save():
-    global configuration_changed
+    global current_configuration, configuration_changed
     while True:
         command = input("Enter new short name (10 characters max): [cancel] ")
         if command == "":
@@ -733,6 +762,7 @@ def save():
         return
 
 def update():
+    global current_configuration
     current_configuration.update()
 
 def exit_check():

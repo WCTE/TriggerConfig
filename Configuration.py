@@ -331,8 +331,8 @@ class Configuration:
             # check that the channel number is a number between 0 and 9
             fail = fail or not self.check_int(channel, 0, 9)
         elif board == "2":
-            # check that the channel number is 0
-            fail = fail or not self.check_int(channel, 0, 0)
+            # check that the channel number is 19
+            fail = fail or not self.check_int(channel, 19, 19)
 
         # check that source is one of "lemo" or "patch panel" or "other"
         if source not in ["lemo", "patch panel", "other"]:
@@ -368,8 +368,8 @@ class Configuration:
             # check that the channel number is a number between 10 and 19
             fail = fail or not self.check_int(channel, 10, 19)
         elif board == "2":
-            # check that the channel number is a number between 1 and 19
-            fail = fail or not self.check_int(channel, 1, 19)
+            # check that the channel number is a number between 0 and 18
+            fail = fail or not self.check_int(channel, 0, 18)
 
         # check that source is one of "input" or "other"
         if source not in ["input", "other"]:
@@ -420,19 +420,23 @@ class Configuration:
             if verbose:
                 print(f'{source}-{source_serial} connected to patch panel position {serial}')
 
-    def set_prescaler(self, serial: str, prescale: str, verbose: bool = True):
+    def set_prescaler(self, serial: str, prescale: str, select: str, verbose: bool = True):
         fail = False
         # check that the serial number is a number between 0 and 9 (level 1 logic output)
         fail = fail or not self.check_int(serial, 0, 9)
 
-        # check that the prescale is a number between 0 and 255
-        fail = fail or not self.check_int(prescale, 0, 256)
+        # check that the prescale is a number between 1 and 255
+        fail = fail or not self.check_int(prescale, 1, 255)
+
+        # check that the select is a boolean (specifies how the prescaler is used)
+        fail = fail or not self.check_bool(select)
 
         if not fail:
             # Assign the prescale to the configuration
             self.configuration["prescalers"][serial] = prescale
+            self.configuration["prescalers"][serial + "_select"] = select
             if verbose:
-                print(f'prescaler {serial} set to {prescale}')
+                print(f'prescaler {serial} set to {prescale} with select {select}')
 
     def set_spill_channel(self, pre_spill: str, end_spill: str, enabled: str, verbose: bool = True):
         fail = False
@@ -653,8 +657,12 @@ class Configuration:
         for register_address in register_addresses:
             reg[hex(register_address)] = hex(0)
         for ist in self.configuration["prescalers"]:
-            value = int(self.configuration["prescalers"][ist])
-            reg[hex(register_addresses[int(ist)])] = hex(value)
+            if ist.isdigit():
+                value = int(self.configuration["prescalers"][ist])
+                select = self.configuration["prescalers"].get(ist + "_select","True")
+                if select == "True":
+                    value |= 1 << 8
+                reg[hex(register_addresses[int(ist)])] = hex(value)
 
         # Spill channels
         register_name = 'ARW_SPILL'

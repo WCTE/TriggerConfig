@@ -272,28 +272,40 @@ For level 2, if treatment is False, the width corresponds to the width that the 
 if True, the width is one time bin. No adjustable delay is applied to the level 2 outputs.
 
 The output of LEMO 0 (the bottom-most LEMO connector on the mezzanine card) is considered to be
-the master trigger signal (TDC stop) and has a deadtime veto applied. 
+the master trigger signal (TDC stop) and optionally has a deadtime veto and a inter-spill veto. 
 A configuration which has the deadtime veto period shorter than the gate width of the master trigger signal will
 produce an oscillating signal on the master trigger output (as the deadtime veto logic is being applied) which
 should be avoided. The LEMO 0 output is also subject to the out-of-spill veto, if that is enabled.
+
+To ensure timing consistency for LEMO 0 output, it should have a gate width of 1 (for level 2 outputs, that is
+achieved by setting the treatment to True).
 
 ### Viewing and adjusting the prescaler properties
 ```
 Enter command: [help] prescalers
 Current prescaler values:
-+-------+----------+
-| Index | Prescale |
-+-------+----------+
-|   3   |    16    |
-+-------+----------+
++-------+----------+--------+
+| Index | Prescale | Select |
++-------+----------+--------+
+|   3   |    16    | False  |
++-------+----------+--------+
 Enter prescaler index to add/modify: [cancel] 
 ```
 
-The prescalers apply to the output of the level 1 logic unit specified by the Index. The most significant bit of the prescale value determines the 
-prescale factor.
-The possible prescale factors are 1 (no prescaling) 2 (every other level 1 trigger is accepted), 
-4 (every fourth level 1 trigger is accepted) etc up to 256.
+The prescalers reduce the rate of level 1 triggers for the logic unit specified by the Index, by rejecting
+a fraction of the triggers.
 
+The most significant bit of the prescale value determines the prescale factor. The maximum prescale factor is 128.
+
+If Select is True, a prescale factor of 4 means that every fourth trigger is accepted, and the other three are rejected.
+This is appropriate if the logic unit is used to identify an event selection, and the rate of those selected
+events needs to be reduced.
+
+If Select is False, a prescale factor of 4 means that every fourth trigger is rejected, and the other three are accepted.
+This is appropriate if the logic unit is used to identify a veto condition (for example, the electron veto) and a
+for a fraction of events, the veto should not be applied (so as to accept some electrons).
+
+To disable the prescaler, set the Select field to True and the Prescale value to 1.
 
 ### Viewing and adjusting the spill signal assignments
 ```
@@ -308,7 +320,9 @@ Enter pre-spill, end-spill: [cancel]
 ```
 
 The spill signals are assigned to the input channels that correspond to the beam spill warning and beam spill end signals.
-These are required for the module to take special actions (resetting counters and vetoing triggers outside of spills).
+With enabled set to True then between spills, the master trigger output (LEMO 0) is vetoed and all counters are frozen.
+This ensures that the number of master triggers during a spill is well established, that the counters reflect the rate
+of beam related signals, and that resetting the counters can be done at any time between spills.
 
 To disable the special spill treatment, set the Enabled field to False.
 
@@ -324,7 +338,7 @@ Current deadtime value:
 Enter deadtime: [cancel] 
 ```
 
-The deadtime is applied to signals directed to lemo 0 (the master trigger signal). 
+The deadtime is applied to signals directed to the master trigger output (LEMO 0). 
 Signals are blocked for the specified number of clock cycles after the master trigger signal is generated.
 The value 625 corresponds to 5 us, which is the nominal deadtime being considered for the WCTE trigger.
 The minimum deadtime is 1 (8 ns).
@@ -367,11 +381,14 @@ recorded in the configuration file as an important reference for the signals bei
 trigger/digitizer boards.
 
 There are 3 boards (numbered 0,1,2). Ten channels are reserved for logic channels on boards 0 and 1
-(and one channel for board 2) which generally are connected to the lemo outputs from the trigger module.
+(and channel 19 for board 2) which generally are connected to the lemo outputs from the trigger module.
 The remaining 40 channels are generally connected to the input signals (split before the discriminator) 
 from the beamline modules or other signals (for example, the laser signal).
 
 The index is a combination of the board number and the channel number (board number * 20 + channel number).
+
+For consistent timing of digital signals, the connections to logic channels should have a fixed gate width = 1.
+A warning indication will be shown in the table if that is not the case for any of the logic channels.
 
 ### Viewing and adjusting the connections to the patch panel
 ```

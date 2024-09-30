@@ -1,7 +1,7 @@
 {
     "config_version": "tc-1.1",
-    "short_name": "LE v13",
-    "description": "Low Energy Trigger version 1.3",
+    "short_name": "LE v14",
+    "description": "Low Energy Trigger version 1.4",
     "input_signals": {
         "0": {
             "short_name": "T00",
@@ -1189,87 +1189,87 @@
             "source": "input",
             "source_serial": "8"
         },
+        "40": {
+            "board": "2",
+            "channel": "0",
+            "source": "input",
+            "source_serial": "12"
+        },
         "41": {
             "board": "2",
             "channel": "1",
             "source": "input",
-            "source_serial": "12"
+            "source_serial": "13"
         },
         "42": {
             "board": "2",
             "channel": "2",
             "source": "input",
-            "source_serial": "13"
+            "source_serial": "14"
         },
         "43": {
             "board": "2",
             "channel": "3",
             "source": "input",
-            "source_serial": "14"
+            "source_serial": "15"
         },
         "44": {
             "board": "2",
             "channel": "4",
             "source": "input",
-            "source_serial": "15"
+            "source_serial": "16"
         },
         "45": {
             "board": "2",
             "channel": "5",
             "source": "input",
-            "source_serial": "16"
+            "source_serial": "17"
         },
         "46": {
             "board": "2",
             "channel": "6",
             "source": "input",
-            "source_serial": "17"
+            "source_serial": "18"
         },
         "47": {
             "board": "2",
             "channel": "7",
             "source": "input",
-            "source_serial": "18"
+            "source_serial": "19"
         },
         "48": {
             "board": "2",
             "channel": "8",
             "source": "input",
-            "source_serial": "19"
+            "source_serial": "20"
         },
         "49": {
             "board": "2",
             "channel": "9",
             "source": "input",
-            "source_serial": "20"
+            "source_serial": "21"
         },
         "50": {
             "board": "2",
             "channel": "10",
             "source": "input",
-            "source_serial": "21"
+            "source_serial": "22"
         },
         "51": {
             "board": "2",
             "channel": "11",
             "source": "input",
-            "source_serial": "22"
+            "source_serial": "23"
         },
         "52": {
             "board": "2",
             "channel": "12",
             "source": "input",
-            "source_serial": "23"
+            "source_serial": "24"
         },
         "53": {
             "board": "2",
             "channel": "13",
-            "source": "input",
-            "source_serial": "24"
-        },
-        "54": {
-            "board": "2",
-            "channel": "14",
             "source": "input",
             "source_serial": "25"
         },
@@ -1357,33 +1357,33 @@
             "source": "input",
             "source_serial": "41"
         },
+        "54": {
+            "board": "2",
+            "channel": "14",
+            "source": "input",
+            "source_serial": "42"
+        },
         "55": {
             "board": "2",
             "channel": "15",
             "source": "input",
-            "source_serial": "42"
+            "source_serial": "43"
         },
         "56": {
             "board": "2",
             "channel": "16",
             "source": "input",
-            "source_serial": "43"
+            "source_serial": "44"
         },
         "57": {
             "board": "2",
             "channel": "17",
             "source": "input",
-            "source_serial": "44"
+            "source_serial": "45"
         },
         "58": {
             "board": "2",
             "channel": "18",
-            "source": "input",
-            "source_serial": "45"
-        },
-        "59": {
-            "board": "2",
-            "channel": "19",
             "source": "input",
             "source_serial": "46"
         },
@@ -1399,9 +1399,9 @@
             "source": "other",
             "source_serial": "TDCT0"
         },
-        "40": {
+        "59": {
             "board": "2",
-            "channel": "0",
+            "channel": "19",
             "source": "other",
             "source_serial": "TDCT0"
         },
@@ -1465,7 +1465,8 @@
         }
     },
     "prescalers": {
-        "3": "16"
+        "3": "16",
+        "3_select": "False"
     },
     "spill_channels": {
         "pre_spill": "26",
