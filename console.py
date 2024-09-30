@@ -457,7 +457,7 @@ def prescalers(prompt: bool = True):
                 print(table.draw())
             else:
                 # add the new prescaler
-                current_configuration.set_prescaler(index, "1", True,True)
+                current_configuration.set_prescaler(index, "1", "True",True)
                 configuration_changed = True
                 continue
             while True:
