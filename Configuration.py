@@ -20,6 +20,7 @@ class Configuration:
             "config_version": self.get_version(),
             "short_name": short_name,
             "description": description,
+            "cfd_modules": {},
             "input_signals": {},
             "input_cfd_settings": {},
             "input_signal_treatments": {},
@@ -43,7 +44,7 @@ class Configuration:
     # Get the version number (change when the configuration format changes)
     @staticmethod
     def get_version():
-        return "tc-1.1"
+        return "tc-1.2"
 
     def check_int(self, serial: str, min_value: int, max_value: int):
         # check that the number is a string between the min and max values
@@ -65,6 +66,31 @@ class Configuration:
             print(f'*** invalid boolean {boolean}. It must be either "True" or "False"')
             return False
         return True
+
+    # Define a new CFD module and add to the trigger configuration
+    def set_cfd_module(self, serial: str, address: str, verbose: bool = True):
+        
+        fail = False
+        # check that the serial number is a number between 0 and 5
+        fail = fail or not self.check_int(serial, 0, 5)
+
+        if not fail:
+
+            # check if the serial number is already in the configuration
+            new_module = True
+            if serial in self.configuration["cfd_modules"]:
+                new_module = False
+
+            # Assign the signal dictionary to the configuration
+            cfd_module = {
+                "address": address
+            }
+            self.configuration["cfd_modules"][serial] = cfd_module
+            if verbose:
+                if new_module:
+                    print(f'module {serial} added')
+                else:
+                    print(f'module {serial} address modified')
 
     # Define a new signal and add to the trigger configuration
     def set_signal(self, serial: str, short_name: str, description: str, verbose: bool = True):
@@ -401,13 +427,15 @@ class Configuration:
         fail = fail or not self.check_int(serial, 0, 15)
 
         # check that source is one of "lemo" or "other"
-        if source not in ["lemo", "other"]:
+        if source not in ["lemo", "input", "other"]:
             fail = True
-            print(f'*** invalid source {source}. It must be one of "lemo", "patch panel", "other"')
+            print(f'*** invalid source {source}. It must be one of "lemo", "input", "other"')
 
         # check that the source serial number is valid
         if source == "lemo":
             fail = fail or not self.check_int(source_serial, 0, 15)
+        if source == "input":
+            fail = fail or not self.check_int(source_serial, 0, 96)
 
         if not fail:
             # Define the connection dictionary
@@ -699,35 +727,29 @@ class Configuration:
         # Work out the values for the CFD module registers
         # Note: write a value to every register - so that previous settings are overwritten
         cfd_reg = {}
-        # CFD modules have 16 channels
-        # ignore any modules that have no enabled channels There is a maximum of 6 CFD modules
-        for cfd_module in range(6):
-            in_use = False
+        # CFD modules have 16 channels, serial numbers ordered according to channel numbers
+        cfd_modules = self.configuration["cfd_modules"]
+        for cfd_serial in cfd_modules:
+            cfd_module = cfd_modules[cfd_serial]
+            cfd_address = cfd_module["address"]
+            cfd_reg[cfd_address] = {}
+            enabled = 0
             for cfd_channel in range(16):
-                input_channel = cfd_module*16 + cfd_channel
+                input_channel = int(cfd_serial)*16 + cfd_channel
+                register_address = cfd_channel*2
+                threshold = 16
                 if str(input_channel) in self.configuration["input_cfd_settings"]:
+                    threshold = int(self.configuration["input_cfd_settings"][str(input_channel)]["threshold"])
                     if self.configuration["input_cfd_settings"][str(input_channel)]["enabled"] == "True":
-                        in_use = True
-                        break
-            if in_use:
-                cfd_reg[str(cfd_module)] = {}
-                enabled = 0
-                for cfd_channel in range(16):
-                    input_channel = cfd_module*16 + cfd_channel
-                    register_address = cfd_channel*2
-                    threshold = 16
-                    if str(input_channel) in self.configuration["input_cfd_settings"]:
-                        threshold = int(self.configuration["input_cfd_settings"][str(input_channel)]["threshold"])
-                        if self.configuration["input_cfd_settings"][str(input_channel)]["enabled"] == "True":
-                            enabled |= 1 << cfd_channel
+                        enabled |= 1 << cfd_channel
 
-                    cfd_reg[str(cfd_module)][hex(register_address)] = hex(threshold)
+                cfd_reg[cfd_address][hex(register_address)] = hex(threshold)
 
-                cfd_reg[str(cfd_module)][hex(64)] = hex(0) # address of the width register chans 0-7 (0x40)
-                cfd_reg[str(cfd_module)][hex(66)] = hex(0)  # address of the width register chans 8-15 (0x40)
-                cfd_reg[str(cfd_module)][hex(68)] = hex(0)  # address of the deadtime register chans 0-7 (0x40)
-                cfd_reg[str(cfd_module)][hex(70)] = hex(0)  # address of the deadtime register chans 8-15 (0x40)
-                cfd_reg[str(cfd_module)][hex(74)] = hex(enabled)  # address of the enable register (0x4A)
+            cfd_reg[cfd_address][hex(64)] = hex(0) # address of the width register chans 0-7 (0x40)
+            cfd_reg[cfd_address][hex(66)] = hex(0)  # address of the width register chans 8-15 (0x40)
+            cfd_reg[cfd_address][hex(68)] = hex(0)  # address of the deadtime register chans 0-7 (0x40)
+            cfd_reg[cfd_address][hex(70)] = hex(0)  # address of the deadtime register chans 8-15 (0x40)
+            cfd_reg[cfd_address][hex(74)] = hex(enabled)  # address of the enable register (0x4A)
 
         self.cfd_register_settings = cfd_reg
 

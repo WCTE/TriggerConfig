@@ -60,31 +60,124 @@ def load():
         else:
             print("*** Invalid index")
 
+def check_missing_cfds():
+    global current_configuration
+    cfd_modules = current_configuration.configuration["cfd_modules"]
+    input_signals = current_configuration.configuration["input_signals"]
+    # check that all required CFDs are place
+    missing_cfds = {}
+    cfd_missing = False
+    for input_signal in input_signals:
+        icfd = int(input_signal) // 16
+        if str(icfd) not in cfd_modules:
+            cfd_missing = True
+            if icfd not in missing_cfds:
+                missing_cfds[icfd] = []
+            missing_cfds[icfd].append(int(input_signal))
+
+    if cfd_missing:
+        print('')
+        print(' *** WARNING ***')
+        print(' *** The following CFD module addresses need to be specified ***')
+        for icfd in missing_cfds:
+            missing_cfd = missing_cfds[icfd]
+            print(f'CFD {icfd} is used for channels: {missing_cfd}')
+        print('')
+
 def channels():
     global current_configuration
-    print("Current input signals:")
+    print("Current CFD modules and input signals:")
+    cfd_modules = current_configuration.configuration["cfd_modules"]
     input_signals = current_configuration.configuration["input_signals"]
-    indices = []
-    for i in range(96):
-        if str(i) in input_signals:
-            indices.append(i)
+
+    for icfd in range(6):
+        has_input = False
+        for i in range(16):
+            if str(icfd*16+i) in input_signals:
+                has_input = True
+        if str(icfd) not in cfd_modules and not has_input:
+            continue
+
+        address = "****"
+        if str(icfd) in cfd_modules:
+            address = cfd_modules[(str(icfd))]["address"]
+        print('CFD module:',icfd,'VME address:',address+":")
+
+        table = texttable.Texttable(max_width=max_table_width)
+        table.set_cols_align(["c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", ])
+        table.set_cols_valign(["m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", ])
+        table.add_row(["#", "Name", "#", "Name", "#", "Name", "#", "Name",
+                       "#", "Name", "#", "Name", "#", "Name", "#", "Name"])
+
+        # show 8 channels per row
+        for i in range(2):
+            row = []
+            for j in range(8):
+                ichan = icfd*16 + i*8 + j
+                if str(ichan) in input_signals:
+                    row.append(str(ichan))
+                    row.append(input_signals[str(ichan)]["short_name"])
+                else:
+                    row.append("-")
+                    row.append("-")
+            table.add_row(row)
+        print(table.draw())
+
+    check_missing_cfds()
+
+def cfds_table(indices, cfd_modules):
     table = texttable.Texttable(max_width=max_table_width)
-    table.set_cols_align(["c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", "c", ])
-    table.set_cols_valign(["m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", "m", ])
-    table.add_row(["#", "Name", "#", "Name", "#", "Name", "#", "Name",
-                   "#", "Name", "#", "Name", "#", "Name", "#", "Name"])
-    # show 8 channels per row
-    for i in range(0, len(indices), 8):
-        row = []
-        for j in range(8):
-            if i+j < len(indices):
-                row.append(str(indices[i+j]))
-                row.append(input_signals[str(indices[i+j])]["short_name"])
-            else:
-                row.append("")
-                row.append("")
-        table.add_row(row)
+    table.set_cols_align(["c", "c"])
+    table.set_cols_valign(["m", "m"])
+    table.add_row(["Index", "Address"])
+    for i in indices:
+        address = cfd_modules[str(i)]["address"]
+        table.add_row([str(i), address])
+    return table
+
+def cfds(prompt: bool = True):
+    global current_configuration, configuration_changed
+    print("Current CFD modules:")
+    cfd_modules = current_configuration.configuration["cfd_modules"]
+    indices = []
+    for i in range(6):
+        if str(i) in cfd_modules:
+            indices.append(i)
+    table = cfds_table(indices, cfd_modules)
     print(table.draw())
+
+    check_missing_cfds()
+
+    # prompt the user to select an index to modify
+    while prompt:
+        index = input("Enter CFD module index to add/modify: [cancel] ")
+        if index == "":
+            return
+        if index.isdigit() and 0 <= int(index) < 6:
+            i = int(index)
+            indices = [i]
+            if index in cfd_modules:
+                print('CFD selected:')
+                table = cfds_table(indices, cfd_modules)
+                print(table.draw())
+            else:
+                # add the new cfd module
+                current_configuration.set_cfd_module(index, "0000",True)
+                configuration_changed = True
+                continue
+            while True:
+                command = input("Enter new VME address: [cancel] ")
+                if command == "":
+                    break
+                fields = [c.strip() for c in command.split(',')]
+                if len(fields) == 1:
+                    address = fields[0]
+                    current_configuration.set_cfd_module(index, address, True)
+                    configuration_changed = True
+                else:
+                    print("*** Invalid input (enter for example: 881a)")
+        else:
+            print("*** Invalid index number")
 
 def input_table(indices, signals, cfd_settings, treatments):
     table = texttable.Texttable(max_width=max_table_width)
@@ -699,13 +792,15 @@ def patch_table(indices, tdbc):
     table = texttable.Texttable(max_width=max_table_width)
     table.set_cols_align(["c", "c", "c", "c"])
     table.set_cols_valign(["m", "m", "m", "m"])
-    table.add_row(["Index", "Source", "Source Serial", "Source Short Name"])
+    table.add_row(["Index", "Source", "Source Serial", "Source/Dest Short Name"])
     for i in indices:
         source = tdbc[str(i)]["source"]
         source_serial = tdbc[str(i)]["source_serial"]
         source_short_name = "-"
         if source == "lemo" and source_serial in current_configuration.configuration["output_lemo_assignments"]:
             source_short_name = current_configuration.configuration["output_lemo_assignments"][source_serial]["short_name"]
+        if source == "input" and source_serial in current_configuration.configuration["input_signals"]:
+            source_short_name = current_configuration.configuration["input_signals"][source_serial]["short_name"]
         table.add_row([str(i), source, source_serial, source_short_name])
     return table
 
@@ -770,8 +865,8 @@ def show_all():
     print()
     outputs(False)
     print()
-    prescalers(False)
-    print()
+    #prescalers(False)
+    #print()
     spills(False)
     print()
     deadtime(False)
@@ -782,6 +877,9 @@ def show_all():
 
 def save():
     global current_configuration, configuration_changed
+
+    check_missing_cfds()
+
     while True:
         command = input("Enter new short name (10 characters max): [cancel] ")
         if command == "":
@@ -831,11 +929,12 @@ def help():
     table.add_row(["help", "Display this help message"])
     table.add_row(["load", "Load a trigger configuration"])
     table.add_row(["channels", "Show the input signal channels in compact form"])
+    table.add_row(["cfds", "Show/modify the constant fraction discriminator VME addresses"])
     table.add_row(["inputs", "Show/modify the input signal properties"])
     table.add_row(["level1", "Show/modify the level 1 logic properties"])
     table.add_row(["level2", "Show/modify the level 2 logic properties"])
     table.add_row(["outputs", "Show/modify the output lemo assignments"])
-    table.add_row(["prescalers", "Show/modify the prescaler properties"])
+    #table.add_row(["prescalers", "Show/modify the prescaler properties"])
     table.add_row(["spills", "Show/modify the spill signal assignments"])
     table.add_row(["deadtime", "Show/modify the deadtime properties"])
     table.add_row(["connections", "Show/modify the connections to the trigger/digitizer boards"])
@@ -852,11 +951,12 @@ def main():
         "help": help,
         "load": load,
         "channels": channels,
+        "cfds": cfds,
         "inputs": inputs,
         "level1": level_1,
         "level2": level_2,
         "outputs": outputs,
-        "prescalers": prescalers,
+        #"prescalers": prescalers,
         "spills": spills,
         "deadtime": deadtime,
         "connections": connections,

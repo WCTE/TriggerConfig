@@ -1,7 +1,24 @@
 {
-    "config_version": "tc-1.1",
-    "short_name": "LE v14",
-    "description": "Low Energy Trigger version 1.4",
+    "config_version": "tc-1.2",
+    "short_name": "TP v15",
+    "description": "Tagged Photon Trigger version 1.5",
+    "cfd_modules": {
+        "0": {
+            "address": "8800"
+        },
+        "1": {
+            "address": "8801"
+        },
+        "2": {
+            "address": "8802"
+        },
+        "4": {
+            "address": "8804"
+        },
+        "5": {
+            "address": "8805"
+        }
+    },
     "input_signals": {
         "0": {
             "short_name": "T00",
@@ -19,85 +36,13 @@
             "short_name": "T03",
             "description": "Upstream trigger scintillator 0 channel 3"
         },
-        "4": {
-            "short_name": "T10",
-            "description": "Downstream trigger scintillator 1 channel 0"
-        },
-        "5": {
-            "short_name": "T11",
-            "description": "Downstream trigger scintillator 1 channel 1"
-        },
-        "6": {
-            "short_name": "T12",
-            "description": "Downstream trigger scintillator 1 channel 2"
-        },
-        "7": {
-            "short_name": "T13",
-            "description": "Downstream trigger scintillator 1 channel 3"
-        },
         "8": {
             "short_name": "T2",
             "description": "Small trigger scintillator upstream of magnet"
         },
-        "9": {
-            "short_name": "HC0",
-            "description": "Hole counter 0 upstream of ACT"
-        },
-        "10": {
-            "short_name": "HC1",
-            "description": "Hole counter 1 downstream of ACT"
-        },
         "11": {
             "short_name": "HC2",
             "description": "Hole counter 2 upstream of magnet"
-        },
-        "12": {
-            "short_name": "ACT00",
-            "description": "ACT module 0 channel 0"
-        },
-        "13": {
-            "short_name": "ACT01",
-            "description": "ACT module 0 channel 1"
-        },
-        "14": {
-            "short_name": "ACT10",
-            "description": "ACT module 1 channel 0"
-        },
-        "15": {
-            "short_name": "ACT11",
-            "description": "ACT module 1 channel 1"
-        },
-        "16": {
-            "short_name": "ACT20",
-            "description": "ACT module 2 channel 0"
-        },
-        "17": {
-            "short_name": "ACT21",
-            "description": "ACT module 2 channel 1"
-        },
-        "18": {
-            "short_name": "ACT30",
-            "description": "ACT module 3 channel 0"
-        },
-        "19": {
-            "short_name": "ACT31",
-            "description": "ACT module 3 channel 1"
-        },
-        "20": {
-            "short_name": "ACT40",
-            "description": "ACT module 4 channel 0"
-        },
-        "21": {
-            "short_name": "ACT41",
-            "description": "ACT module 4 channel 1"
-        },
-        "22": {
-            "short_name": "ACT50",
-            "description": "ACT module 5 channel 0"
-        },
-        "23": {
-            "short_name": "ACT51",
-            "description": "ACT module 5 channel 1"
         },
         "24": {
             "short_name": "MUT0",
@@ -195,70 +140,6 @@
             "short_name": "TDCT0",
             "description": "TDC stop signal for TDC1"
         },
-        "64": {
-            "short_name": "TOF00",
-            "description": "TOF module 0 channel 0"
-        },
-        "65": {
-            "short_name": "TOF01",
-            "description": "TOF module 0 channel 1"
-        },
-        "66": {
-            "short_name": "TOF02",
-            "description": "TOF module 0 channel 2"
-        },
-        "67": {
-            "short_name": "TOF03",
-            "description": "TOF module 0 channel 3"
-        },
-        "68": {
-            "short_name": "TOF04",
-            "description": "TOF module 0 channel 4"
-        },
-        "69": {
-            "short_name": "TOF05",
-            "description": "TOF module 0 channel 5"
-        },
-        "70": {
-            "short_name": "TOF06",
-            "description": "TOF module 0 channel 6"
-        },
-        "71": {
-            "short_name": "TOF07",
-            "description": "TOF module 0 channel 7"
-        },
-        "72": {
-            "short_name": "TOF08",
-            "description": "TOF module 0 channel 8"
-        },
-        "73": {
-            "short_name": "TOF09",
-            "description": "TOF module 0 channel 9"
-        },
-        "74": {
-            "short_name": "TOF0A",
-            "description": "TOF module 0 channel 10"
-        },
-        "75": {
-            "short_name": "TOF0B",
-            "description": "TOF module 0 channel 11"
-        },
-        "76": {
-            "short_name": "TOF0C",
-            "description": "TOF module 0 channel 12"
-        },
-        "77": {
-            "short_name": "TOF0D",
-            "description": "TOF module 0 channel 13"
-        },
-        "78": {
-            "short_name": "TOF0E",
-            "description": "TOF module 0 channel 14"
-        },
-        "79": {
-            "short_name": "TOF0F",
-            "description": "TOF module 0 channel 15"
-        },
         "80": {
             "short_name": "TOF10",
             "description": "TOF module 1 channel 0"
@@ -341,83 +222,11 @@
             "enabled": "True",
             "threshold": "16"
         },
-        "4": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "5": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "6": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "7": {
-            "enabled": "True",
-            "threshold": "16"
-        },
         "8": {
             "enabled": "True",
             "threshold": "16"
         },
-        "9": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "10": {
-            "enabled": "True",
-            "threshold": "16"
-        },
         "11": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "12": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "13": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "14": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "15": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "16": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "17": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "18": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "19": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "20": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "21": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "22": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "23": {
             "enabled": "True",
             "threshold": "16"
         },
@@ -514,70 +323,6 @@
             "threshold": "16"
         },
         "47": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "64": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "65": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "66": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "67": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "68": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "69": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "70": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "71": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "72": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "73": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "74": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "75": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "76": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "77": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "78": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "79": {
             "enabled": "True",
             "threshold": "16"
         },
@@ -652,30 +397,14 @@
             "window_length": "1"
         },
         "1": {
-            "delay": "7",
-            "window_length": "3"
+            "delay": "0",
+            "window_length": "1"
         },
         "2": {
             "delay": "0",
             "window_length": "1"
         },
         "3": {
-            "delay": "255",
-            "window_length": "3"
-        },
-        "4": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "5": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "6": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "7": {
             "delay": "0",
             "window_length": "1"
         },
@@ -683,63 +412,7 @@
             "delay": "0",
             "window_length": "1"
         },
-        "9": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "10": {
-            "delay": "0",
-            "window_length": "1"
-        },
         "11": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "12": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "13": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "14": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "15": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "16": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "17": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "18": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "19": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "20": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "21": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "22": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "23": {
             "delay": "0",
             "window_length": "1"
         },
@@ -836,70 +509,6 @@
             "window_length": "1"
         },
         "47": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "64": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "65": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "66": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "67": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "68": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "69": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "70": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "71": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "72": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "73": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "74": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "75": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "76": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "77": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "78": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "79": {
             "delay": "0",
             "window_length": "1"
         },
@@ -977,39 +586,11 @@
             "logic_type": "AND"
         },
         "1": {
-            "short_name": "T1 L1",
-            "description": "T1 coincidence",
-            "inputs": "[4,5,6,7]",
-            "invert_inputs": "[]",
-            "logic_type": "AND"
-        },
-        "2": {
-            "short_name": "ATCe",
-            "description": "ATC electron",
-            "inputs": "[12,13]",
+            "short_name": "HODO",
+            "description": "Hodoscope signal",
+            "inputs": "[32,33,34,35,36,37,38,39,40,41,42,43,44,45,46]",
             "invert_inputs": "[]",
             "logic_type": "OR"
-        },
-        "3": {
-            "short_name": "ATCeps",
-            "description": "ATC electron prescaled",
-            "inputs": "[12,13]",
-            "invert_inputs": "[]",
-            "logic_type": "OR"
-        },
-        "4": {
-            "short_name": "HC L1",
-            "description": "Hole counter",
-            "inputs": "[9,10]",
-            "invert_inputs": "[]",
-            "logic_type": "OR"
-        },
-        "5": {
-            "short_name": "MUON",
-            "description": "Muon tagger",
-            "inputs": "[24,25]",
-            "invert_inputs": "[]",
-            "logic_type": "AND"
         }
     },
     "level_1_output_treatments": {
@@ -1020,59 +601,25 @@
         "1": {
             "delay": "0",
             "window_length": "1"
-        },
-        "2": {
-            "delay": "3",
-            "window_length": "7"
-        },
-        "3": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "4": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "5": {
-            "delay": "0",
-            "window_length": "1"
         }
     },
     "level_2_logics": {
         "0": {
-            "short_name": "LE psV",
-            "description": "Low Energy Trigger prescaled eVeto",
-            "inputs": "[]",
-            "invert_inputs": "[]",
+            "short_name": "TP",
+            "description": "Tagged Photon Trigger",
+            "inputs": "[8]",
+            "invert_inputs": "[12]",
             "level_1_inputs": "[0,1]",
-            "invert_level_1_inputs": "[3,4]",
+            "invert_level_1_inputs": "[]",
             "logic_type": "AND"
         },
         "1": {
-            "short_name": "LE nV",
-            "description": "Low Energy Trigger without eVeto",
-            "inputs": "[]",
-            "invert_inputs": "[]",
-            "level_1_inputs": "[0,1]",
-            "invert_level_1_inputs": "[4]",
-            "logic_type": "AND"
-        },
-        "2": {
-            "short_name": "LE e",
-            "description": "Low Energy Trigger with electron",
-            "inputs": "[]",
-            "invert_inputs": "[]",
-            "level_1_inputs": "[0,1,2]",
-            "invert_level_1_inputs": "[4]",
-            "logic_type": "AND"
-        },
-        "3": {
-            "short_name": "LE mu",
-            "description": "Low Energy Trigger with muon",
-            "inputs": "[]",
-            "invert_inputs": "[]",
-            "level_1_inputs": "[0,1,5]",
-            "invert_level_1_inputs": "[2,4]",
+            "short_name": "TP nH",
+            "description": "Tagged Photon Trigger no HODO requirement",
+            "inputs": "[8]",
+            "invert_inputs": "[12]",
+            "level_1_inputs": "[0]",
+            "invert_level_1_inputs": "[]",
             "logic_type": "AND"
         }
     },
@@ -1112,23 +659,9 @@
             "source_serial": "0",
             "treatment": "True"
         },
-        "1": {
-            "short_name": "EL TAG",
-            "description": "Electron tagged",
-            "source": "level 2",
-            "source_serial": "2",
-            "treatment": "True"
-        },
-        "2": {
-            "short_name": "MU TAG",
-            "description": "Muon tagged",
-            "source": "level 2",
-            "source_serial": "3",
-            "treatment": "True"
-        },
         "7": {
-            "short_name": "LE nV",
-            "description": "Low Energy Trigger without eVeto",
+            "short_name": "TP nH",
+            "description": "Tagged Photon Trigger no HODO requirement",
             "source": "level 2",
             "source_serial": "1",
             "treatment": "True"
@@ -1159,107 +692,11 @@
             "source": "input",
             "source_serial": "3"
         },
-        "14": {
-            "board": "0",
-            "channel": "14",
-            "source": "input",
-            "source_serial": "4"
-        },
-        "15": {
-            "board": "0",
-            "channel": "15",
-            "source": "input",
-            "source_serial": "5"
-        },
-        "16": {
-            "board": "0",
-            "channel": "16",
-            "source": "input",
-            "source_serial": "6"
-        },
-        "17": {
-            "board": "0",
-            "channel": "17",
-            "source": "input",
-            "source_serial": "7"
-        },
         "18": {
             "board": "0",
             "channel": "18",
             "source": "input",
             "source_serial": "8"
-        },
-        "40": {
-            "board": "2",
-            "channel": "0",
-            "source": "input",
-            "source_serial": "12"
-        },
-        "41": {
-            "board": "2",
-            "channel": "1",
-            "source": "input",
-            "source_serial": "13"
-        },
-        "42": {
-            "board": "2",
-            "channel": "2",
-            "source": "input",
-            "source_serial": "14"
-        },
-        "43": {
-            "board": "2",
-            "channel": "3",
-            "source": "input",
-            "source_serial": "15"
-        },
-        "44": {
-            "board": "2",
-            "channel": "4",
-            "source": "input",
-            "source_serial": "16"
-        },
-        "45": {
-            "board": "2",
-            "channel": "5",
-            "source": "input",
-            "source_serial": "17"
-        },
-        "46": {
-            "board": "2",
-            "channel": "6",
-            "source": "input",
-            "source_serial": "18"
-        },
-        "47": {
-            "board": "2",
-            "channel": "7",
-            "source": "input",
-            "source_serial": "19"
-        },
-        "48": {
-            "board": "2",
-            "channel": "8",
-            "source": "input",
-            "source_serial": "20"
-        },
-        "49": {
-            "board": "2",
-            "channel": "9",
-            "source": "input",
-            "source_serial": "21"
-        },
-        "50": {
-            "board": "2",
-            "channel": "10",
-            "source": "input",
-            "source_serial": "22"
-        },
-        "51": {
-            "board": "2",
-            "channel": "11",
-            "source": "input",
-            "source_serial": "23"
         },
         "52": {
             "board": "2",
@@ -1404,18 +841,6 @@
             "channel": "19",
             "source": "other",
             "source_serial": "TDCT0"
-        },
-        "1": {
-            "board": "0",
-            "channel": "1",
-            "source": "lemo",
-            "source_serial": "1"
-        },
-        "2": {
-            "board": "0",
-            "channel": "2",
-            "source": "lemo",
-            "source_serial": "2"
         }
     },
     "patch_panel_connections": {
@@ -1464,10 +889,7 @@
             "source_serial": "15"
         }
     },
-    "prescalers": {
-        "3": "16",
-        "3_select": "False"
-    },
+    "prescalers": {},
     "spill_channels": {
         "pre_spill": "26",
         "end_spill": "27",

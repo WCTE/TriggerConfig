@@ -1,7 +1,24 @@
 {
-    "config_version": "tc-1.1",
-    "short_name": "TP v14",
-    "description": "Tagged Photon Trigger version 1.4",
+    "config_version": "tc-1.2",
+    "short_name": "LE v15",
+    "description": "Low Energy Trigger version 1.5",
+    "cfd_modules": {
+        "0": {
+            "address": "8800"
+        },
+        "1": {
+            "address": "8801"
+        },
+        "2": {
+            "address": "8802"
+        },
+        "4": {
+            "address": "8804"
+        },
+        "5": {
+            "address": "8805"
+        }
+    },
     "input_signals": {
         "0": {
             "short_name": "T00",
@@ -35,10 +52,6 @@
             "short_name": "T13",
             "description": "Downstream trigger scintillator 1 channel 3"
         },
-        "8": {
-            "short_name": "T2",
-            "description": "Small trigger scintillator upstream of magnet"
-        },
         "9": {
             "short_name": "HC0",
             "description": "Hole counter 0 upstream of ACT"
@@ -48,8 +61,8 @@
             "description": "Hole counter 1 downstream of ACT"
         },
         "11": {
-            "short_name": "HC2",
-            "description": "Hole counter 2 upstream of magnet"
+            "short_name": "ACTEVD",
+            "description": "ACT electron veto deactivate"
         },
         "12": {
             "short_name": "ACT00",
@@ -130,70 +143,6 @@
         "31": {
             "short_name": "TDCT0",
             "description": "TDC stop signal for TDC0"
-        },
-        "32": {
-            "short_name": "HODO0",
-            "description": "Hodoscope channel 0"
-        },
-        "33": {
-            "short_name": "HODO1",
-            "description": "Hodoscope channel 1"
-        },
-        "34": {
-            "short_name": "HODO2",
-            "description": "Hodoscope channel 2"
-        },
-        "35": {
-            "short_name": "HODO3",
-            "description": "Hodoscope channel 3"
-        },
-        "36": {
-            "short_name": "HODO4",
-            "description": "Hodoscope channel 4"
-        },
-        "37": {
-            "short_name": "HODO5",
-            "description": "Hodoscope channel 5"
-        },
-        "38": {
-            "short_name": "HODO6",
-            "description": "Hodoscope channel 6"
-        },
-        "39": {
-            "short_name": "HODO7",
-            "description": "Hodoscope channel 7"
-        },
-        "40": {
-            "short_name": "HODO8",
-            "description": "Hodoscope channel 8"
-        },
-        "41": {
-            "short_name": "HODO9",
-            "description": "Hodoscope channel 9"
-        },
-        "42": {
-            "short_name": "HODOA",
-            "description": "Hodoscope channel 10"
-        },
-        "43": {
-            "short_name": "HODOB",
-            "description": "Hodoscope channel 11"
-        },
-        "44": {
-            "short_name": "HODOC",
-            "description": "Hodoscope channel 12"
-        },
-        "45": {
-            "short_name": "HODOD",
-            "description": "Hodoscope channel 13"
-        },
-        "46": {
-            "short_name": "HODOE",
-            "description": "Hodoscope channel 14"
-        },
-        "47": {
-            "short_name": "TDCT0",
-            "description": "TDC stop signal for TDC1"
         },
         "64": {
             "short_name": "TOF00",
@@ -357,10 +306,6 @@
             "enabled": "True",
             "threshold": "16"
         },
-        "8": {
-            "enabled": "True",
-            "threshold": "16"
-        },
         "9": {
             "enabled": "True",
             "threshold": "16"
@@ -450,70 +395,6 @@
             "threshold": "16"
         },
         "31": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "32": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "33": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "34": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "35": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "36": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "37": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "38": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "39": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "40": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "41": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "42": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "43": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "44": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "45": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "46": {
-            "enabled": "True",
-            "threshold": "16"
-        },
-        "47": {
             "enabled": "True",
             "threshold": "16"
         },
@@ -652,16 +533,16 @@
             "window_length": "1"
         },
         "1": {
-            "delay": "0",
-            "window_length": "1"
+            "delay": "7",
+            "window_length": "3"
         },
         "2": {
             "delay": "0",
             "window_length": "1"
         },
         "3": {
-            "delay": "0",
-            "window_length": "1"
+            "delay": "255",
+            "window_length": "3"
         },
         "4": {
             "delay": "0",
@@ -676,10 +557,6 @@
             "window_length": "1"
         },
         "7": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "8": {
             "delay": "0",
             "window_length": "1"
         },
@@ -772,70 +649,6 @@
             "window_length": "1"
         },
         "31": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "32": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "33": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "34": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "35": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "36": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "37": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "38": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "39": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "40": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "41": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "42": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "43": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "44": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "45": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "46": {
-            "delay": "0",
-            "window_length": "1"
-        },
-        "47": {
             "delay": "0",
             "window_length": "1"
         },
@@ -977,11 +790,39 @@
             "logic_type": "AND"
         },
         "1": {
-            "short_name": "HODO",
-            "description": "Hodoscope signal",
-            "inputs": "[32,33,34,35,36,37,38,39,40,41,42,43,44,45,46]",
+            "short_name": "T1 L1",
+            "description": "T1 coincidence",
+            "inputs": "[4,5,6,7]",
+            "invert_inputs": "[]",
+            "logic_type": "AND"
+        },
+        "2": {
+            "short_name": "ATCe",
+            "description": "ATC electron",
+            "inputs": "[12,13]",
             "invert_inputs": "[]",
             "logic_type": "OR"
+        },
+        "3": {
+            "short_name": "ATCeps",
+            "description": "ATC electron prescaled",
+            "inputs": "[12,13]",
+            "invert_inputs": "[11]",
+            "logic_type": "OR"
+        },
+        "4": {
+            "short_name": "HC L1",
+            "description": "Hole counter",
+            "inputs": "[9,10]",
+            "invert_inputs": "[]",
+            "logic_type": "OR"
+        },
+        "5": {
+            "short_name": "MUON",
+            "description": "Muon tagger",
+            "inputs": "[24,25]",
+            "invert_inputs": "[]",
+            "logic_type": "AND"
         }
     },
     "level_1_output_treatments": {
@@ -992,25 +833,59 @@
         "1": {
             "delay": "0",
             "window_length": "1"
+        },
+        "2": {
+            "delay": "3",
+            "window_length": "7"
+        },
+        "3": {
+            "delay": "0",
+            "window_length": "1"
+        },
+        "4": {
+            "delay": "0",
+            "window_length": "1"
+        },
+        "5": {
+            "delay": "0",
+            "window_length": "1"
         }
     },
     "level_2_logics": {
         "0": {
-            "short_name": "TP",
-            "description": "Tagged Photon Trigger",
-            "inputs": "[8]",
-            "invert_inputs": "[12]",
+            "short_name": "LE psV",
+            "description": "Low Energy Trigger prescaled eVeto",
+            "inputs": "[]",
+            "invert_inputs": "[]",
             "level_1_inputs": "[0,1]",
-            "invert_level_1_inputs": "[]",
+            "invert_level_1_inputs": "[3,4]",
             "logic_type": "AND"
         },
         "1": {
-            "short_name": "TP nH",
-            "description": "Tagged Photon Trigger no HODO requirement",
-            "inputs": "[8]",
-            "invert_inputs": "[12]",
-            "level_1_inputs": "[0]",
-            "invert_level_1_inputs": "[]",
+            "short_name": "LE nV",
+            "description": "Low Energy Trigger without eVeto",
+            "inputs": "[]",
+            "invert_inputs": "[]",
+            "level_1_inputs": "[0,1]",
+            "invert_level_1_inputs": "[4]",
+            "logic_type": "AND"
+        },
+        "2": {
+            "short_name": "LE e",
+            "description": "Low Energy Trigger with electron",
+            "inputs": "[]",
+            "invert_inputs": "[]",
+            "level_1_inputs": "[0,1,2]",
+            "invert_level_1_inputs": "[4]",
+            "logic_type": "AND"
+        },
+        "3": {
+            "short_name": "LE mu",
+            "description": "Low Energy Trigger with muon",
+            "inputs": "[]",
+            "invert_inputs": "[]",
+            "level_1_inputs": "[0,1,5]",
+            "invert_level_1_inputs": "[2,4]",
             "logic_type": "AND"
         }
     },
@@ -1050,9 +925,23 @@
             "source_serial": "0",
             "treatment": "True"
         },
+        "1": {
+            "short_name": "EL TAG",
+            "description": "Electron tagged",
+            "source": "level 2",
+            "source_serial": "2",
+            "treatment": "True"
+        },
+        "2": {
+            "short_name": "MU TAG",
+            "description": "Muon tagged",
+            "source": "level 2",
+            "source_serial": "3",
+            "treatment": "True"
+        },
         "7": {
-            "short_name": "TP nH",
-            "description": "Tagged Photon Trigger no HODO requirement",
+            "short_name": "LE nV",
+            "description": "Low Energy Trigger without eVeto",
             "source": "level 2",
             "source_serial": "1",
             "treatment": "True"
@@ -1106,12 +995,6 @@
             "channel": "17",
             "source": "input",
             "source_serial": "7"
-        },
-        "18": {
-            "board": "0",
-            "channel": "18",
-            "source": "input",
-            "source_serial": "8"
         },
         "40": {
             "board": "2",
@@ -1221,96 +1104,6 @@
             "source": "lemo",
             "source_serial": "6"
         },
-        "30": {
-            "board": "1",
-            "channel": "10",
-            "source": "input",
-            "source_serial": "32"
-        },
-        "31": {
-            "board": "1",
-            "channel": "11",
-            "source": "input",
-            "source_serial": "33"
-        },
-        "32": {
-            "board": "1",
-            "channel": "12",
-            "source": "input",
-            "source_serial": "34"
-        },
-        "33": {
-            "board": "1",
-            "channel": "13",
-            "source": "input",
-            "source_serial": "35"
-        },
-        "34": {
-            "board": "1",
-            "channel": "14",
-            "source": "input",
-            "source_serial": "36"
-        },
-        "35": {
-            "board": "1",
-            "channel": "15",
-            "source": "input",
-            "source_serial": "37"
-        },
-        "36": {
-            "board": "1",
-            "channel": "16",
-            "source": "input",
-            "source_serial": "38"
-        },
-        "37": {
-            "board": "1",
-            "channel": "17",
-            "source": "input",
-            "source_serial": "39"
-        },
-        "38": {
-            "board": "1",
-            "channel": "18",
-            "source": "input",
-            "source_serial": "40"
-        },
-        "39": {
-            "board": "1",
-            "channel": "19",
-            "source": "input",
-            "source_serial": "41"
-        },
-        "54": {
-            "board": "2",
-            "channel": "14",
-            "source": "input",
-            "source_serial": "42"
-        },
-        "55": {
-            "board": "2",
-            "channel": "15",
-            "source": "input",
-            "source_serial": "43"
-        },
-        "56": {
-            "board": "2",
-            "channel": "16",
-            "source": "input",
-            "source_serial": "44"
-        },
-        "57": {
-            "board": "2",
-            "channel": "17",
-            "source": "input",
-            "source_serial": "45"
-        },
-        "58": {
-            "board": "2",
-            "channel": "18",
-            "source": "input",
-            "source_serial": "46"
-        },
         "0": {
             "board": "0",
             "channel": "0",
@@ -1328,6 +1121,18 @@
             "channel": "19",
             "source": "other",
             "source_serial": "TDCT0"
+        },
+        "1": {
+            "board": "0",
+            "channel": "1",
+            "source": "lemo",
+            "source_serial": "1"
+        },
+        "2": {
+            "board": "0",
+            "channel": "2",
+            "source": "lemo",
+            "source_serial": "2"
         }
     },
     "patch_panel_connections": {
@@ -1342,6 +1147,10 @@
         "2": {
             "source": "lemo",
             "source_serial": "7"
+        },
+        "3": {
+            "source": "input",
+            "source_serial": "11"
         },
         "8": {
             "source": "lemo",
@@ -1376,7 +1185,10 @@
             "source_serial": "15"
         }
     },
-    "prescalers": {},
+    "prescalers": {
+        "3": "16",
+        "3_select": "False"
+    },
     "spill_channels": {
         "pre_spill": "26",
         "end_spill": "27",

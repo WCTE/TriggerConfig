@@ -43,6 +43,8 @@ Available commands:
 +-------------+---------------------------------------------------------------+
 | channels    | Show the input signal channels in compact form                |
 +-------------+---------------------------------------------------------------+
+| cfds        | Show/modify the constant fraction discriminator VME addresses |
++-------------+---------------------------------------------------------------+
 | inputs      | Show/modify the input signal properties                       |
 +-------------+---------------------------------------------------------------+
 | level1      | Show/modify the level 1 logic properties                      |
@@ -50,8 +52,6 @@ Available commands:
 | level2      | Show/modify the level 2 logic properties                      |
 +-------------+---------------------------------------------------------------+
 | outputs     | Show/modify the output lemo assignments                       |
-+-------------+---------------------------------------------------------------+
-| prescalers  | Show/modify the prescaler properties                          |
 +-------------+---------------------------------------------------------------+
 | spills      | Show/modify the spill signal assignments                      |
 +-------------+---------------------------------------------------------------+
@@ -102,31 +102,68 @@ itself, and are not associated with the TC Version.
 ### Compact summary of input signal channels using shortnames
 ```
 Enter command: [help] channels
-Current input signals:
+Current CFD modules and input signals:
+CFD module: 0 VME address: 8800:
++---+------+---+------+----+------+----+--------+----+-------+----+-------+----+-------+----+-------+
+| # | Name | # | Name | #  | Name | #  |  Name  | #  | Name  | #  | Name  | #  | Name  | #  | Name  |
++---+------+---+------+----+------+----+--------+----+-------+----+-------+----+-------+----+-------+
+| 0 | T00  | 1 | T01  | 2  | T02  | 3  |  T03   | 4  |  T10  | 5  |  T11  | 6  |  T12  | 7  |  T13  |
++---+------+---+------+----+------+----+--------+----+-------+----+-------+----+-------+----+-------+
+| - |  -   | 9 | HC0  | 10 | HC1  | 11 | ACTEVD | 12 | ACT00 | 13 | ACT01 | 14 | ACT10 | 15 | ACT11 |
++---+------+---+------+----+------+----+--------+----+-------+----+-------+----+-------+----+-------+
+CFD module: 1 VME address: 8801:
 +----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+
 | #  | Name  | #  | Name  | #  | Name  | #  | Name  | #  | Name  | #  | Name  | #  | Name  | #  | Name  |
-+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+
-| 0  |  T00  | 1  |  T01  | 2  |  T02  | 3  |  T03  | 4  |  T10  | 5  |  T11  | 6  |  T12  | 7  |  T13  |
-+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+
-| 8  |  T2   | 9  |  HC0  | 10 |  HC1  | 11 |  HC2  | 12 | ACT00 | 13 | ACT01 | 14 | ACT10 | 15 | ACT11 |
 +----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+
 | 16 | ACT20 | 17 | ACT21 | 18 | ACT30 | 19 | ACT31 | 20 | ACT40 | 21 | ACT41 | 22 | ACT50 | 23 | ACT51 |
 +----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+
 | 24 | MUT0  | 25 | MUT1  | 26 |  BSW  | 27 |  BSE  | 28 | LASER | 29 | XTRIG | 30 | TOF0F | 31 | TDCT0 |
 +----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+
-| 32 | HODO0 | 33 | HODO1 | 34 | HODO2 | 35 | HODO3 | 36 | HODO4 | 37 | HODO5 | 38 | HODO6 | 39 | HODO7 |
+CFD module: 2 VME address: 8802:
++---+------+---+------+---+------+---+------+---+------+---+------+---+------+---+------+
+| # | Name | # | Name | # | Name | # | Name | # | Name | # | Name | # | Name | # | Name |
++---+------+---+------+---+------+---+------+---+------+---+------+---+------+---+------+
+| - |  -   | - |  -   | - |  -   | - |  -   | - |  -   | - |  -   | - |  -   | - |  -   |
++---+------+---+------+---+------+---+------+---+------+---+------+---+------+---+------+
+| - |  -   | - |  -   | - |  -   | - |  -   | - |  -   | - |  -   | - |  -   | - |  -   |
++---+------+---+------+---+------+---+------+---+------+---+------+---+------+---+------+
+CFD module: 4 VME address: 8804:
 +----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+
-| 40 | HODO8 | 41 | HODO9 | 42 | HODOA | 43 | HODOB | 44 | HODOC | 45 | HODOD | 46 | HODOE | 47 | TDCT0 |
+| #  | Name  | #  | Name  | #  | Name  | #  | Name  | #  | Name  | #  | Name  | #  | Name  | #  | Name  |
 +----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+
 | 64 | TOF00 | 65 | TOF01 | 66 | TOF02 | 67 | TOF03 | 68 | TOF04 | 69 | TOF05 | 70 | TOF06 | 71 | TOF07 |
 +----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+
 | 72 | TOF08 | 73 | TOF09 | 74 | TOF0A | 75 | TOF0B | 76 | TOF0C | 77 | TOF0D | 78 | TOF0E | 79 | TOF0F |
++----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+
+CFD module: 5 VME address: 8805:
++----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+
+| #  | Name  | #  | Name  | #  | Name  | #  | Name  | #  | Name  | #  | Name  | #  | Name  | #  | Name  |
 +----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+
 | 80 | TOF10 | 81 | TOF11 | 82 | TOF12 | 83 | TOF13 | 84 | TOF14 | 85 | TOF15 | 86 | TOF16 | 87 | TOF17 |
 +----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+
 | 88 | TOF18 | 89 | TOF19 | 90 | TOF1A | 91 | TOF1B | 92 | TOF1C | 93 | TOF1D | 94 | TOF1E | 95 | TDCT0 |
 +----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+----+-------+
 Enter command: [help] 
+```
+
+### Viewing and adjusting the CFD module addresses
+```
+Enter command: [help] cfds
+Current CFD modules:
++-------+---------+
+| Index | Address |
++-------+---------+
+|   0   |  8800   |
++-------+---------+
+|   1   |  8801   |
++-------+---------+
+|   2   |  8802   |
++-------+---------+
+|   4   |  8804   |
++-------+---------+
+|   5   |  8805   |
++-------+---------+
+Enter CFD module index to add/modify: [cancel] 
 ```
 
 ### Viewing and adjusting input signals: (CFD enabled and CFD threshold) and logic delays and gate widths
@@ -175,7 +212,6 @@ Enter field # = new value: [cancel]
 Enter input channel number to add/modify: [cancel] 
 Enter command: [help] 
 ```
-
  * The Enabled field is used to enable or disable the CFD input
  * The Threshold field sets the CFD threshold in mV
  * The delay and gate widths are specified in the fundamental clock period for WCTE: 8 ns.
@@ -237,9 +273,9 @@ There are 4 level 2 logic elements. They are referenced by their index (0-3).
 The level 2 logic can take the treated inputs and the treated level 1 logic outputs to form the trigger condition.
 This example includes veto conditions for "electrons" and for signals in the "hole counters".
 
-
-### Viewing and adjusting the output lemo assignments
 ```
+### Viewing and adjusting the output lemo assignments
+
 Enter command: [help] outputs
 Current output lemo assignments:
 +-------+------------+---------+---------------+-----------+----------------------------------+
@@ -280,7 +316,7 @@ should be avoided. The LEMO 0 output is also subject to the out-of-spill veto, i
 To ensure timing consistency for LEMO 0 output, it should have a gate width of 1 (for level 2 outputs, that is
 achieved by setting the treatment to True).
 
-### Viewing and adjusting the prescaler properties
+### Viewing and adjusting the prescaler properties (DO NOT USE)
 ```
 Enter command: [help] prescalers
 Current prescaler values:
@@ -291,6 +327,10 @@ Current prescaler values:
 +-------+----------+--------+
 Enter prescaler index to add/modify: [cancel] 
 ```
+
+#### Prescalers not currently working
+
+The prescaler function is not currently reliable. The electron veto prescale is implemented by another mechanism.
 
 The prescalers reduce the rate of level 1 triggers for the logic unit specified by the Index, by rejecting
 a fraction of the triggers.
