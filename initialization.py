@@ -5,24 +5,29 @@ from Configuration import Configuration
 
 # Define the low-energy (le) and tagged-photon (tp) signal channel assignments
 # Try to keep the channel assignments the same for the two (to reduce re-cabling when switching)
-#  - current list of repurposed channels: 11
+#  - current list of repurposed channels:
+#     4  (le: T1L, tp: T2)
+#     9  (le: HC0, tp: HC2)
+#
+#
+# need places for pb glass and T3
 
 # Define the CFD modules in the VME crate
 def set_cfd_modules(c, verbose = False):
     c.set_cfd_module("0", "8800", verbose)
-    c.set_cfd_module("1", "8801", verbose)
-    c.set_cfd_module("2", "8802", verbose)
-    c.set_cfd_module("4", "8804", verbose)
-    c.set_cfd_module("5", "8805", verbose)
+    c.set_cfd_module("1", "8900", verbose)
+    c.set_cfd_module("2", "8A00", verbose)
+    c.set_cfd_module("4", "8700", verbose)
+    c.set_cfd_module("5", "88AF", verbose)
 
 # Channels not set for a particular trigger type will have their CFD channels disabled
 def set_signal_channels(c, le = True, verbose = False):
 
     # Trigger scintillator 0
-    c.set_signal("0", "T00", "Upstream trigger scintillator 0 channel 0", verbose)
-    c.set_signal("1", "T01", "Upstream trigger scintillator 0 channel 1", verbose)
-    c.set_signal("2", "T02", "Upstream trigger scintillator 0 channel 2", verbose)
-    c.set_signal("3", "T03", "Upstream trigger scintillator 0 channel 3", verbose)
+    c.set_signal("0", "T0L", "Upstream trigger scintillator 0 left", verbose)
+    c.set_signal("1", "T0T", "Upstream trigger scintillator 0 top", verbose)
+    c.set_signal("2", "T0R", "Upstream trigger scintillator 0 right", verbose)
+    c.set_signal("3", "T0B", "Upstream trigger scintillator 0 bottom", verbose)
 
     c.set_digitizer_board_connection("0","10","input", "0", verbose)
     c.set_digitizer_board_connection("0","11","input", "1", verbose)
@@ -31,43 +36,41 @@ def set_signal_channels(c, le = True, verbose = False):
 
     # Trigger scintillator 1
     if le:
-        c.set_signal("4", "T10", "Downstream trigger scintillator 1 channel 0", verbose)
-        c.set_signal("5", "T11", "Downstream trigger scintillator 1 channel 1", verbose)
-        c.set_signal("6", "T12", "Downstream trigger scintillator 1 channel 2", verbose)
-        c.set_signal("7", "T13", "Downstream trigger scintillator 1 channel 3", verbose)
+        c.set_signal("4", "T1L", "Downstream trigger scintillator 1 left", verbose)
+        c.set_signal("5", "T1T", "Downstream trigger scintillator 1 top", verbose)
+        c.set_signal("6", "T1R", "Downstream trigger scintillator 1 right", verbose)
+        c.set_signal("7", "T1B", "Downstream trigger scintillator 1 bottom", verbose)
         c.set_digitizer_board_connection("0", "14", "input", "4", verbose)
         c.set_digitizer_board_connection("0", "15", "input", "5", verbose)
         c.set_digitizer_board_connection("0", "16", "input", "6", verbose)
         c.set_digitizer_board_connection("0", "17", "input", "7", verbose)
     else:
-        c.set_signal("8", "T2", "Small trigger scintillator upstream of magnet", verbose)
+        c.set_signal("4", "T2", "Small trigger scintillator upstream of magnet", verbose)
         c.set_digitizer_board_connection("0","18","input", "8", verbose)
 
     # Hole counters + ACT electron veto deactivation
     if le:
         c.set_signal("9", "HC0", "Hole counter 0 upstream of ACT", verbose)
-        c.set_signal("10", "HC1", "Hole counter 1 downstream of ACT", verbose)
-        # *** repurposed CFD channel #11: ***
-        c.set_signal("11", "ACTEVD", "ACT electron veto deactivate", verbose)
     else:
-        c.set_signal("11", "HC2", "Hole counter 2 upstream of magnet", verbose)
+        c.set_signal("9", "HC2", "Hole counter 2 upstream of magnet", verbose)
 
     # ACT modules
     if le:
-        c.set_signal("12", "ACT00", "ACT module 0 channel 0", verbose)
-        c.set_signal("13", "ACT01", "ACT module 0 channel 1", verbose)
-        c.set_signal("14", "ACT10", "ACT module 1 channel 0", verbose)
-        c.set_signal("15", "ACT11", "ACT module 1 channel 1", verbose)
+        c.set_signal("11", "ACTEVD", "ACT electron veto deactivate", verbose)
+        c.set_signal("12", "ACT0L", "ACT module 0 left", verbose)
+        c.set_signal("13", "ACT0R", "ACT module 0 right", verbose)
+        c.set_signal("14", "ACT1L", "ACT module 1 left", verbose)
+        c.set_signal("15", "ACT1R", "ACT module 1 right", verbose)
 
     if le:
-        c.set_signal("16", "ACT20", "ACT module 2 channel 0", verbose)
-        c.set_signal("17", "ACT21", "ACT module 2 channel 1", verbose)
-        c.set_signal("18", "ACT30", "ACT module 3 channel 0", verbose)
-        c.set_signal("19", "ACT31", "ACT module 3 channel 1", verbose)
-        c.set_signal("20", "ACT40", "ACT module 4 channel 0", verbose)
-        c.set_signal("21", "ACT41", "ACT module 4 channel 1", verbose)
-        c.set_signal("22", "ACT50", "ACT module 5 channel 0", verbose)
-        c.set_signal("23", "ACT51", "ACT module 5 channel 1", verbose)
+        c.set_signal("16", "ACT2L", "ACT module 2 left", verbose)
+        c.set_signal("17", "ACT2R", "ACT module 2 right", verbose)
+        c.set_signal("18", "ACT3L", "ACT module 3 left", verbose)
+        c.set_signal("19", "ACT3R", "ACT module 3 right", verbose)
+        c.set_signal("20", "ACT4L", "ACT module 4 left", verbose)
+        c.set_signal("21", "ACT4R", "ACT module 4 right", verbose)
+        c.set_signal("22", "ACT5L", "ACT module 5 left", verbose)
+        c.set_signal("23", "ACT5R", "ACT module 5 right", verbose)
 
         c.set_digitizer_board_connection("2", "0", "input", "12", verbose)
         c.set_digitizer_board_connection("2", "1", "input", "13", verbose)
@@ -81,6 +84,11 @@ def set_signal_channels(c, le = True, verbose = False):
         c.set_digitizer_board_connection("2", "9", "input", "21", verbose)
         c.set_digitizer_board_connection("2", "10", "input", "22", verbose)
         c.set_digitizer_board_connection("2", "11", "input", "23", verbose)
+
+    # Lead glass
+    c.set_signal("8", "PBG", "Lead glass", verbose)
+    # Special small scintillator for beam checks
+    c.set_signal("10", "T3", "Small trigger scintillator (movable)", verbose)
 
     # Muon tagger
     c.set_signal("24", "MUT0", "Muon tagger channel 0", verbose)
@@ -111,7 +119,10 @@ def set_signal_channels(c, le = True, verbose = False):
     c.set_signal("31", "TDCT0", "TDC stop signal for TDC0", verbose)
 
     # Hodoscope modules: 15 channels labelled as hexidecimal
-    if not le:
+    if le:
+        c.set_signal("46", "HC1", "Hole counter 1 downstream of ACT", verbose)
+        c.set_signal("47", "TDCT0", "TDC stop signal for TDC1", verbose)
+    else:
         c.set_signal("32", "HODO0", "Hodoscope channel 0", verbose)
         c.set_signal("33", "HODO1", "Hodoscope channel 1", verbose)
         c.set_signal("34", "HODO2", "Hodoscope channel 2", verbose)
@@ -191,11 +202,11 @@ def setup_le_trigger_logic(c: Configuration, verbose = False):
     c.set_level_1_logic("1", "T1 L1", "T1 coincidence", "[4,5,6,7]", "[]", "AND", verbose)
     c.set_level_1_logic("2", "ATCe", "ATC electron", "[12,13]", "[]", "OR", verbose)
     c.set_level_1_logic("3", "ATCeps", "ATC electron prescaled", "[12,13]", "[11]", "OR", verbose)
-    c.set_level_1_logic("4","HC L1", "Hole counter", "[9,10]", "[]", "OR", verbose)
-    c.set_level_1_logic("5","MUON", "Muon tagger", "[24,25]", "[]", "AND", verbose)
+    c.set_level_1_logic("4","HC L1", "Hole counter", "[9,46]", "[]", "OR", verbose)
+    c.set_level_1_logic("5","MUON", "Muon tagger", "[24,25]", "[]", "OR", verbose)
 
-    # pre-scale electron veto
-    c.set_prescaler("3", "16", "False", verbose)
+    # pre-scale electron veto - deactivate: prescaler does not function correctly
+    # c.set_prescaler("3", "16", "False", verbose)
 
     # adjust timing for example
     c.set_level_1_treatment("2","3", "7", verbose=verbose)
@@ -349,10 +360,10 @@ verbose = False
 for trigger in ["LE", "TP", "LA"]:
 
     if trigger == "LE":
-        configure_le_trigger("LE v15","Low Energy Trigger version 1.5", "le_v15", verbose=verbose)
+        configure_le_trigger("LE v16","Low Energy Trigger version 1.6", "le_v16", verbose=verbose)
 
     elif trigger == "TP":
-        configure_tp_trigger("TP v15","Tagged Photon Trigger version 1.5", "tp_v15", verbose=verbose)
+        configure_tp_trigger("TP v16","Tagged Photon Trigger version 1.6", "tp_v16", verbose=verbose)
 
     elif trigger == "LA":
-        configure_la_trigger("LA v15","Laser Trigger version 1.5", "la_v15", verbose=verbose)
+        configure_la_trigger("LA v16","Laser Trigger version 1.6", "la_v16", verbose=verbose)

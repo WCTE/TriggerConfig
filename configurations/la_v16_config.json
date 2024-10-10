@@ -1,22 +1,22 @@
 {
     "config_version": "tc-1.2",
-    "short_name": "LA v15",
-    "description": "Laser Trigger version 1.5",
+    "short_name": "LA v16",
+    "description": "Laser Trigger version 1.6",
     "cfd_modules": {
         "0": {
             "address": "8800"
         },
         "1": {
-            "address": "8801"
+            "address": "8900"
         },
         "2": {
-            "address": "8802"
+            "address": "8A00"
         },
         "4": {
-            "address": "8804"
+            "address": "8700"
         },
         "5": {
-            "address": "8805"
+            "address": "88AF"
         }
     },
     "input_signals": {

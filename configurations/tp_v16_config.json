@@ -1,48 +1,56 @@
 {
     "config_version": "tc-1.2",
-    "short_name": "TP v15",
-    "description": "Tagged Photon Trigger version 1.5",
+    "short_name": "TP v16",
+    "description": "Tagged Photon Trigger version 1.6",
     "cfd_modules": {
         "0": {
             "address": "8800"
         },
         "1": {
-            "address": "8801"
+            "address": "8900"
         },
         "2": {
-            "address": "8802"
+            "address": "8A00"
         },
         "4": {
-            "address": "8804"
+            "address": "8700"
         },
         "5": {
-            "address": "8805"
+            "address": "88AF"
         }
     },
     "input_signals": {
         "0": {
-            "short_name": "T00",
-            "description": "Upstream trigger scintillator 0 channel 0"
+            "short_name": "T0L",
+            "description": "Upstream trigger scintillator 0 left"
         },
         "1": {
-            "short_name": "T01",
-            "description": "Upstream trigger scintillator 0 channel 1"
+            "short_name": "T0T",
+            "description": "Upstream trigger scintillator 0 top"
         },
         "2": {
-            "short_name": "T02",
-            "description": "Upstream trigger scintillator 0 channel 2"
+            "short_name": "T0R",
+            "description": "Upstream trigger scintillator 0 right"
         },
         "3": {
-            "short_name": "T03",
-            "description": "Upstream trigger scintillator 0 channel 3"
+            "short_name": "T0B",
+            "description": "Upstream trigger scintillator 0 bottom"
         },
-        "8": {
+        "4": {
             "short_name": "T2",
             "description": "Small trigger scintillator upstream of magnet"
         },
-        "11": {
+        "9": {
             "short_name": "HC2",
             "description": "Hole counter 2 upstream of magnet"
+        },
+        "8": {
+            "short_name": "PBG",
+            "description": "Lead glass"
+        },
+        "10": {
+            "short_name": "T3",
+            "description": "Small trigger scintillator (movable)"
         },
         "24": {
             "short_name": "MUT0",
@@ -222,11 +230,19 @@
             "enabled": "True",
             "threshold": "16"
         },
+        "4": {
+            "enabled": "True",
+            "threshold": "16"
+        },
+        "9": {
+            "enabled": "True",
+            "threshold": "16"
+        },
         "8": {
             "enabled": "True",
             "threshold": "16"
         },
-        "11": {
+        "10": {
             "enabled": "True",
             "threshold": "16"
         },
@@ -408,11 +424,19 @@
             "delay": "0",
             "window_length": "1"
         },
+        "4": {
+            "delay": "0",
+            "window_length": "1"
+        },
+        "9": {
+            "delay": "0",
+            "window_length": "1"
+        },
         "8": {
             "delay": "0",
             "window_length": "1"
         },
-        "11": {
+        "10": {
             "delay": "0",
             "window_length": "1"
         },

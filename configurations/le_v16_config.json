@@ -1,116 +1,120 @@
 {
     "config_version": "tc-1.2",
-    "short_name": "LE v15",
-    "description": "Low Energy Trigger version 1.5",
+    "short_name": "LE v16",
+    "description": "Low Energy Trigger version 1.6",
     "cfd_modules": {
         "0": {
             "address": "8800"
         },
         "1": {
-            "address": "8801"
+            "address": "8900"
         },
         "2": {
-            "address": "8802"
+            "address": "8A00"
         },
         "4": {
-            "address": "8804"
+            "address": "8700"
         },
         "5": {
-            "address": "8805"
+            "address": "88AF"
         }
     },
     "input_signals": {
         "0": {
-            "short_name": "T00",
-            "description": "Upstream trigger scintillator 0 channel 0"
+            "short_name": "T0L",
+            "description": "Upstream trigger scintillator 0 left"
         },
         "1": {
-            "short_name": "T01",
-            "description": "Upstream trigger scintillator 0 channel 1"
+            "short_name": "T0T",
+            "description": "Upstream trigger scintillator 0 top"
         },
         "2": {
-            "short_name": "T02",
-            "description": "Upstream trigger scintillator 0 channel 2"
+            "short_name": "T0R",
+            "description": "Upstream trigger scintillator 0 right"
         },
         "3": {
-            "short_name": "T03",
-            "description": "Upstream trigger scintillator 0 channel 3"
+            "short_name": "T0B",
+            "description": "Upstream trigger scintillator 0 bottom"
         },
         "4": {
-            "short_name": "T10",
-            "description": "Downstream trigger scintillator 1 channel 0"
+            "short_name": "T1L",
+            "description": "Downstream trigger scintillator 1 left"
         },
         "5": {
-            "short_name": "T11",
-            "description": "Downstream trigger scintillator 1 channel 1"
+            "short_name": "T1T",
+            "description": "Downstream trigger scintillator 1 top"
         },
         "6": {
-            "short_name": "T12",
-            "description": "Downstream trigger scintillator 1 channel 2"
+            "short_name": "T1R",
+            "description": "Downstream trigger scintillator 1 right"
         },
         "7": {
-            "short_name": "T13",
-            "description": "Downstream trigger scintillator 1 channel 3"
+            "short_name": "T1B",
+            "description": "Downstream trigger scintillator 1 bottom"
         },
         "9": {
             "short_name": "HC0",
             "description": "Hole counter 0 upstream of ACT"
-        },
-        "10": {
-            "short_name": "HC1",
-            "description": "Hole counter 1 downstream of ACT"
         },
         "11": {
             "short_name": "ACTEVD",
             "description": "ACT electron veto deactivate"
         },
         "12": {
-            "short_name": "ACT00",
-            "description": "ACT module 0 channel 0"
+            "short_name": "ACT0L",
+            "description": "ACT module 0 left"
         },
         "13": {
-            "short_name": "ACT01",
-            "description": "ACT module 0 channel 1"
+            "short_name": "ACT0R",
+            "description": "ACT module 0 right"
         },
         "14": {
-            "short_name": "ACT10",
-            "description": "ACT module 1 channel 0"
+            "short_name": "ACT1L",
+            "description": "ACT module 1 left"
         },
         "15": {
-            "short_name": "ACT11",
-            "description": "ACT module 1 channel 1"
+            "short_name": "ACT1R",
+            "description": "ACT module 1 right"
         },
         "16": {
-            "short_name": "ACT20",
-            "description": "ACT module 2 channel 0"
+            "short_name": "ACT2L",
+            "description": "ACT module 2 left"
         },
         "17": {
-            "short_name": "ACT21",
-            "description": "ACT module 2 channel 1"
+            "short_name": "ACT2R",
+            "description": "ACT module 2 right"
         },
         "18": {
-            "short_name": "ACT30",
-            "description": "ACT module 3 channel 0"
+            "short_name": "ACT3L",
+            "description": "ACT module 3 left"
         },
         "19": {
-            "short_name": "ACT31",
-            "description": "ACT module 3 channel 1"
+            "short_name": "ACT3R",
+            "description": "ACT module 3 right"
         },
         "20": {
-            "short_name": "ACT40",
-            "description": "ACT module 4 channel 0"
+            "short_name": "ACT4L",
+            "description": "ACT module 4 left"
         },
         "21": {
-            "short_name": "ACT41",
-            "description": "ACT module 4 channel 1"
+            "short_name": "ACT4R",
+            "description": "ACT module 4 right"
         },
         "22": {
-            "short_name": "ACT50",
-            "description": "ACT module 5 channel 0"
+            "short_name": "ACT5L",
+            "description": "ACT module 5 left"
         },
         "23": {
-            "short_name": "ACT51",
-            "description": "ACT module 5 channel 1"
+            "short_name": "ACT5R",
+            "description": "ACT module 5 right"
+        },
+        "8": {
+            "short_name": "PBG",
+            "description": "Lead glass"
+        },
+        "10": {
+            "short_name": "T3",
+            "description": "Small trigger scintillator (movable)"
         },
         "24": {
             "short_name": "MUT0",
@@ -143,6 +147,14 @@
         "31": {
             "short_name": "TDCT0",
             "description": "TDC stop signal for TDC0"
+        },
+        "46": {
+            "short_name": "HC1",
+            "description": "Hole counter 1 downstream of ACT"
+        },
+        "47": {
+            "short_name": "TDCT0",
+            "description": "TDC stop signal for TDC1"
         },
         "64": {
             "short_name": "TOF00",
@@ -310,10 +322,6 @@
             "enabled": "True",
             "threshold": "16"
         },
-        "10": {
-            "enabled": "True",
-            "threshold": "16"
-        },
         "11": {
             "enabled": "True",
             "threshold": "16"
@@ -366,6 +374,14 @@
             "enabled": "True",
             "threshold": "16"
         },
+        "8": {
+            "enabled": "True",
+            "threshold": "16"
+        },
+        "10": {
+            "enabled": "True",
+            "threshold": "16"
+        },
         "24": {
             "enabled": "True",
             "threshold": "16"
@@ -395,6 +411,14 @@
             "threshold": "16"
         },
         "31": {
+            "enabled": "True",
+            "threshold": "16"
+        },
+        "46": {
+            "enabled": "True",
+            "threshold": "16"
+        },
+        "47": {
             "enabled": "True",
             "threshold": "16"
         },
@@ -564,10 +588,6 @@
             "delay": "0",
             "window_length": "1"
         },
-        "10": {
-            "delay": "0",
-            "window_length": "1"
-        },
         "11": {
             "delay": "0",
             "window_length": "1"
@@ -620,6 +640,14 @@
             "delay": "0",
             "window_length": "1"
         },
+        "8": {
+            "delay": "0",
+            "window_length": "1"
+        },
+        "10": {
+            "delay": "0",
+            "window_length": "1"
+        },
         "24": {
             "delay": "0",
             "window_length": "1"
@@ -649,6 +677,14 @@
             "window_length": "1"
         },
         "31": {
+            "delay": "0",
+            "window_length": "1"
+        },
+        "46": {
+            "delay": "0",
+            "window_length": "1"
+        },
+        "47": {
             "delay": "0",
             "window_length": "1"
         },
@@ -813,7 +849,7 @@
         "4": {
             "short_name": "HC L1",
             "description": "Hole counter",
-            "inputs": "[9,10]",
+            "inputs": "[9,46]",
             "invert_inputs": "[]",
             "logic_type": "OR"
         },
@@ -822,7 +858,7 @@
             "description": "Muon tagger",
             "inputs": "[24,25]",
             "invert_inputs": "[]",
-            "logic_type": "AND"
+            "logic_type": "OR"
         }
     },
     "level_1_output_treatments": {
@@ -1185,10 +1221,7 @@
             "source_serial": "15"
         }
     },
-    "prescalers": {
-        "3": "16",
-        "3_select": "False"
-    },
+    "prescalers": {},
     "spill_channels": {
         "pre_spill": "26",
         "end_spill": "27",
