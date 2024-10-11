@@ -4,13 +4,10 @@
 from Configuration import Configuration
 
 # Define the low-energy (le) and tagged-photon (tp) signal channel assignments
-# Try to keep the channel assignments the same for the two (to reduce re-cabling when switching)
-#  - current list of repurposed channels:
-#     4  (le: T1L, tp: T2)
-#     9  (le: HC0, tp: HC2)
+# To free up channels, H0D07-14 are shared with ACT2-5
+# (both trigger and amplitude cables for these need to be swapped when switching between LE and TP)
 #
-#
-# need places for pb glass and T3
+# Note: 2 bad channels 47 and 74. These get flagged in the console program if used
 
 # Define the CFD modules in the VME crate
 def set_cfd_modules(c, verbose = False):
@@ -45,22 +42,30 @@ def set_signal_channels(c, le = True, verbose = False):
         c.set_digitizer_board_connection("0", "16", "input", "6", verbose)
         c.set_digitizer_board_connection("0", "17", "input", "7", verbose)
     else:
-        c.set_signal("4", "T2", "Small trigger scintillator upstream of magnet", verbose)
+        c.set_signal("8", "T2", "Small trigger scintillator upstream of magnet", verbose)
         c.set_digitizer_board_connection("0","18","input", "8", verbose)
 
     # Hole counters + ACT electron veto deactivation
     if le:
         c.set_signal("9", "HC0", "Hole counter 0 upstream of ACT", verbose)
+        c.set_signal("10", "HC1", "Hole counter 1 downstream of ACT", verbose)
+        c.set_digitizer_board_connection("0", "19", "input", "9", verbose)
+        c.set_digitizer_board_connection("1", "17", "input", "10", verbose)
     else:
-        c.set_signal("9", "HC2", "Hole counter 2 upstream of magnet", verbose)
+        c.set_signal("11", "HC2", "Hole counter 2 upstream of magnet", verbose)
+        c.set_digitizer_board_connection("2", "15", "input", "11", verbose)
 
     # ACT modules
     if le:
-        c.set_signal("11", "ACTEVD", "ACT electron veto deactivate", verbose)
         c.set_signal("12", "ACT0L", "ACT module 0 left", verbose)
         c.set_signal("13", "ACT0R", "ACT module 0 right", verbose)
         c.set_signal("14", "ACT1L", "ACT module 1 left", verbose)
         c.set_signal("15", "ACT1R", "ACT module 1 right", verbose)
+
+        c.set_digitizer_board_connection("2", "0", "input", "12", verbose)
+        c.set_digitizer_board_connection("2", "1", "input", "13", verbose)
+        c.set_digitizer_board_connection("2", "2", "input", "14", verbose)
+        c.set_digitizer_board_connection("2", "3", "input", "15", verbose)
 
     if le:
         c.set_signal("16", "ACT2L", "ACT module 2 left", verbose)
@@ -71,24 +76,24 @@ def set_signal_channels(c, le = True, verbose = False):
         c.set_signal("21", "ACT4R", "ACT module 4 right", verbose)
         c.set_signal("22", "ACT5L", "ACT module 5 left", verbose)
         c.set_signal("23", "ACT5R", "ACT module 5 right", verbose)
+    else:
+        c.set_signal("16", "HODO7", "Hodoscope channel 7", verbose)  # was 39
+        c.set_signal("17", "HODO8", "Hodoscope channel 8", verbose)
+        c.set_signal("18", "HODO9", "Hodoscope channel 9", verbose)
+        c.set_signal("19", "HODOA", "Hodoscope channel 10", verbose)
+        c.set_signal("20", "HODOB", "Hodoscope channel 11", verbose)
+        c.set_signal("21", "HODOC", "Hodoscope channel 12", verbose)
+        c.set_signal("22", "HODOD", "Hodoscope channel 13", verbose)
+        c.set_signal("23", "HODOE", "Hodoscope channel 14", verbose)
 
-        c.set_digitizer_board_connection("2", "0", "input", "12", verbose)
-        c.set_digitizer_board_connection("2", "1", "input", "13", verbose)
-        c.set_digitizer_board_connection("2", "2", "input", "14", verbose)
-        c.set_digitizer_board_connection("2", "3", "input", "15", verbose)
-        c.set_digitizer_board_connection("2", "4", "input", "16", verbose)
-        c.set_digitizer_board_connection("2", "5", "input", "17", verbose)
-        c.set_digitizer_board_connection("2", "6", "input", "18", verbose)
-        c.set_digitizer_board_connection("2", "7", "input", "19", verbose)
-        c.set_digitizer_board_connection("2", "8", "input", "20", verbose)
-        c.set_digitizer_board_connection("2", "9", "input", "21", verbose)
-        c.set_digitizer_board_connection("2", "10", "input", "22", verbose)
-        c.set_digitizer_board_connection("2", "11", "input", "23", verbose)
-
-    # Lead glass
-    c.set_signal("8", "PBG", "Lead glass", verbose)
-    # Special small scintillator for beam checks
-    c.set_signal("10", "T3", "Small trigger scintillator (movable)", verbose)
+    c.set_digitizer_board_connection("2", "4", "input", "16", verbose)
+    c.set_digitizer_board_connection("2", "5", "input", "17", verbose)
+    c.set_digitizer_board_connection("2", "6", "input", "18", verbose)
+    c.set_digitizer_board_connection("2", "7", "input", "19", verbose)
+    c.set_digitizer_board_connection("2", "8", "input", "20", verbose)
+    c.set_digitizer_board_connection("2", "9", "input", "21", verbose)
+    c.set_digitizer_board_connection("2", "10", "input", "22", verbose)
+    c.set_digitizer_board_connection("2", "11", "input", "23", verbose)
 
     # Muon tagger
     c.set_signal("24", "MUT0", "Muon tagger channel 0", verbose)
@@ -116,13 +121,11 @@ def set_signal_channels(c, le = True, verbose = False):
 
     # 1 TOF channel left over
     c.set_signal("30", "TOF0F", "TOF module 0 channel 15", verbose)
-    c.set_signal("31", "TDCT0", "TDC stop signal for TDC0", verbose)
+    c.set_signal("31", "TDCT00", "TDC stop signal for TDC0", verbose)
 
     # Hodoscope modules: 15 channels labelled as hexidecimal
-    if le:
-        c.set_signal("46", "HC1", "Hole counter 1 downstream of ACT", verbose)
-        c.set_signal("47", "TDCT0", "TDC stop signal for TDC1", verbose)
-    else:
+    # To allow more channels, HODO7-14 share channels with ACT2-5 (see above)
+    if not le:
         c.set_signal("32", "HODO0", "Hodoscope channel 0", verbose)
         c.set_signal("33", "HODO1", "Hodoscope channel 1", verbose)
         c.set_signal("34", "HODO2", "Hodoscope channel 2", verbose)
@@ -130,15 +133,6 @@ def set_signal_channels(c, le = True, verbose = False):
         c.set_signal("36", "HODO4", "Hodoscope channel 4", verbose)
         c.set_signal("37", "HODO5", "Hodoscope channel 5", verbose)
         c.set_signal("38", "HODO6", "Hodoscope channel 6", verbose)
-        c.set_signal("39", "HODO7", "Hodoscope channel 7", verbose)
-        c.set_signal("40", "HODO8", "Hodoscope channel 8", verbose)
-        c.set_signal("41", "HODO9", "Hodoscope channel 9", verbose)
-        c.set_signal("42", "HODOA", "Hodoscope channel 10", verbose)
-        c.set_signal("43", "HODOB", "Hodoscope channel 11", verbose)
-        c.set_signal("44", "HODOC", "Hodoscope channel 12", verbose)
-        c.set_signal("45", "HODOD", "Hodoscope channel 13", verbose)
-        c.set_signal("46", "HODOE", "Hodoscope channel 14", verbose)
-        c.set_signal("47", "TDCT0", "TDC stop signal for TDC1", verbose)
 
         c.set_digitizer_board_connection("1", "10", "input", "32", verbose)
         c.set_digitizer_board_connection("1", "11", "input", "33", verbose)
@@ -147,15 +141,26 @@ def set_signal_channels(c, le = True, verbose = False):
         c.set_digitizer_board_connection("1", "14", "input", "36", verbose)
         c.set_digitizer_board_connection("1", "15", "input", "37", verbose)
         c.set_digitizer_board_connection("1", "16", "input", "38", verbose)
-        c.set_digitizer_board_connection("1", "17", "input", "39", verbose)
-        c.set_digitizer_board_connection("1", "18", "input", "40", verbose)
-        c.set_digitizer_board_connection("1", "19", "input", "41", verbose)
 
-        c.set_digitizer_board_connection("2", "14", "input", "42", verbose)
-        c.set_digitizer_board_connection("2", "15", "input", "43", verbose)
-        c.set_digitizer_board_connection("2", "16", "input", "44", verbose)
-        c.set_digitizer_board_connection("2", "17", "input", "45", verbose)
-        c.set_digitizer_board_connection("2", "18", "input", "46", verbose)
+    # Signal from control room to control the ACT electron veto
+    c.set_signal("39", "ACTEVD", "ACT electron veto deactivate", verbose)
+    # Lead glass (prior to WCTE operation)
+    c.set_signal("40", "PBG", "Lead glass", verbose)
+    # Special moveable small scintillator for beam checks
+    c.set_signal("41", "T3", "Small trigger scintillator (movable)", verbose)
+
+    c.set_digitizer_board_connection("1", "18", "input", "40", verbose)
+    c.set_digitizer_board_connection("1", "19", "input", "41", verbose)
+
+    # channel 74 is bad -> move here
+    if le:
+        c.set_signal("42", "TOF0A", "TOF module 0 channel 10", verbose)
+
+    # three spare channels in case needed: 43-45
+    # also have 3 spare digitizer channels: module 2 15-17
+
+    # channel 47 is bad
+    c.set_signal("46", "TDCT01", "TDC stop signal for TDC1", verbose)
 
 # Channels 49-63 are not used since we have only 5 discriminator modules (80 channels)
 
@@ -171,7 +176,7 @@ def set_signal_channels(c, le = True, verbose = False):
         c.set_signal("71", "TOF07", "TOF module 0 channel 7", verbose)
         c.set_signal("72", "TOF08", "TOF module 0 channel 8", verbose)
         c.set_signal("73", "TOF09", "TOF module 0 channel 9", verbose)
-        c.set_signal("74", "TOF0A", "TOF module 0 channel 10", verbose)
+        # channel 74 is bad
         c.set_signal("75", "TOF0B", "TOF module 0 channel 11", verbose)
         c.set_signal("76", "TOF0C", "TOF module 0 channel 12", verbose)
         c.set_signal("77", "TOF0D", "TOF module 0 channel 13", verbose)
@@ -193,7 +198,7 @@ def set_signal_channels(c, le = True, verbose = False):
     c.set_signal("92", "TOF1C", "TOF module 1 channel 12", verbose)
     c.set_signal("93", "TOF1D", "TOF module 1 channel 13", verbose)
     c.set_signal("94", "TOF1E", "TOF module 1 channel 14", verbose)
-    c.set_signal("95", "TDCT0", "TDC stop signal for TDC2", verbose)
+    c.set_signal("95", "TDCT02", "TDC stop signal for TDC2", verbose)
 
 def setup_le_trigger_logic(c: Configuration, verbose = False):
 
@@ -201,9 +206,10 @@ def setup_le_trigger_logic(c: Configuration, verbose = False):
     c.set_level_1_logic("0", "T0 L1", "T0 coincidence", "[0,1,2,3]", "[]", "AND", verbose)
     c.set_level_1_logic("1", "T1 L1", "T1 coincidence", "[4,5,6,7]", "[]", "AND", verbose)
     c.set_level_1_logic("2", "ATCe", "ATC electron", "[12,13]", "[]", "OR", verbose)
-    c.set_level_1_logic("3", "ATCeps", "ATC electron prescaled", "[12,13]", "[11]", "OR", verbose)
-    c.set_level_1_logic("4","HC L1", "Hole counter", "[9,46]", "[]", "OR", verbose)
+    c.set_level_1_logic("3", "ATCeps", "ATC electron prescaled", "[12,13]", "[39]", "OR", verbose)
+    c.set_level_1_logic("4","HC L1", "Hole counter", "[9,10]", "[]", "OR", verbose)
     c.set_level_1_logic("5","MUON", "Muon tagger", "[24,25]", "[]", "OR", verbose)
+    c.set_level_1_logic("6","T0T1L1", "T0-T1 coincidence", "[0,1,2,3,4,5,6,7]", "[]", "AND", verbose)
 
     # pre-scale electron veto - deactivate: prescaler does not function correctly
     # c.set_prescaler("3", "16", "False", verbose)
@@ -241,7 +247,10 @@ def configure_le_trigger(short_name: str, description: str, filename: str, verbo
     le.set_trigger_board_connection("2", "19", "other", "TDCT0", verbose=verbose)
     le.set_patch_panel_connection("0", "other", "TDCT0", verbose=verbose)
 
-    # custom trigger from control room to input 29
+    # output needed for QDC gate open
+    le.set_output_lemo_assignment("8", "QDCG", "QDC gate open", "level 1", "6", "True", verbose=verbose)
+
+    # custom trigger from control room to input 29 (eg. random trigger)
     le.set_patch_panel_connection("1", "other", "XTRIG", verbose=verbose)
 
     # output electron and muon tags
@@ -249,18 +258,18 @@ def configure_le_trigger(short_name: str, description: str, filename: str, verbo
     le.set_trigger_board_connection("0", "1", "lemo", "1", verbose=verbose)
 
     le.set_output_lemo_assignment("2", "MU TAG", "Muon tagged", "level 2", "3", "True", verbose=True)
-    le.set_trigger_board_connection("0", "2", "lemo", "2", verbose=True)
+    le.set_trigger_board_connection("0", "2", "lemo", "2", verbose=verbose)
 
     # LE trigger without electron veto patched to control room (for beam tuning)
     le.set_output_lemo_assignment("7", "LE nV", "Low Energy Trigger without eVeto", "level 2", "1", "True", verbose=True)
-    le.set_patch_panel_connection("2", "lemo", "7", verbose=True)
+    le.set_patch_panel_connection("2", "lemo", "7", verbose=verbose)
 
-    # ACT electron veto disable from control room (adjusted with a NIM clock module)
-    le.set_patch_panel_connection("3", "input", "11", verbose=True)
+    # ACT electron veto disable signal from control room (adjusted with a NIM clock module)
+    le.set_patch_panel_connection("3", "input", "39", verbose=verbose)
 
-    # Reserve 8 patch panel connections connected to LEMO outputs 8-15
-    for i in range(8,16):
-        le.set_patch_panel_connection(str(i), "lemo", str(i), verbose=True)
+    # Reserve 7 patch panel connections connected to LEMO outputs 9-15 (to be adjusted during setup
+    for i in range(9,16):
+        le.set_patch_panel_connection(str(i), "lemo", str(i), verbose=verbose)
 
     # Set some treatment examples
     le.set_treatment("1","7","3", verbose=verbose)
@@ -276,12 +285,13 @@ def setup_tp_trigger_logic(c: Configuration, verbose = False):
 
     # level 1 logics
     c.set_level_1_logic("0", "T0 L1", "T0 coincidence", "[0,1,2,3]", "[]", "AND", verbose)
-    hodoscope_channels = "[32,33,34,35,36,37,38,39,40,41,42,43,44,45,46]"
+    hodoscope_channels = "[16,17,18,19,20,21,22,23,32,33,34,35,36,37,38]"
     c.set_level_1_logic("1","HODO", "Hodoscope signal", hodoscope_channels, "[]", "OR", verbose)
+    c.set_level_1_logic("6", "T0T2L1", "T0-T2 coincidence", "[0,1,2,3,8]", "[]", "AND", verbose)
 
     # level 2 logics
-    c.set_level_2_logic("0", "TP", "Tagged Photon Trigger", "[8]", "[12]", "[0,1]","[]","AND", verbose)
-    c.set_level_2_logic("1", "TP nH", "Tagged Photon Trigger no HODO requirement", "[8]", "[12]", "[0]","[]","AND", verbose)
+    c.set_level_2_logic("0", "TP", "Tagged Photon Trigger", "[8]", "[11]", "[0,1]","[]","AND", verbose)
+    c.set_level_2_logic("1", "TP nH", "Tagged Photon Trigger no HODO requirement", "[8]", "[11]", "[0]","[]","AND", verbose)
 
 # initialize the tagged photon trigger configuration
 def configure_tp_trigger(short_name: str, description: str, filename: str, verbose = False):
@@ -307,16 +317,19 @@ def configure_tp_trigger(short_name: str, description: str, filename: str, verbo
     tp.set_trigger_board_connection("2", "19", "other", "TDCT0", verbose=verbose)
     tp.set_patch_panel_connection("0", "other", "TDCT0", verbose=verbose)
 
+    # output needed for QDC gate open
+    tp.set_output_lemo_assignment("8", "QDCG", "QDC gate open", "level 1", "6", "True", verbose=verbose)
+
     # custom trigger from control room to input 29
-    tp.set_patch_panel_connection("1", "other", "XTRIG", verbose=True)
+    tp.set_patch_panel_connection("1", "other", "XTRIG", verbose=verbose)
 
     # Tagged photon trigger without hodoscope requirement patched to control room (for beam tuning)
     tp.set_output_lemo_assignment("7", "TP nH", "Tagged Photon Trigger no HODO requirement", "level 2", "1", "True", verbose=True)
-    tp.set_patch_panel_connection("2", "lemo", "7", verbose=True)
+    tp.set_patch_panel_connection("2", "lemo", "7", verbose=verbose)
 
-    # Reserve 8 patch panel connections connected to LEMO outputs 8-15
-    for i in range(8,16):
-        tp.set_patch_panel_connection(str(i), "lemo", str(i), verbose=True)
+    # Reserve 7 patch panel connections connected to LEMO outputs 9-15
+    for i in range(9,16):
+        tp.set_patch_panel_connection(str(i), "lemo", str(i), verbose=verbose)
 
     # define the deadtime veto: 625 time bins = 5 us
     tp.set_deadtime_veto("625", verbose=verbose)
@@ -351,7 +364,6 @@ def configure_la_trigger(short_name: str, description: str, filename: str, verbo
     # Save the low energy trigger configuration and register settings to json files
     la.save(filename)
 
-
 # Select the trigger configuration to setup:
 
 # trigger = "LE"  # one of "LE" (low energy) "TP" (tagged photon) "LA" (laser) or "TS" (test stand)
@@ -360,10 +372,10 @@ verbose = False
 for trigger in ["LE", "TP", "LA"]:
 
     if trigger == "LE":
-        configure_le_trigger("LE v16","Low Energy Trigger version 1.6", "le_v16", verbose=verbose)
+        configure_le_trigger("LE v17","Low Energy Trigger version 1.7", "le_v17", verbose=verbose)
 
     elif trigger == "TP":
-        configure_tp_trigger("TP v16","Tagged Photon Trigger version 1.6", "tp_v16", verbose=verbose)
+        configure_tp_trigger("TP v17","Tagged Photon Trigger version 1.7", "tp_v17", verbose=verbose)
 
     elif trigger == "LA":
-        configure_la_trigger("LA v16","Laser Trigger version 1.6", "la_v16", verbose=verbose)
+        configure_la_trigger("LA v17","Laser Trigger version 1.7", "la_v17", verbose=verbose)

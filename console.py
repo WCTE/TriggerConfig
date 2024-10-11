@@ -5,9 +5,10 @@ from Configuration import Configuration
 import texttable
 import os
 
-max_table_width = 120
+max_table_width = 110
 current_configuration = Configuration("","")
 configuration_changed = False
+bad_channels = ["47", "74"]
 
 def load():
     global current_configuration, configuration_changed
@@ -84,6 +85,75 @@ def check_missing_cfds():
             print(f'CFD {icfd} is used for channels: {missing_cfd}')
         print('')
 
+def check_bad_channels():
+    global current_configuration
+    input_signals = current_configuration.configuration["input_signals"]
+    for bad_channel in bad_channels:
+        if bad_channel in input_signals:
+            print(f' *** WARNING ***')
+            print(f' *** Bad CFD channel {bad_channel} is in use ***')
+            print('')
+
+def check_logic_inputs():
+    global current_configuration
+    level_1_logics = current_configuration.configuration["level_1_logics"]
+    level_2_logics = current_configuration.configuration["level_2_logics"]
+    input_signals = current_configuration.configuration["input_signals"]
+    for logic in level_1_logics:
+        inputs = level_1_logics[logic]["inputs"]
+        invert_inputs = level_1_logics[logic]["invert_inputs"]
+        for inputs_str in [inputs, invert_inputs]:
+            check_brackets = inputs_str[0] == '[' and inputs_str[-1] == ']'
+            str_list = inputs_str.strip().strip('[]').split(',')
+            if not check_brackets and all(i.isdigit() and 0 <= int(i) <= 63 for i in str_list):
+                print(f' *** WARNING ***')
+                print(f' *** Level 1 logic {logic} has an invalid inputs format {inputs_str} ***')
+            else:
+                for input_signal in str_list:
+                    if input_signal != "" and input_signal not in input_signals:
+                        print(f' *** WARNING ***')
+                        print(f' *** Level 1 logic {logic} uses input signal {input_signal} which is not defined ***')
+                        print('')
+
+    for logic in level_2_logics:
+        inputs = level_2_logics[logic]["inputs"]
+        invert_inputs = level_1_logics[logic]["invert_inputs"]
+        for inputs_str in [inputs, invert_inputs]:
+            check_brackets = inputs_str[0] == '[' and inputs_str[-1] == ']'
+            str_list = inputs_str.strip().strip('[]').split(',')
+            if not check_brackets and all(i.isdigit() and 0 <= int(i) <= 63 for i in str_list):
+                print(f' *** WARNING ***')
+                print(f' *** Level 2 logic {logic} has an invalid inputs format {inputs_str} ***')
+            else:
+                for input_signal in str_list:
+                    if input_signal != "" and input_signal not in input_signals:
+                        print(f' *** WARNING ***')
+                        print(f' *** Level 2 logic {logic} uses input signal {input_signal} which is not defined ***')
+                        print('')
+
+        level_1_inputs = level_2_logics[logic]["level_1_inputs"]
+        invert_level_1_inputs = level_2_logics[logic]["invert_level_1_inputs"]
+        for inputs_str in [level_1_inputs, invert_level_1_inputs]:
+            check_brackets = inputs_str[0] == '[' and inputs_str[-1] == ']'
+            str_list = inputs_str.strip().strip('[]').split(',')
+            if not check_brackets and all(i.isdigit() and 0 <= int(i) <= 9 for i in str_list):
+                print(f' *** WARNING ***')
+                print(f' *** Level 2 logic {logic} has an invalid inputs format {inputs_str} ***')
+            else:
+                for level_1_input in str_list:
+                    if level_1_input != "" and level_1_input not in level_1_logics:
+                        print(f' *** WARNING ***')
+                        print(f' *** Level 2 logic {logic} uses level 1 {level_1_input} which is not defined ***')
+                        print('')
+
+def check():
+    # check that the current configuration is valid
+    global current_configuration
+    check_missing_cfds()
+    check_bad_channels()
+    check_logic_inputs()
+
+
 def channels():
     global current_configuration
     print("Current CFD modules and input signals:")
@@ -117,6 +187,9 @@ def channels():
                 if str(ichan) in input_signals:
                     row.append(str(ichan))
                     row.append(input_signals[str(ichan)]["short_name"])
+                elif str(ichan) in bad_channels:
+                    row.append(str(ichan))
+                    row.append("* BAD *")
                 else:
                     row.append("-")
                     row.append("-")
@@ -124,6 +197,7 @@ def channels():
         print(table.draw())
 
     check_missing_cfds()
+    check_bad_channels()
 
 def cfds_table(indices, cfd_modules):
     table = texttable.Texttable(max_width=max_table_width)
@@ -215,6 +289,10 @@ def inputs(prompt: bool = True):
         if index[0] != "c" and index.isdigit() and 0 <= int(index) < 96:
             i = int(index)
             indices = [i]
+            if index in bad_channels:
+                print('*** Bad channel selected ***')
+                print('Please select a different channel')
+                continue
             if index in input_signals:
                 print('Channel selected:')
                 table = input_table(indices, input_signals, input_cfd_settings, input_treatments)
@@ -878,7 +956,8 @@ def show_all():
 def save():
     global current_configuration, configuration_changed
 
-    check_missing_cfds()
+    # print any problems discovered in the configuration
+    check()
 
     while True:
         command = input("Enter new short name (10 characters max): [cancel] ")
@@ -962,6 +1041,7 @@ def main():
         "connections": connections,
         "patches": patch_panel,
         "show": show_all,
+        "check": check,
         "save": save,
         "update": update,
         "exit": exit_check
