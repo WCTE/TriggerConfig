@@ -9,6 +9,7 @@ max_table_width = 110
 current_configuration = Configuration("","")
 configuration_changed = False
 bad_channels = ["47", "74"]
+bad_digitizer_channels = {"0":["6"], "1":["4","19"], "2":["9"]}
 
 def load():
     global current_configuration, configuration_changed
@@ -93,6 +94,16 @@ def check_bad_channels():
             print(f' *** WARNING ***')
             print(f' *** Bad CFD channel {bad_channel} is in use ***')
             print('')
+
+    connections = current_configuration.configuration["trigger_digitizer_board_connections"]
+    for connection in connections:
+        board = connections[connection]["board"]
+        channel = connections[connection]["channel"]
+        if board in bad_digitizer_channels and channel in bad_digitizer_channels[board]:
+            print(f' *** WARNING ***')
+            print(f' *** Bad digitizer channel {channel} on board {board} is in use ***')
+            print('')
+
 
 def check_logic_inputs():
     global current_configuration
@@ -814,7 +825,7 @@ def connections(prompt: bool = True):
     print("Current trigger/digitizer board connections:")
     board_connections = current_configuration.configuration["trigger_digitizer_board_connections"]
     indices = []
-    for i in range(60): # CURRENTLY 8 -> will go to 16
+    for i in range(60):
         if str(i) in board_connections:
             indices.append(i)
     table = connection_table(indices, board_connections)
@@ -829,6 +840,10 @@ def connections(prompt: bool = True):
             i = int(index)
             board = str(i // 20)
             channel = str(i % 20)
+            if board in bad_digitizer_channels and channel in bad_digitizer_channels[board]:
+                print('*** Bad digitizer channel selected ***')
+                print('Please select a different channel')
+                continue
             indices = [i]
             if index in board_connections:
                 print('Trigger/digitizer board connection:')
