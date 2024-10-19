@@ -131,7 +131,7 @@ class Configuration:
                 if verbose:
                     print(f'default treatment and CFD settings for signal {serial} set')
 
-    def set_cfd_setting(self, serial: str, enabled: str = "True", threshold: str = "16", verbose: bool = True):
+    def set_cfd_setting(self, serial: str, enabled: str = "True", threshold: str = "7", verbose: bool = True):
 
             fail = False
             # check that the serial number is a number between 0 and 95
@@ -155,7 +155,7 @@ class Configuration:
                 if verbose:
                     print(f'CFD setting for signal {serial} set')
 
-    def set_treatment(self, serial: str, delay: str = "0", window_length: str = "1", verbose: bool = True):
+    def set_treatment(self, serial: str, delay: str = "0", window_length: str = "4", verbose: bool = True):
 
         fail = False
         # check that the serial number is a number between 0 and 95
