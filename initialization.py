@@ -292,8 +292,8 @@ def configure_le_trigger(short_name: str, description: str, filename: str, verbo
         le.set_patch_panel_connection(str(i), "lemo", str(i), verbose=verbose)
 
     # Set some treatment examples
-    le.set_treatment("1","7","3", verbose=verbose)
-    le.set_treatment("3","255","3", verbose=verbose)
+    #le.set_treatment("1","7","3", verbose=verbose)
+    #le.set_treatment("3","255","3", verbose=verbose)
 
     # define the deadtime veto: 625 time bins = 5 us
     le.set_deadtime_veto("625", verbose=verbose)
