@@ -8,7 +8,11 @@ import os
 max_table_width = 110
 current_configuration = Configuration("","")
 configuration_changed = False
-bad_channels = ["47", "74"]
+# 2024 pre-run tests found these two bad CFD channels
+#bad_channels = ["47", "74"]
+# 2025 pre-run tests did not find bad channels (used 4ns delay instead of 20 for CFDs)
+bad_channels = []
+# NEED TO CHECK IF THE FOLLOWING STILL APPLIES FOR 2025
 bad_digitizer_channels = {"0":["6"], "1":["4","19"], "2":["9"]}
 
 def load():
@@ -795,7 +799,10 @@ def connection_table(indices, tdbc):
         source_serial = tdbc[str(i)]["source_serial"]
         source_short_name = "-"
         # check that gate widths are 1 for digital inputs to the trigger board
-        digital_input = i in [0,1,2,3,4,5,6,7,8,9,20,21,22,23,24,25,26,27,28,29,59]
+        # 2024 running had a backup trigger board (mPMT 130) having digital inputs 20-29
+        #digital_input = i in [0,1,2,3,4,5,6,7,8,9,20,21,22,23,24,25,26,27,28,29,59]
+        # 2025 running converted the backup trigger board to a digitizer board
+        digital_input = i in [0,1,2,3,4,5,6,7,8,9,39,59]
         if source == "input" and source_serial in current_configuration.configuration["input_signals"]:
             source_short_name = current_configuration.configuration["input_signals"][source_serial]["short_name"]
             if digital_input:

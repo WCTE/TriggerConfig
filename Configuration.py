@@ -96,8 +96,8 @@ class Configuration:
     def set_signal(self, serial: str, short_name: str, description: str, verbose: bool = True):
 
         fail = False
-        # check that the serial number is a number between 0 and 95
-        fail = fail or not self.check_int(serial, 0, 95)
+        # check that the serial number is a number between 0 and 63 (was 95 in 2024)
+        fail = fail or not self.check_int(serial, 0, 63)
 
         # check that the short name is a string of length at most 10 (for printing purposes)
         fail = fail or not self.check_string(short_name, 10)
@@ -134,8 +134,8 @@ class Configuration:
     def set_cfd_setting(self, serial: str, enabled: str = "True", threshold: str = "7", verbose: bool = True):
 
             fail = False
-            # check that the serial number is a number between 0 and 95
-            fail = fail or not self.check_int(serial, 0, 95)
+            # check that the serial number is a number between 0 and 63 (was 95 in 2024)
+            fail = fail or not self.check_int(serial, 0, 63)
 
             # check that the enabled is a boolean (specifies if the CFD channel is enabled)
             fail = fail or not self.check_bool(enabled)
@@ -158,8 +158,8 @@ class Configuration:
     def set_treatment(self, serial: str, delay: str = "0", window_length: str = "4", verbose: bool = True):
 
         fail = False
-        # check that the serial number is a number between 0 and 95
-        fail = fail or not self.check_int(serial, 0, 95)
+        # check that the serial number is a number between 0 and 63 (was 95 in 2024)
+        fail = fail or not self.check_int(serial, 0, 63)
 
         fail = fail or not self.check_int(delay, 0, self.maximum_delay)
         fail = fail or not self.check_int(window_length, 1, self.maximum_window_length)
@@ -324,7 +324,7 @@ class Configuration:
 
         # check that the source serial number is valid
         if source == "input":
-            fail = fail or not self.check_int(source_serial, 0, 95)
+            fail = fail or not self.check_int(source_serial, 0, 63) # (95 in 2024)
         elif source == "level 1":
             fail = fail or not self.check_int(source_serial, 0, 9)
         elif source == "level 2":
@@ -353,10 +353,13 @@ class Configuration:
         # check that the board number is a number between 0 and 2
         fail = fail or not self.check_int(board, 0, 2)
 
-        if board in ["0", "1"]:
+        # In 2025 board "1" was converted from a trigger/digitizer to a digitizer
+        #if board in ["0", "1"]:
+        if board in ["0"]:
             # check that the channel number is a number between 0 and 9
             fail = fail or not self.check_int(channel, 0, 9)
-        elif board == "2":
+        #elif board == "2":
+        elif board in ["1", "2"]:
             # check that the channel number is 19
             fail = fail or not self.check_int(channel, 19, 19)
 
@@ -390,10 +393,13 @@ class Configuration:
         # check that the board number is a number between 0 and 2
         fail = fail or not self.check_int(board, 0, 2)
 
-        if board in ["0", "1"]:
+        # in 2025 we changed a trigger/digitizer board to a digitizer board
+        #if board in ["0", "1"]:
+        if board in ["0"]:
             # check that the channel number is a number between 10 and 19
             fail = fail or not self.check_int(channel, 10, 19)
-        elif board == "2":
+        elif board in ["1","2"]:
+        #elif board == "2":
             # check that the channel number is a number between 0 and 18
             fail = fail or not self.check_int(channel, 0, 18)
 
@@ -435,7 +441,7 @@ class Configuration:
         if source == "lemo":
             fail = fail or not self.check_int(source_serial, 0, 15)
         if source == "input":
-            fail = fail or not self.check_int(source_serial, 0, 96)
+            fail = fail or not self.check_int(source_serial, 0, 63)  # (95 in 2024)
 
         if not fail:
             # Define the connection dictionary
