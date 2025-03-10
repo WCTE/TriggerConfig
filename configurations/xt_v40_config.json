@@ -1,7 +1,7 @@
 {
     "config_version": "tc-1.2",
-    "short_name": "LA v40",
-    "description": "Laser Trigger version 4.0",
+    "short_name": "xt v40",
+    "description": "External trigger v4.0",
     "cfd_modules": {
         "0": {
             "address": "8700"
@@ -17,19 +17,19 @@
         }
     },
     "input_signals": {
-        "28": {
-            "short_name": "LASER",
-            "description": "Laser signal"
+        "29": {
+            "short_name": "XTRIG",
+            "description": "external trigger"
         }
     },
     "input_cfd_settings": {
-        "28": {
+        "29": {
             "enabled": "True",
-            "threshold": "7"
+            "threshold": "20"
         }
     },
     "input_signal_treatments": {
-        "28": {
+        "29": {
             "delay": "0",
             "window_length": "1"
         }
@@ -38,39 +38,20 @@
     "level_1_output_treatments": {},
     "level_2_logics": {},
     "output_lemo_assignments": {
-        "5": {
-            "short_name": "LASER",
-            "description": "Laser signal",
-            "source": "input",
-            "source_serial": "28",
-            "treatment": "True"
-        },
         "0": {
             "short_name": "TDCT0",
             "description": "Event trigger (TDC_STOP)",
             "source": "input",
-            "source_serial": "28",
+            "source_serial": "29",
             "treatment": "True"
         }
     },
     "trigger_digitizer_board_connections": {
-        "5": {
-            "board": "0",
-            "channel": "5",
-            "source": "lemo",
-            "source_serial": "5"
-        },
         "0": {
             "board": "0",
             "channel": "0",
             "source": "other",
             "source_serial": "TDCT0"
-        },
-        "9": {
-            "board": "0",
-            "channel": "0",
-            "source": "other",
-            "source_serial": "Laser Sync"
         },
         "39": {
             "board": "1",
