@@ -558,16 +558,23 @@ def level_2(prompt: bool = True):
 
 def output_table(indices, olas):
     table = texttable.Texttable(max_width=max_table_width)
-    table.set_cols_align(["c", "c", "c", "c", "c", "l"])
-    table.set_cols_valign(["m", "m", "m", "m", "m", "m"])
-    table.add_row(["Index", "Short Name", "Source", "Source Serial", "Treatment", "Description"])
+    table.set_cols_align(["c", "c", "c", "c", "c", "c", "l"])
+    table.set_cols_valign(["m", "m", "m", "m", "m", "m", "m"])
+    table.add_row(["Index", "Short Name", "Source", "Source Serial", "Source Name", "Treatment", "Description"])
     for i in indices:
         short_name = olas[str(i)]["short_name"]
         source = olas[str(i)]["source"]
         source_serial = olas[str(i)]["source_serial"]
+        source_short_name = '-'
+        if source == 'input':
+            source_short_name = current_configuration.configuration["input_signals"][source_serial]["short_name"]
+        elif source == 'level 1':
+            source_short_name = current_configuration.configuration["level_1_logics"][source_serial]["short_name"]
+        elif source == 'level 2':
+            source_short_name = current_configuration.configuration["level_2_logics"][source_serial]["short_name"]
         treatment = olas[str(i)]["treatment"]
         description = olas[str(i)]["description"]
-        table.add_row([str(i), short_name, source, source_serial, treatment, description])
+        table.add_row([str(i), short_name, source, source_serial, source_short_name, treatment, description])
     return table
 
 def outputs(prompt: bool = True):
@@ -592,7 +599,7 @@ def outputs(prompt: bool = True):
             if index in output_lemo_assignments:
                 print('Output lemo assignment:')
                 table = output_table(indices, output_lemo_assignments)
-                table.add_row(["field:", "0", "1", "2", "3", "4"])
+                table.add_row(["field:", "0", "1", "2", "-", "3", "4"])
                 print(table.draw())
             else:
                 # add the new lemo assignment
