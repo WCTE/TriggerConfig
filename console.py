@@ -567,11 +567,14 @@ def output_table(indices, olas):
         source_serial = olas[str(i)]["source_serial"]
         source_short_name = '-'
         if source == 'input':
-            source_short_name = current_configuration.configuration["input_signals"][source_serial]["short_name"]
+            if source_serial in current_configuration.configuration["input_signals"]:
+                source_short_name = current_configuration.configuration["input_signals"][source_serial]["short_name"]
         elif source == 'level 1':
-            source_short_name = current_configuration.configuration["level_1_logics"][source_serial]["short_name"]
+            if source_serial in current_configuration.configuration["level_1_logics"]:
+                source_short_name = current_configuration.configuration["level_1_logics"][source_serial]["short_name"]
         elif source == 'level 2':
-            source_short_name = current_configuration.configuration["level_2_logics"][source_serial]["short_name"]
+            if source_serial in current_configuration.configuration["level_2_logics"]:
+                source_short_name = current_configuration.configuration["level_2_logics"][source_serial]["short_name"]
         treatment = olas[str(i)]["treatment"]
         description = olas[str(i)]["description"]
         table.add_row([str(i), short_name, source, source_serial, source_short_name, treatment, description])
