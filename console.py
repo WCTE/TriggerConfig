@@ -13,7 +13,7 @@ configuration_changed = False
 # 2025 pre-run tests did not find bad channels (used 4ns delay instead of 20 for CFDs)
 bad_channels = []
 # NEED TO CHECK IF THE FOLLOWING STILL APPLIES FOR 2025
-bad_digitizer_channels = {"0":["6"], "1":["4","19"], "2":["9"]}
+bad_digitizer_channels = {"0":["6"], "1":["4"], "2":["9"]}
 
 def load():
     global current_configuration, configuration_changed
