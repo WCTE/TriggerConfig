@@ -1068,11 +1068,17 @@
             "source": "other",
             "source_serial": "TDCT0"
         },
+        "39": {
+            "board": "1",
+            "channel": "19",
+            "source": "other",
+            "source_serial": "TDCT1"
+        },
         "59": {
             "board": "2",
             "channel": "19",
             "source": "other",
-            "source_serial": "TDCT0"
+            "source_serial": "TDCT2"
         },
         "37": {
             "board": "1",
