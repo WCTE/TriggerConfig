@@ -12,6 +12,12 @@ current_configuration = Configuration("","")
 max_table_width = 110
 
 while True:
+    # Announce the name of this script
+    print("")
+    print("WCTE Trigger Configuration Loader")
+    print("---------------------------------")
+    print("")
+
     if current_configuration.configuration["short_name"] == "":
         print("")
         print("===================================")
