@@ -12,6 +12,9 @@ This package provides the tools for defining and adjusting the WCTE trigger conf
      * viewing and adjusting all elements of the trigger configuration
      * saving and loading configurations using JSON files
      * saving JSON files with register values for the WCTE trigger logic module (V1495) and the constant fraction discriminator (CFD) modules (V812)
+ * "load_wcte_registers" module:
+   * provides a simple command line interface for selecting a configuration and loading it into the WCTE trigger logic module
+ 
 
 ## Installation
 To install the package, clone WCTE/TriggerConfig repository in a folder that also contains the V1495_firmware
@@ -20,6 +23,7 @@ To install the package, clone WCTE/TriggerConfig repository in a folder that als
 Dependencies:
  * V1495_firmware
  * texttable
+ * datetime
 
 To install texttable:
 ```sudo apt-get install python3-texttable```
