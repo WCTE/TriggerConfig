@@ -14,6 +14,8 @@ max_table_width = 110
 while True:
     # Announce the name of this script
     print("")
+    print("")
+    print("---------------------------------")
     print("WCTE Trigger Configuration Loader")
     print("---------------------------------")
     print("")
@@ -35,8 +37,9 @@ while True:
                        current_configuration.configuration["description"]])
         print(table.draw())
         print("")
+        print("")
 
-    print("List of available trigger configurations: sorted by modification time")
+    print("List of available trigger configurations (sorted by modification time)")
     # show a list of available configurations in a texttable
     # get a list of .json files in the configurations directory, oldest first
 
@@ -68,12 +71,13 @@ while True:
     #prompt the user to select a configuration
 
     index = input("Select index of file to load: [cancel] ")
-    if index == "":
-        pass
-    elif index.isdigit() and 0 <= int(index) < len(files):
+    if index !="" and index.isdigit() and 0 <= int(index) < len(files):
         current_version = Configuration.get_version()
         if current_version != file_versions[int(index)]:
+            print("")
             print("*** Configuration file version mismatch - cannot load")
+            print("")
+            dummy = input("Press enter to continue")
         else:
             i = int(index)
             save = input(f"Load configuration {short_names[i]} into the trigger module? [no] ")
@@ -93,10 +97,16 @@ while True:
                 # write the current short name to a file that will be used for saving in the database
                 with open("configurations/trigger_configuration_current.txt", "w") as f:
                     f.write(f'{short_names[i]}')
+                print("")
+                dummy = input("Press enter to continue")
             else:
                 print("")
                 print("*** Configuration NOT loaded to trigger module***")
                 print("")
+                dummy = input("Press enter to continue")
 
     else:
+        print("")
         print("*** Invalid index ***")
+        print("")
+        dummy = input("Press enter to continue")
