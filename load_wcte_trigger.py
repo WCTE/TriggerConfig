@@ -39,7 +39,7 @@ while True:
     full_list = [os.path.join(path, i) for i in name_list]
     full_list_sorted = sorted(full_list, key=os.path.getmtime)
     json_files = [i for i in full_list_sorted if i.endswith(".json") and
-                  i not in ["current_config.json","written_config.json"]]
+                  i not in [path+"\\current_config.json",path+"\\written_config.json"]]
     files = [os.path.basename(i) for i in json_files]
     file_versions = []
 
