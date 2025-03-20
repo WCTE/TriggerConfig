@@ -84,6 +84,9 @@ while True:
                 now = datetime.datetime.now()
                 with open("configurations/trigger_configuration.log", "a") as f:
                     f.write(f"{now.strftime('%Y-%m-%d %H:%M:%S')} {current_configuration.configuration['short_name']}\n")
+                # write the current short name to a file that will be used for saving in the database
+                with open("configurations/trigger_configuration_current.txt", "w") as f:
+                    f.write(f'{short_names[i]}')
             else:
                 print("")
                 print("*** Configuration NOT loaded to trigger module***")
