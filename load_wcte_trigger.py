@@ -134,8 +134,8 @@ while True:
                     break
                 if command.isdigit():
                     deadtime_value = command
-                    if int(deadtime_value) < 1:
-                        print("*** Invalid deadtime value: must be greater than 0")
+                    if int(deadtime_value) < 625:
+                        print("*** Invalid deadtime value: must be at least 625 (5 us)")
                     else:
                         deadtime = deadtime_value
                         break
@@ -168,6 +168,8 @@ while True:
                             actevd_value = command
                             if int(actevd_value) < 1:
                                 print("*** Invalid ACTEVD value: must be greater than 0")
+                            elif int(actevd_value) > 99:
+                                print("*** Invalid ACTEVD value: must not be greater than 99")
                             else:
                                 actevd = actevd_value
                                 actevd_changed = True
