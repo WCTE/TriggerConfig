@@ -1,7 +1,7 @@
 {
     "config_version": "tc-1.2",
-    "short_name": "BT v4.4",
-    "description": "Beam tuning V4.4",
+    "short_name": "LEP v5.0",
+    "description": "LE pre-scale eveto V5.0",
     "cfd_modules": {
         "0": {
             "address": "8700"
@@ -547,7 +547,7 @@
         },
         "39": {
             "delay": "0",
-            "window_length": "2"
+            "window_length": "4"
         },
         "40": {
             "delay": "0",
@@ -671,11 +671,11 @@
             "logic_type": "OR"
         },
         "5": {
-            "short_name": "T0T1T3L1",
-            "description": "Beam tuning signal",
-            "inputs": "[0,1,2,3,4,5,6,7,41]",
+            "short_name": "MUON",
+            "description": "Muon tagger",
+            "inputs": "[24,25]",
             "invert_inputs": "[]",
-            "logic_type": "AND"
+            "logic_type": "OR"
         },
         "6": {
             "short_name": "T0T1L1",
@@ -790,8 +790,8 @@
         "0": {
             "short_name": "TDCT0",
             "description": "Event trigger (TDC_STOP)",
-            "source": "level 1",
-            "source_serial": "6",
+            "source": "level 2",
+            "source_serial": "0",
             "treatment": "True"
         },
         "1": {
@@ -847,35 +847,35 @@
             "short_name": "OUT9",
             "description": "General purpose #9",
             "source": "level 1",
-            "source_serial": "6",
+            "source_serial": "0",
             "treatment": "True"
         },
         "10": {
             "short_name": "OUT10",
             "description": "General purpose #10",
-            "source": "input",
-            "source_serial": "41",
+            "source": "level 1",
+            "source_serial": "1",
             "treatment": "True"
         },
         "11": {
             "short_name": "OUT11",
             "description": "General purpose #11",
             "source": "level 1",
-            "source_serial": "0",
+            "source_serial": "6",
             "treatment": "True"
         },
         "12": {
             "short_name": "OUT12",
             "description": "General purpose #12",
             "source": "level 1",
-            "source_serial": "1",
+            "source_serial": "7",
             "treatment": "True"
         },
         "13": {
             "short_name": "OUT13",
             "description": "General purpose #13",
-            "source": "level 1",
-            "source_serial": "5",
+            "source": "input",
+            "source_serial": "31",
             "treatment": "True"
         },
         "14": {
@@ -886,10 +886,10 @@
             "treatment": "True"
         },
         "15": {
-            "short_name": "LE nV",
+            "short_name": "OUT",
             "description": "General purpose #15",
-            "source": "level 1",
-            "source_serial": "5",
+            "source": "level 2",
+            "source_serial": "1",
             "treatment": "True"
         },
         "8": {
@@ -1276,5 +1276,5 @@
         "end_spill": "27",
         "enabled": "True"
     },
-    "deadtime": "625"
+    "deadtime": "25000"
 }
