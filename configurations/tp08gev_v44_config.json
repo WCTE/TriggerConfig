@@ -1,0 +1,1149 @@
+{
+    "config_version": "tc-1.2",
+    "short_name": "TP0.8 v4.4",
+    "description": "Tagged Photon 0.8GeV v4.4",
+    "cfd_modules": {
+        "0": {
+            "address": "8700"
+        },
+        "1": {
+            "address": "8900"
+        },
+        "2": {
+            "address": "8A00"
+        },
+        "3": {
+            "address": "88AF"
+        }
+    },
+    "input_signals": {
+        "0": {
+            "short_name": "T0-0L",
+            "description": "Upstream trigger scintillator 0 left lower"
+        },
+        "1": {
+            "short_name": "T0-1L",
+            "description": "Upstream trigger scintillator 0 left upper"
+        },
+        "2": {
+            "short_name": "T0-0R",
+            "description": "Upstream trigger scintillator 0 right lower"
+        },
+        "3": {
+            "short_name": "T0-1R",
+            "description": "Upstream trigger scintillator 0 right upper"
+        },
+        "8": {
+            "short_name": "T2",
+            "description": "Small trigger scintillator upstream of magnet"
+        },
+        "11": {
+            "short_name": "HC-2",
+            "description": "Hole counter 2 upstream of magnet"
+        },
+        "16": {
+            "short_name": "HD-7",
+            "description": "Hodoscope channel 7"
+        },
+        "17": {
+            "short_name": "HD-8",
+            "description": "Hodoscope channel 8"
+        },
+        "18": {
+            "short_name": "HD-9",
+            "description": "Hodoscope channel 9"
+        },
+        "19": {
+            "short_name": "HD-A",
+            "description": "Hodoscope channel 10"
+        },
+        "20": {
+            "short_name": "HD-B",
+            "description": "Hodoscope channel 11"
+        },
+        "21": {
+            "short_name": "HD-C",
+            "description": "Hodoscope channel 12"
+        },
+        "22": {
+            "short_name": "HD-D",
+            "description": "Hodoscope channel 13"
+        },
+        "23": {
+            "short_name": "HD-E",
+            "description": "Hodoscope channel 14"
+        },
+        "24": {
+            "short_name": "MuT-L",
+            "description": "Muon tagger left"
+        },
+        "25": {
+            "short_name": "MuT-R",
+            "description": "Muon tagger right"
+        },
+        "26": {
+            "short_name": "BSW",
+            "description": "Beam spill warning"
+        },
+        "27": {
+            "short_name": "BSE",
+            "description": "Beam spill end"
+        },
+        "28": {
+            "short_name": "LASER",
+            "description": "Laser signal"
+        },
+        "29": {
+            "short_name": "XTRIG",
+            "description": "Other trigger"
+        },
+        "31": {
+            "short_name": "TDCT00",
+            "description": "TDC stop signal for TDC0"
+        },
+        "32": {
+            "short_name": "HD-0",
+            "description": "Hodoscope channel 0"
+        },
+        "33": {
+            "short_name": "HD-1",
+            "description": "Hodoscope channel 1"
+        },
+        "34": {
+            "short_name": "HD-2",
+            "description": "Hodoscope channel 2"
+        },
+        "35": {
+            "short_name": "HD-3",
+            "description": "Hodoscope channel 3"
+        },
+        "36": {
+            "short_name": "HD-4",
+            "description": "Hodoscope channel 4"
+        },
+        "37": {
+            "short_name": "HD-5",
+            "description": "Hodoscope channel 5"
+        },
+        "38": {
+            "short_name": "HD-6",
+            "description": "Hodoscope channel 6"
+        },
+        "40": {
+            "short_name": "PbG",
+            "description": "Lead glass"
+        },
+        "41": {
+            "short_name": "T3",
+            "description": "Small trigger scintillator (movable)"
+        },
+        "42": {
+            "short_name": "T4-L",
+            "description": "Trigger scintillator 4 left"
+        },
+        "43": {
+            "short_name": "T4-R",
+            "description": "Trigger scintillator 4 right"
+        },
+        "46": {
+            "short_name": "TDCT01",
+            "description": "TDC stop signal for TDC1"
+        },
+        "48": {
+            "short_name": "TOF-0",
+            "description": "TOF channel 0"
+        },
+        "49": {
+            "short_name": "TOF-1",
+            "description": "TOF channel 1"
+        },
+        "50": {
+            "short_name": "TOF-2",
+            "description": "TOF channel 2"
+        },
+        "51": {
+            "short_name": "TOF-3",
+            "description": "TOF channel 3"
+        },
+        "52": {
+            "short_name": "TOF-4",
+            "description": "TOF channel 4"
+        },
+        "53": {
+            "short_name": "TOF-5",
+            "description": "TOF channel 5"
+        },
+        "54": {
+            "short_name": "TOF-6",
+            "description": "TOF channel 6"
+        },
+        "55": {
+            "short_name": "TOF-7",
+            "description": "TOF channel 7"
+        },
+        "56": {
+            "short_name": "TOF-8",
+            "description": "TOF channel 8"
+        },
+        "57": {
+            "short_name": "TOF-9",
+            "description": "TOF channel 9"
+        },
+        "58": {
+            "short_name": "TOF-A",
+            "description": "TOF channel 10"
+        },
+        "59": {
+            "short_name": "TOF-B",
+            "description": "TOF channel 11"
+        },
+        "60": {
+            "short_name": "TOF-C",
+            "description": "TOF channel 12"
+        },
+        "61": {
+            "short_name": "TOF-D",
+            "description": "TOF channel 13"
+        },
+        "62": {
+            "short_name": "TOF-E",
+            "description": "TOF channel 14"
+        },
+        "63": {
+            "short_name": "TOF-F",
+            "description": "TOF channel 15"
+        }
+    },
+    "input_cfd_settings": {
+        "0": {
+            "enabled": "True",
+            "threshold": "100"
+        },
+        "1": {
+            "enabled": "True",
+            "threshold": "100"
+        },
+        "2": {
+            "enabled": "True",
+            "threshold": "100"
+        },
+        "3": {
+            "enabled": "True",
+            "threshold": "100"
+        },
+        "8": {
+            "enabled": "True",
+            "threshold": "30"
+        },
+        "11": {
+            "enabled": "True",
+            "threshold": "30"
+        },
+        "16": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "17": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "18": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "19": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "20": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "21": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "22": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "23": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "24": {
+            "enabled": "True",
+            "threshold": "7"
+        },
+        "25": {
+            "enabled": "True",
+            "threshold": "7"
+        },
+        "26": {
+            "enabled": "True",
+            "threshold": "7"
+        },
+        "27": {
+            "enabled": "True",
+            "threshold": "7"
+        },
+        "28": {
+            "enabled": "True",
+            "threshold": "7"
+        },
+        "29": {
+            "enabled": "True",
+            "threshold": "7"
+        },
+        "31": {
+            "enabled": "True",
+            "threshold": "7"
+        },
+        "32": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "33": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "34": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "35": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "36": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "37": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "38": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "40": {
+            "enabled": "True",
+            "threshold": "7"
+        },
+        "41": {
+            "enabled": "True",
+            "threshold": "7"
+        },
+        "42": {
+            "enabled": "True",
+            "threshold": "7"
+        },
+        "43": {
+            "enabled": "True",
+            "threshold": "7"
+        },
+        "46": {
+            "enabled": "True",
+            "threshold": "7"
+        },
+        "48": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "49": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "50": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "51": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "52": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "53": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "54": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "55": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "56": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "57": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "58": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "59": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "60": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "61": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "62": {
+            "enabled": "True",
+            "threshold": "50"
+        },
+        "63": {
+            "enabled": "True",
+            "threshold": "50"
+        }
+    },
+    "input_signal_treatments": {
+        "0": {
+            "delay": "6",
+            "window_length": "4"
+        },
+        "1": {
+            "delay": "6",
+            "window_length": "4"
+        },
+        "2": {
+            "delay": "6",
+            "window_length": "4"
+        },
+        "3": {
+            "delay": "6",
+            "window_length": "4"
+        },
+        "8": {
+            "delay": "4",
+            "window_length": "4"
+        },
+        "11": {
+            "delay": "4",
+            "window_length": "10"
+        },
+        "16": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "17": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "18": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "19": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "20": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "21": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "22": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "23": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "24": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "25": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "26": {
+            "delay": "0",
+            "window_length": "1"
+        },
+        "27": {
+            "delay": "0",
+            "window_length": "1"
+        },
+        "28": {
+            "delay": "0",
+            "window_length": "1"
+        },
+        "29": {
+            "delay": "0",
+            "window_length": "1"
+        },
+        "31": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "32": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "33": {
+            "delay": "0",
+            "window_length": "6"
+        },
+        "34": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "35": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "36": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "37": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "38": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "40": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "41": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "42": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "43": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "46": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "48": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "49": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "50": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "51": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "52": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "53": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "54": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "55": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "56": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "57": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "58": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "59": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "60": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "61": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "62": {
+            "delay": "0",
+            "window_length": "4"
+        },
+        "63": {
+            "delay": "0",
+            "window_length": "4"
+        }
+    },
+    "level_1_logics": {
+        "0": {
+            "short_name": "T0 L1",
+            "description": "T0 coincidence",
+            "inputs": "[0,1,2,3]",
+            "invert_inputs": "[]",
+            "logic_type": "AND"
+        },
+        "1": {
+            "short_name": "HODO",
+            "description": "Hodoscope signal",
+            "inputs": "[16,17,18,19,20,21,22,23,32,33,34,35,36,37,38]",
+            "invert_inputs": "[]",
+            "logic_type": "OR"
+        },
+        "2": {
+            "short_name": "TOFR",
+            "description": "TOF right",
+            "inputs": "[48,49,50,51,52,53,54,55]",
+            "invert_inputs": "[]",
+            "logic_type": "OR"
+        },
+        "3": {
+            "short_name": "TOFL",
+            "description": "TOF left",
+            "inputs": "[56,57,58,59,60,61,62,63]",
+            "invert_inputs": "[]",
+            "logic_type": "OR"
+        },
+        "6": {
+            "short_name": "T0T2L1",
+            "description": "T0-T2 coincidence",
+            "inputs": "[0,1,2,3,8]",
+            "invert_inputs": "[]",
+            "logic_type": "AND"
+        }
+    },
+    "level_1_output_treatments": {
+        "0": {
+            "delay": "0",
+            "window_length": "1"
+        },
+        "1": {
+            "delay": "0",
+            "window_length": "19"
+        },
+        "2": {
+            "delay": "0",
+            "window_length": "5"
+        },
+        "3": {
+            "delay": "0",
+            "window_length": "5"
+        },
+        "6": {
+            "delay": "0",
+            "window_length": "19"
+        }
+    },
+    "level_2_logics": {
+        "0": {
+            "short_name": "TP",
+            "description": "Tagged Photon Trigger",
+            "inputs": "[8]",
+            "invert_inputs": "[11,17,32,33]",
+            "level_1_inputs": "[0]",
+            "invert_level_1_inputs": "[]",
+            "logic_type": "AND"
+        },
+        "1": {
+            "short_name": "TP nH",
+            "description": "Tagged Photon Trigger no HODO requirement",
+            "inputs": "[8]",
+            "invert_inputs": "[11]",
+            "level_1_inputs": "[0]",
+            "invert_level_1_inputs": "[]",
+            "logic_type": "AND"
+        },
+        "2": {
+            "short_name": "TP xTOF",
+            "description": "Tagged Photon Trigger no TOF signal",
+            "inputs": "[8]",
+            "invert_inputs": "[11]",
+            "level_1_inputs": "[0]",
+            "invert_level_1_inputs": "[2,3]",
+            "logic_type": "AND"
+        }
+    },
+    "output_lemo_assignments": {
+        "3": {
+            "short_name": "BSWarn",
+            "description": "Beam spill warning",
+            "source": "input",
+            "source_serial": "26",
+            "treatment": "True"
+        },
+        "4": {
+            "short_name": "BSEnd",
+            "description": "Beam spill end",
+            "source": "input",
+            "source_serial": "27",
+            "treatment": "True"
+        },
+        "5": {
+            "short_name": "LASER",
+            "description": "Laser signal",
+            "source": "input",
+            "source_serial": "28",
+            "treatment": "True"
+        },
+        "6": {
+            "short_name": "XTRIG",
+            "description": "Other trigger",
+            "source": "input",
+            "source_serial": "29",
+            "treatment": "True"
+        },
+        "0": {
+            "short_name": "TDCT0",
+            "description": "Event trigger (TDC_STOP)",
+            "source": "level 2",
+            "source_serial": "0",
+            "treatment": "True"
+        },
+        "7": {
+            "short_name": "QDCG",
+            "description": "QDC gate open",
+            "source": "level 1",
+            "source_serial": "6",
+            "treatment": "True"
+        },
+        "9": {
+            "short_name": "OUT9",
+            "description": "General purpose #9",
+            "source": "input",
+            "source_serial": "8",
+            "treatment": "True"
+        },
+        "10": {
+            "short_name": "OUT10",
+            "description": "General purpose #10",
+            "source": "level 1",
+            "source_serial": "0",
+            "treatment": "True"
+        },
+        "11": {
+            "short_name": "OUT11",
+            "description": "General purpose #11",
+            "source": "input",
+            "source_serial": "33",
+            "treatment": "True"
+        },
+        "12": {
+            "short_name": "OUT12",
+            "description": "General purpose #12",
+            "source": "level 2",
+            "source_serial": "1",
+            "treatment": "True"
+        },
+        "13": {
+            "short_name": "OUT13",
+            "description": "General purpose #13",
+            "source": "level 2",
+            "source_serial": "2",
+            "treatment": "True"
+        },
+        "14": {
+            "short_name": "UNUSED",
+            "description": "Not used",
+            "source": "level 2",
+            "source_serial": "3",
+            "treatment": "True"
+        },
+        "15": {
+            "short_name": "TP nH",
+            "description": "Tagged Photon Trigger no HODO requirement",
+            "source": "level 2",
+            "source_serial": "1",
+            "treatment": "True"
+        }
+    },
+    "trigger_digitizer_board_connections": {
+        "55": {
+            "board": "2",
+            "channel": "15",
+            "source": "input",
+            "source_serial": "62"
+        },
+        "56": {
+            "board": "2",
+            "channel": "16",
+            "source": "input",
+            "source_serial": "63"
+        },
+        "57": {
+            "board": "2",
+            "channel": "17",
+            "source": "input",
+            "source_serial": "42"
+        },
+        "58": {
+            "board": "2",
+            "channel": "18",
+            "source": "input",
+            "source_serial": "43"
+        },
+        "47": {
+            "board": "2",
+            "channel": "7",
+            "source": "input",
+            "source_serial": "55"
+        },
+        "48": {
+            "board": "2",
+            "channel": "8",
+            "source": "input",
+            "source_serial": "56"
+        },
+        "50": {
+            "board": "2",
+            "channel": "10",
+            "source": "input",
+            "source_serial": "57"
+        },
+        "51": {
+            "board": "2",
+            "channel": "11",
+            "source": "input",
+            "source_serial": "58"
+        },
+        "52": {
+            "board": "2",
+            "channel": "12",
+            "source": "input",
+            "source_serial": "59"
+        },
+        "53": {
+            "board": "2",
+            "channel": "13",
+            "source": "input",
+            "source_serial": "60"
+        },
+        "54": {
+            "board": "2",
+            "channel": "14",
+            "source": "input",
+            "source_serial": "61"
+        },
+        "18": {
+            "board": "0",
+            "channel": "18",
+            "source": "input",
+            "source_serial": "24"
+        },
+        "19": {
+            "board": "0",
+            "channel": "19",
+            "source": "input",
+            "source_serial": "25"
+        },
+        "3": {
+            "board": "0",
+            "channel": "3",
+            "source": "lemo",
+            "source_serial": "3"
+        },
+        "4": {
+            "board": "0",
+            "channel": "4",
+            "source": "lemo",
+            "source_serial": "4"
+        },
+        "5": {
+            "board": "0",
+            "channel": "5",
+            "source": "lemo",
+            "source_serial": "5"
+        },
+        "7": {
+            "board": "0",
+            "channel": "7",
+            "source": "lemo",
+            "source_serial": "6"
+        },
+        "10": {
+            "board": "0",
+            "channel": "10",
+            "source": "input",
+            "source_serial": "8"
+        },
+        "11": {
+            "board": "0",
+            "channel": "11",
+            "source": "input",
+            "source_serial": "41"
+        },
+        "12": {
+            "board": "0",
+            "channel": "12",
+            "source": "input",
+            "source_serial": "0"
+        },
+        "13": {
+            "board": "0",
+            "channel": "13",
+            "source": "input",
+            "source_serial": "2"
+        },
+        "14": {
+            "board": "0",
+            "channel": "14",
+            "source": "input",
+            "source_serial": "1"
+        },
+        "15": {
+            "board": "0",
+            "channel": "15",
+            "source": "input",
+            "source_serial": "3"
+        },
+        "20": {
+            "board": "1",
+            "channel": "0",
+            "source": "input",
+            "source_serial": "11"
+        },
+        "21": {
+            "board": "1",
+            "channel": "1",
+            "source": "input",
+            "source_serial": "32"
+        },
+        "22": {
+            "board": "1",
+            "channel": "2",
+            "source": "input",
+            "source_serial": "33"
+        },
+        "23": {
+            "board": "1",
+            "channel": "3",
+            "source": "input",
+            "source_serial": "34"
+        },
+        "25": {
+            "board": "1",
+            "channel": "5",
+            "source": "input",
+            "source_serial": "16"
+        },
+        "26": {
+            "board": "1",
+            "channel": "6",
+            "source": "input",
+            "source_serial": "17"
+        },
+        "27": {
+            "board": "1",
+            "channel": "7",
+            "source": "input",
+            "source_serial": "18"
+        },
+        "28": {
+            "board": "1",
+            "channel": "8",
+            "source": "input",
+            "source_serial": "19"
+        },
+        "29": {
+            "board": "1",
+            "channel": "9",
+            "source": "input",
+            "source_serial": "20"
+        },
+        "30": {
+            "board": "1",
+            "channel": "10",
+            "source": "input",
+            "source_serial": "21"
+        },
+        "31": {
+            "board": "1",
+            "channel": "11",
+            "source": "input",
+            "source_serial": "22"
+        },
+        "32": {
+            "board": "1",
+            "channel": "12",
+            "source": "input",
+            "source_serial": "23"
+        },
+        "33": {
+            "board": "1",
+            "channel": "13",
+            "source": "input",
+            "source_serial": "35"
+        },
+        "34": {
+            "board": "1",
+            "channel": "14",
+            "source": "input",
+            "source_serial": "36"
+        },
+        "35": {
+            "board": "1",
+            "channel": "15",
+            "source": "input",
+            "source_serial": "37"
+        },
+        "36": {
+            "board": "1",
+            "channel": "16",
+            "source": "input",
+            "source_serial": "38"
+        },
+        "40": {
+            "board": "2",
+            "channel": "0",
+            "source": "input",
+            "source_serial": "48"
+        },
+        "41": {
+            "board": "2",
+            "channel": "1",
+            "source": "input",
+            "source_serial": "49"
+        },
+        "42": {
+            "board": "2",
+            "channel": "2",
+            "source": "input",
+            "source_serial": "50"
+        },
+        "43": {
+            "board": "2",
+            "channel": "3",
+            "source": "input",
+            "source_serial": "51"
+        },
+        "44": {
+            "board": "2",
+            "channel": "4",
+            "source": "input",
+            "source_serial": "52"
+        },
+        "45": {
+            "board": "2",
+            "channel": "5",
+            "source": "input",
+            "source_serial": "53"
+        },
+        "46": {
+            "board": "2",
+            "channel": "6",
+            "source": "input",
+            "source_serial": "54"
+        },
+        "17": {
+            "board": "0",
+            "channel": "17",
+            "source": "input",
+            "source_serial": "40"
+        },
+        "0": {
+            "board": "0",
+            "channel": "0",
+            "source": "other",
+            "source_serial": "TDCT0"
+        },
+        "39": {
+            "board": "1",
+            "channel": "19",
+            "source": "other",
+            "source_serial": "TDCT1"
+        },
+        "59": {
+            "board": "2",
+            "channel": "19",
+            "source": "other",
+            "source_serial": "TDCT2"
+        }
+    },
+    "patch_panel_connections": {
+        "1": {
+            "source": "other",
+            "source_serial": "TDCT0"
+        },
+        "2": {
+            "source": "input",
+            "source_serial": "29"
+        },
+        "15": {
+            "source": "lemo",
+            "source_serial": "15"
+        },
+        "4": {
+            "source": "input",
+            "source_serial": "26"
+        },
+        "5": {
+            "source": "input",
+            "source_serial": "27"
+        },
+        "9": {
+            "source": "lemo",
+            "source_serial": "9"
+        },
+        "10": {
+            "source": "lemo",
+            "source_serial": "10"
+        },
+        "11": {
+            "source": "lemo",
+            "source_serial": "11"
+        },
+        "12": {
+            "source": "lemo",
+            "source_serial": "12"
+        },
+        "13": {
+            "source": "lemo",
+            "source_serial": "13"
+        },
+        "14": {
+            "source": "other",
+            "source_serial": "LaserIn"
+        }
+    },
+    "prescalers": {},
+    "spill_channels": {
+        "pre_spill": "26",
+        "end_spill": "27",
+        "enabled": "True"
+    },
+    "deadtime": "625"
+}
